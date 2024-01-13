@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.0.0\n"
-"POT-Creation-Date: 2024-01-08 21:26:18\n"
-"PO-Revision-Date: 2024-01-08 21:26:18\n"
+"Project-Id-Version: unknown\n"
+"POT-Creation-Date: 2024-01-13 18:09:56\n"
+"PO-Revision-Date: 2024-01-13 18:23:05\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -31,11 +31,17 @@ msgstr "Kann Datei nicht überschreiben"
 msgid "Cannot write file"
 msgstr "Kann Datei nicht schreiben"
 
+msgid "Create from Aeon Timeline 2..."
+msgstr "Aus Aeon Timeline 2 erzeugen..."
+
 msgid "Edit the timeline"
 msgstr "Die Zeitleiste bearbeiten"
 
 msgid "File"
 msgstr "Datei"
+
+msgid "File already exists"
+msgstr "Datei existiert bereits"
 
 msgid "File written"
 msgstr "Datei gespeichert"

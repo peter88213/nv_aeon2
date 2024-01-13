@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.0\n"
-"POT-Creation-Date: 2024-01-08 21:26:18\n"
+"POT-Creation-Date: 2024-01-13 18:09:56\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -32,10 +32,16 @@ msgstr ""
 msgid "Cannot write file"
 msgstr ""
 
+msgid "Create from Aeon Timeline 2..."
+msgstr ""
+
 msgid "Edit the timeline"
 msgstr ""
 
 msgid "File"
+msgstr ""
+
+msgid "File already exists"
 msgstr ""
 
 msgid "File written"

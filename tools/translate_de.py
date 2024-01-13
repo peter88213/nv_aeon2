@@ -1,7 +1,7 @@
 """Generate German translation files for GNU gettext.
 
 - Update the project's 'de.po' translation file.
-- Generate the language specific 'novxlib.mo' dictionary.
+- Generate the language specific 'nv_aeon2.mo' dictionary.
 
 Usage: 
 translate_de.py
@@ -20,14 +20,10 @@ File structure:
     └── i18n/
         ├── messages.pot
         ├── de.po
-        ├── locale/
-        │   └─ de/
-        │      └─ LC_MESSAGES/
-        │         └─ novxlib.mo
-        └── plugin_locale/
+        └── locale/
             └─ de/
                └─ LC_MESSAGES/
-                  └─ noveltree_aeon2.mo
+                  └─ nv_aeon2.mo
     
 Copyright (c) 2024 Peter Triesberger
 For further information see https://github.com/peter88213/noveltree_aeon2

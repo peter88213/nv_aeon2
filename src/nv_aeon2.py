@@ -22,6 +22,7 @@ import locale
 import os
 from pathlib import Path
 import sys
+from tkinter import filedialog
 from tkinter import messagebox
 import webbrowser
 
@@ -109,6 +110,9 @@ class Plugin():
         self._pluginMenu.add_separator()
         self._pluginMenu.add_command(label=_('Edit the timeline'), command=self._launch_application)
 
+        # Add an entry to the "File > New" menu.
+        self._ui.newMenu.add_command(label=_('Create from Aeon Timeline 2...'), command=self._create_novx)
+
         # Add an entry to the Help menu.
         self._ui.helpMenu.add_command(label=_('Aeon 2 plugin Online help'), command=lambda: webbrowser.open(self._HELP_URL))
 
@@ -157,6 +161,40 @@ class Plugin():
                     message = f'{_("File written")}: "{norm_path(timeline.filePath)}".'
                 self._ui.set_status(message)
 
+    def _create_novx(self):
+        """Create a noveltree project from a timeline."""
+        timelinePath = filedialog.askopenfilename(
+            filetypes=[(JsonTimeline2.DESCRIPTION, JsonTimeline2.EXTENSION)],
+            defaultextension=JsonTimeline2.EXTENSION,
+            )
+        if not timelinePath:
+            return
+
+        self._ctrl.close_project()
+        root, __ = os.path.splitext(timelinePath)
+        novxPath = f'{root}{NovxFile.EXTENSION}'
+        kwargs = self._get_configuration(timelinePath)
+        source = JsonTimeline2(timelinePath, **kwargs)
+        target = NovxFile(novxPath)
+
+        if os.path.isfile(target.filePath):
+            self._ui.set_status(f'!{_("File already exists")}: "{norm_path(target.filePath)}".')
+            return
+
+        message = ''
+        try:
+            source.novel = Novel(tree=NvTree())
+            source.read()
+            target.novel = source.novel
+            target.write()
+        except Error as ex:
+            message = f'!{str(ex)}'
+        else:
+            message = f'{_("File written")}: "{norm_path(target.filePath)}".'
+            self._ctrl.open_project(filePath=target.filePath, doNotSave=True)
+        finally:
+            self._ui.set_status(message)
+
     def _edit_settings(self):
         """Toplevel window"""
         return
@@ -172,7 +210,7 @@ class Plugin():
             self._ui.restore_status()
             if self._ui.ask_yes_no(_('Save the project and update the timeline?')):
                 self._ctrl.save_project()
-                kwargs = self._get_config(timelinePath)
+                kwargs = self._get_configuration(timelinePath)
                 source = NovxFile(self._mdl.prjFile.filePath, **kwargs)
                 source.novel = Novel(tree=NvTree())
                 target = JsonTimeline2(timelinePath, **kwargs)
@@ -186,7 +224,7 @@ class Plugin():
                     message = f'!{str(ex)}'
                 self._ui.set_status(message)
 
-    def _get_config(self, sourcePath):
+    def _get_configuration(self, sourcePath):
         """ Read persistent configuration data for Aeon 2 conversion.
         
         First, look for a global configuration file in the aeon2nv installation directory,
@@ -225,7 +263,7 @@ class Plugin():
 
             if self._ui.ask_yes_no(_('Save the project and update it?')):
                 self._ctrl.save_project()
-                kwargs = self._get_config(timelinePath)
+                kwargs = self._get_configuration(timelinePath)
                 source = JsonTimeline2(timelinePath, **kwargs)
                 target = NovxFile(self._mdl.prjFile.filePath, **kwargs)
                 try:
