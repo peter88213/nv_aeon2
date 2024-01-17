@@ -8,11 +8,14 @@ from datetime import datetime
 from datetime import timedelta
 
 from novxlib.file.file import File
+from novxlib.model.arc import Arc
 from novxlib.model.chapter import Chapter
 from novxlib.model.character import Character
 from novxlib.model.id_generator import create_id
 from novxlib.model.section import Section
 from novxlib.model.world_element import WorldElement
+from novxlib.novx_globals import AC_ROOT
+from novxlib.novx_globals import ARC_PREFIX
 from novxlib.novx_globals import CHAPTER_PREFIX
 from novxlib.novx_globals import CHARACTER_PREFIX
 from novxlib.novx_globals import CH_ROOT
@@ -24,7 +27,6 @@ from novxlib.novx_globals import LC_ROOT
 from novxlib.novx_globals import LOCATION_PREFIX
 from novxlib.novx_globals import SECTION_PREFIX
 from novxlib.novx_globals import _
-from novxlib.novx_globals import list_to_string
 from novxlib.novx_globals import string_to_list
 from nvaeon2lib.aeon2_fop import open_timeline
 from nvaeon2lib.aeon2_fop import save_timeline
@@ -46,17 +48,9 @@ class JsonTimeline2(File):
     SUFFIX = ''
     VALUE_YES = '1'
     # JSON representation of "yes" in Aeon2 "yes/no" properties
-    DATE_LIMIT = (datetime(100, 1, 1) - datetime.min).total_seconds()
-    # Dates before 100-01-01 can not be displayed properly in noveltree
+    DATE_LIMIT = (datetime(1, 1, 1) - datetime.min).total_seconds()
+    # Dates before 1-01-01 can not be displayed properly in noveltree
     PROPERTY_MOONPHASE = 'Moon phase'
-
-    SCN_KWVAR = [
-        'Field_SectionArcs',
-        ]
-    CRT_KWVAR = [
-        'Field_BirthDate',
-        'Field_DeathDate',
-        ]
 
     def __init__(self, filePath, **kwargs):
         """Initialize instance variables.
@@ -130,9 +124,10 @@ class JsonTimeline2(File):
         self._displayIdMax = 0.0
         self._colors = {}
         self._arcCount = 0
-        self._characterGuidById = {}
-        self._locationGuidById = {}
-        self._itemGuidById = {}
+        self._arcGuidsById = {}
+        self._characterGuidsById = {}
+        self._locationGuidsById = {}
+        self._itemGuidsById = {}
         self._trashEvents = []
         self._arcGuidsByName = {}
 
@@ -335,6 +330,15 @@ class JsonTimeline2(File):
 
                 targetScIdByTitle[title] = scId
 
+        targetAcIdByTitle = {}
+        for acId in self.novel.arcs:
+            title = self.novel.arcs[acId].title
+            if title:
+                if title in targetAcIdByTitle:
+                    raise Error(_('Ambiguous noveltree arc "{}".').format(title))
+
+                targetAcIdByTitle[title] = acId
+
         targetCrIdByTitle = {}
         for crId in self.novel.characters:
             title = self.novel.characters[crId].title
@@ -363,71 +367,90 @@ class JsonTimeline2(File):
                 targetItIdByTitle[title] = itId
 
         # For section relationship lookup:
+        acIdsByGuid = {}
         crIdsByGuid = {}
         lcIdsByGuid = {}
         itIdsByGuid = {}
 
         # For ambiguity check:
+        arcNames = []
         characterNames = []
         locationNames = []
         itemNames = []
 
-        for ent in self._jsonData['entities']:
-            if ent['entityType'] == self._typeArcGuid:
-                self._arcCount += 1
-                if ent['name'] == self._entityNarrative:
-                    self._entityNarrativeGuid = ent['guid']
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] == self._typeArcGuid:
+                if entity['name'] in arcNames:
+                    raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
+
+                arcNames.append(entity['name'])
+                if entity['name'] in targetAcIdByTitle:
+                    acId = targetAcIdByTitle[entity['name']]
+                elif entity['name'] != self._entityNarrative:
+                    acId = create_id(self.novel.arcs, prefix=ARC_PREFIX)
+                    self.novel.arcs[acId] = Arc()
+                    self.novel.arcs[acId].title = entity['name']
+                    self.novel.arcs[acId].shortName = entity['name']
+                    self.novel.tree.append(AC_ROOT, acId)
+                if entity['name'] == self._entityNarrative:
+                    self._entityNarrativeGuid = entity['guid']
                 else:
-                    self._arcGuidsByName[ent['name']] = ent['guid']
+                    self._arcGuidsByName[entity['name']] = entity['guid']
+                    self._arcGuidsById[acId] = entity['guid']
+                    self._arcCount += 1
 
-            elif ent['entityType'] == self._typeCharacterGuid:
-                if ent['name'] in characterNames:
-                    raise Error(_('Ambiguous Aeon character "{}".').format(ent['name']))
+            elif entity['entityType'] == self._typeCharacterGuid:
+                if entity['name'] in characterNames:
+                    raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
 
-                characterNames.append(ent['name'])
-                if ent['name'] in targetCrIdByTitle:
-                    crId = targetCrIdByTitle[ent['name']]
+                characterNames.append(entity['name'])
+                if entity['name'] in targetCrIdByTitle:
+                    crId = targetCrIdByTitle[entity['name']]
                 else:
                     crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
                     self.novel.characters[crId] = Character()
-                    self.novel.characters[crId].title = ent['name']
+                    self.novel.characters[crId].title = entity['name']
                     self.novel.tree.append(CR_ROOT, crId)
-                crIdsByGuid[ent['guid']] = crId
-                self._characterGuidById[crId] = ent['guid']
-                if ent['notes']:
-                    self.novel.characters[crId].notes = ent['notes']
+                crIdsByGuid[entity['guid']] = crId
+                self._characterGuidsById[crId] = entity['guid']
+                if entity['notes']:
+                    self.novel.characters[crId].notes = entity['notes']
                 else:
-                    ent['notes'] = ''
+                    entity['notes'] = ''
 
-            elif ent['entityType'] == self._typeLocationGuid:
-                if ent['name'] in locationNames:
-                    raise Error(_('Ambiguous Aeon location "{}".').format(ent['name']))
+            elif entity['entityType'] == self._typeLocationGuid:
+                if entity['name'] in locationNames:
+                    raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
 
-                locationNames.append(ent['name'])
-                if ent['name'] in targetLcIdByTitle:
-                    lcId = targetLcIdByTitle[ent['name']]
+                locationNames.append(entity['name'])
+                if entity['name'] in targetLcIdByTitle:
+                    lcId = targetLcIdByTitle[entity['name']]
                 else:
                     lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
                     self.novel.locations[lcId] = WorldElement()
-                    self.novel.locations[lcId].title = ent['name']
+                    self.novel.locations[lcId].title = entity['name']
                     self.novel.tree.append(LC_ROOT, lcId)
-                lcIdsByGuid[ent['guid']] = lcId
-                self._locationGuidById[lcId] = ent['guid']
+                lcIdsByGuid[entity['guid']] = lcId
+                self._locationGuidsById[lcId] = entity['guid']
 
-            elif ent['entityType'] == self._typeItemGuid:
-                if ent['name'] in itemNames:
-                    raise Error(_('Ambiguous Aeon item "{}".').format(ent['name']))
+            elif entity['entityType'] == self._typeItemGuid:
+                if entity['name'] in itemNames:
+                    raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
 
-                itemNames.append(ent['name'])
-                if ent['name'] in targetItIdByTitle:
-                    itId = targetItIdByTitle[ent['name']]
+                itemNames.append(entity['name'])
+                if entity['name'] in targetItIdByTitle:
+                    itId = targetItIdByTitle[entity['name']]
                 else:
                     itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
                     self.novel.items[itId] = WorldElement()
-                    self.novel.items[itId].title = ent['name']
+                    self.novel.items[itId].title = entity['name']
                     self.novel.tree.append(IT_ROOT, itId)
-                itIdsByGuid[ent['guid']] = itId
-                self._itemGuidById[itId] = ent['guid']
+                itIdsByGuid[entity['guid']] = itId
+                self._itemGuidsById[itId] = entity['guid']
+
+        #--- Abort if there is no Narrative arc.
+        if not self._entityNarrativeGuid:
+            return
 
         #--- Get GUID of user defined properties.
         hasPropertyNotes = False
@@ -493,12 +516,14 @@ class JsonTimeline2(File):
         narrativeEvents = []
         for evt in self._jsonData['events']:
 
-            # Find out whether the event is associated to a normal section:
+            # Find out whether the event is associated to a section:
             isNarrative = False
             for evtRel in evt['relationships']:
                 if evtRel['role'] == self._roleArcGuid:
-                    if self._entityNarrativeGuid and evtRel['entity'] == self._entityNarrativeGuid:
+                    if evtRel['entity'] == self._entityNarrativeGuid:
                         isNarrative = True
+            if not isNarrative:
+                continue
 
             if evt['title'] in scnTitles:
                 raise Error(f'Ambiguous Aeon event title "{evt["title"]}".')
@@ -508,9 +533,6 @@ class JsonTimeline2(File):
             if evt['title'] in targetScIdByTitle:
                 scId = targetScIdByTitle[evt['title']]
             else:
-                if not isNarrative:
-                    continue
-
                 # Create a new section.
                 scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
                 self.novel.sections[scId] = Section(
@@ -625,24 +647,24 @@ class JsonTimeline2(File):
 
             #--- Find sections and get characters, locations, and items.
             self.novel.sections[scId].scType = 1
-            # type = "Notes"
+            # type = "Unused"
             scCharacters = []
             scLocations = []
             scItems = []
-            arcs = []
+            scArcs = []
             for evtRel in evt['relationships']:
                 if evtRel['role'] == self._roleArcGuid:
                     # Make section event "Normal" type section.
-                    if self._entityNarrativeGuid and evtRel['entity'] == self._entityNarrativeGuid:
+                    if evtRel['entity'] == self._entityNarrativeGuid:
                         self.novel.sections[scId].scType = 0
                         # type = "Normal"
                         if timestamp > self._timestampMax:
                             self._timestampMax = timestamp
                 if evtRel['role'] == self._roleStorylineGuid:
                     # Collect section arcs.
-                    for arcName in self._arcGuidsByName:
-                        if evtRel['entity'] == self._arcGuidsByName[arcName]:
-                            arcs.append(arcName)
+                    for acId in self._arcGuidsById:
+                        if evtRel['entity'] == self._arcGuidsById[acId]:
+                            scArcs.append(acId)
                 elif evtRel['role'] == self._roleCharacterGuid:
                     crId = crIdsByGuid[evtRel['entity']]
                     scCharacters.append(crId)
@@ -660,8 +682,15 @@ class JsonTimeline2(File):
             if scItems:
                 self.novel.sections[scId].items = scItems
 
-            # Add arcs to the section keyword variables.
-            self.novel.sections[scId].arcs = list_to_string(arcs)
+            # Add arc reference to the section.
+            self.novel.sections[scId].arcs = scArcs
+
+            # Add section reference to the arc.
+            acSections = self.novel.arcs[acId].sections
+            if acSections is None:
+                acSections = []
+            acSections.append(scId)
+            self.novel.arcs[acId].sections = acSections
 
         #--- Mark sections deleted in Aeon "Unused".
         for scId in self.novel.sections:
@@ -900,7 +929,7 @@ class JsonTimeline2(File):
                 crIdsBySrcId[srcCrId] = crId
                 self.novel.characters[crId] = source.characters[srcCrId]
                 newGuid = get_uid(f'{crId}{self.novel.characters[crId].title}')
-                self._characterGuidById[crId] = newGuid
+                self._characterGuidsById[crId] = newGuid
                 self._jsonData['entities'].append(
                     {
                         'entityType': self._typeCharacterGuid,
@@ -925,7 +954,7 @@ class JsonTimeline2(File):
                 lcIdsBySrcId[srcLcId] = lcId
                 self.novel.locations[lcId] = source.locations[srcLcId]
                 newGuid = get_uid(f'{lcId}{self.novel.locations[lcId].title}')
-                self._locationGuidById[lcId] = newGuid
+                self._locationGuidsById[lcId] = newGuid
                 self._jsonData['entities'].append(
                     {
                         'entityType': self._typeLocationGuid,
@@ -950,7 +979,7 @@ class JsonTimeline2(File):
                 itIdsBySrcId[srcItId] = itId
                 self.novel.items[itId] = source.items[srcItId]
                 newGuid = get_uid(f'{itId}{self.novel.items[itId].title}')
-                self._itemGuidById[itId] = newGuid
+                self._itemGuidsById[itId] = newGuid
                 self._jsonData['entities'].append(
                     {
                         'entityType': self._typeItemGuid,
@@ -1166,7 +1195,7 @@ class JsonTimeline2(File):
                 for crId in self.novel.sections[scId].characters:
                     newRel.append(
                         {
-                            'entity': self._characterGuidById[crId],
+                            'entity': self._characterGuidsById[crId],
                             'percentAllocated': 1,
                             'role': self._roleCharacterGuid,
                         })
@@ -1176,7 +1205,7 @@ class JsonTimeline2(File):
                 for lcId in self.novel.sections[scId].locations:
                     newRel.append(
                         {
-                            'entity': self._locationGuidById[lcId],
+                            'entity': self._locationGuidsById[lcId],
                             'percentAllocated': 1,
                             'role': self._roleLocationGuid,
                         })
@@ -1186,7 +1215,7 @@ class JsonTimeline2(File):
                 for itId in self.novel.sections[scId].items:
                     newRel.append(
                         {
-                            'entity': self._itemGuidById[itId],
+                            'entity': self._itemGuidsById[itId],
                             'percentAllocated': 1,
                             'role': self._roleItemGuid,
                         })
