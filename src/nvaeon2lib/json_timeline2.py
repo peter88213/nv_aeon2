@@ -470,10 +470,6 @@ class JsonTimeline2(File):
                 itIdsByGuid[entity['guid']] = itId
                 self._itemGuidsById[itId] = entity['guid']
 
-        # Abort if there is no Narrative arc.
-        if not self._entityNarrativeGuid:
-            return
-
         # Get GUID of user defined properties.
         hasPropertyNotes = False
         hasPropertyDesc = False
@@ -531,6 +527,10 @@ class JsonTimeline2(File):
                 'sortOrder': n,
                 'type': 'text'
             })
+
+        # Abort if there is no Narrative arc.
+        if not self._entityNarrativeGuid:
+            return
 
         #--- Update/create sections.
         scIdsByDate = {}
@@ -676,18 +676,20 @@ class JsonTimeline2(File):
             scCharacters = []
             scLocations = []
             scItems = []
-            scArcs = []
             for evtRel in event['relationships']:
+
+                # Make the section "Normal", if the event is related to the "Narrative" arc.
                 if evtRel['role'] == self._roleArcGuid:
-                    # Make section event "Normal" type section.
                     if evtRel['entity'] == self._entityNarrativeGuid:
                         self.novel.sections[scId].scType = 0
-                        # type = "Normal"
                         if timestamp > self._timestampMax:
                             self._timestampMax = timestamp
+
+                # Add arc assignment to the section, if the event has a "Storyline" relationship.
                 if evtRel['role'] == self._roleStorylineGuid:
                     acId = acIdsByGuid[evtRel['entity']]
-                    scArcs.append(acId)
+                    self.novel.sections[scId].arcs.append(acId)
+                    # adding arc reference to the section
 
                     # Add section reference to the arc.
                     acSections = self.novel.arcs[acId].sections
@@ -695,25 +697,29 @@ class JsonTimeline2(File):
                         acSections = []
                     acSections.append(scId)
                     self.novel.arcs[acId].sections = acSections
+
+                # Add character to the list, if the event has a character role relationship.
                 elif evtRel['role'] == self._roleCharacterGuid:
                     crId = crIdsByGuid[evtRel['entity']]
                     scCharacters.append(crId)
+
+                # Add location to the list, if the event has a location role relationship.
                 elif evtRel['role'] == self._roleLocationGuid:
                     lcId = lcIdsByGuid[evtRel['entity']]
                     scLocations.append(lcId)
+
+                # Add item to the list, if the event has an item role relationship.
                 elif evtRel['role'] == self._roleItemGuid:
                     itId = itIdsByGuid[evtRel['entity']]
                     scItems.append(itId)
 
+            # Write the character/location/item lists to the section.
             if scCharacters:
                 self.novel.sections[scId].characters = scCharacters
             if scLocations:
                 self.novel.sections[scId].locations = scLocations
             if scItems:
                 self.novel.sections[scId].items = scItems
-
-            # Add arc reference to the section.
-            self.novel.sections[scId].arcs = scArcs
 
         #--- Mark sections deleted in Aeon "Unused".
         for scId in self.novel.sections:
@@ -862,8 +868,9 @@ class JsonTimeline2(File):
 
         #--- Collect arcs from source.
         for arc in source.arcs:
-            if not arc in self._arcGuidsByName:
-                self._arcGuidsByName[arc] = None
+            arcName = arc.title
+            if not arc.title in self._arcGuidsByName:
+                self._arcGuidsByName[arc.title] = None
                 # new arc; GUID is generated on writing
 
         # Check characters.
