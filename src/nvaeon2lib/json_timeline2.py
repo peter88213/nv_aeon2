@@ -321,50 +321,50 @@ class JsonTimeline2(File):
         # This means, there may be already elements with IDs.
         # In order to reuse them, they are collected in the "target element ID by title" dictionaries.
 
-        targetScIdByTitle = {}
+        targetScIdsByTitle = {}
         for scId in self.novel.sections:
             title = self.novel.sections[scId].title
             if title:
-                if title in targetScIdByTitle:
+                if title in targetScIdsByTitle:
                     raise Error(_('Ambiguous noveltree section title "{}".').format(title))
 
-                targetScIdByTitle[title] = scId
+                targetScIdsByTitle[title] = scId
 
-        targetAcIdByTitle = {}
+        targetAcIdsByTitle = {}
         for acId in self.novel.arcs:
             title = self.novel.arcs[acId].title
             if title:
-                if title in targetAcIdByTitle:
+                if title in targetAcIdsByTitle:
                     raise Error(_('Ambiguous noveltree arc "{}".').format(title))
 
-                targetAcIdByTitle[title] = acId
+                targetAcIdsByTitle[title] = acId
 
-        targetCrIdByTitle = {}
+        targetCrIdsByTitle = {}
         for crId in self.novel.characters:
             title = self.novel.characters[crId].title
             if title:
-                if title in targetCrIdByTitle:
+                if title in targetCrIdsByTitle:
                     raise Error(_('Ambiguous noveltree character "{}".').format(title))
 
-                targetCrIdByTitle[title] = crId
+                targetCrIdsByTitle[title] = crId
 
-        targetLcIdByTitle = {}
+        targetLcIdsByTitle = {}
         for lcId in self.novel.locations:
             title = self.novel.locations[lcId].title
             if title:
-                if title in targetLcIdByTitle:
+                if title in targetLcIdsByTitle:
                     raise Error(_('Ambiguous noveltree location "{}".').format(title))
 
-                targetLcIdByTitle[title] = lcId
+                targetLcIdsByTitle[title] = lcId
 
-        targetItIdByTitle = {}
+        targetItIdsByTitle = {}
         for itId in self.novel.items:
             title = self.novel.items[itId].title
             if title:
-                if title in targetItIdByTitle:
+                if title in targetItIdsByTitle:
                     raise Error(_('Ambiguous noveltree item "{}".').format(title))
 
-                targetItIdByTitle[title] = itId
+                targetItIdsByTitle[title] = itId
 
         # For section relationship lookup:
         acIdsByGuid = {}
@@ -380,13 +380,19 @@ class JsonTimeline2(File):
 
         for entity in self._jsonData['entities']:
             if entity['entityType'] == self._typeArcGuid:
+
+                # Check whether the arc title is unique.
                 if entity['name'] in arcNames:
                     raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
 
                 arcNames.append(entity['name'])
-                if entity['name'] in targetAcIdByTitle:
-                    acId = targetAcIdByTitle[entity['name']]
+
+                # Check whether there is already an arc for the entity.
+                if entity['name'] in targetAcIdsByTitle:
+                    acId = targetAcIdsByTitle[entity['name']]
                 elif entity['name'] != self._entityNarrative:
+
+                    # Create a new arc, if it's not the "Narrative" indicator.
                     acId = create_id(self.novel.arcs, prefix=ARC_PREFIX)
                     self.novel.arcs[acId] = Arc()
                     self.novel.arcs[acId].title = entity['name']
@@ -395,18 +401,24 @@ class JsonTimeline2(File):
                 if entity['name'] == self._entityNarrative:
                     self._entityNarrativeGuid = entity['guid']
                 else:
+                    acIdsByGuid[entity['guid']] = acId
                     self._arcGuidsByName[entity['name']] = entity['guid']
                     self._arcGuidsById[acId] = entity['guid']
                     self._arcCount += 1
 
             elif entity['entityType'] == self._typeCharacterGuid:
+
+                # Check whether the character title is unique.
                 if entity['name'] in characterNames:
                     raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
 
                 characterNames.append(entity['name'])
-                if entity['name'] in targetCrIdByTitle:
-                    crId = targetCrIdByTitle[entity['name']]
+
+                # Check whether there is already a character for the entity.
+                if entity['name'] in targetCrIdsByTitle:
+                    crId = targetCrIdsByTitle[entity['name']]
                 else:
+                    # Create a new character.
                     crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
                     self.novel.characters[crId] = Character()
                     self.novel.characters[crId].title = entity['name']
@@ -419,13 +431,18 @@ class JsonTimeline2(File):
                     entity['notes'] = ''
 
             elif entity['entityType'] == self._typeLocationGuid:
+
+                # Check whether the location title is unique.
                 if entity['name'] in locationNames:
                     raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
 
                 locationNames.append(entity['name'])
-                if entity['name'] in targetLcIdByTitle:
-                    lcId = targetLcIdByTitle[entity['name']]
+
+                # Check whether there is already a location for the entity.
+                if entity['name'] in targetLcIdsByTitle:
+                    lcId = targetLcIdsByTitle[entity['name']]
                 else:
+                    # Create a new location.
                     lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
                     self.novel.locations[lcId] = WorldElement()
                     self.novel.locations[lcId].title = entity['name']
@@ -434,13 +451,18 @@ class JsonTimeline2(File):
                 self._locationGuidsById[lcId] = entity['guid']
 
             elif entity['entityType'] == self._typeItemGuid:
+
+                # Check whether the item title is unique.
                 if entity['name'] in itemNames:
                     raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
 
                 itemNames.append(entity['name'])
-                if entity['name'] in targetItIdByTitle:
-                    itId = targetItIdByTitle[entity['name']]
+
+                # Check whether there is already an item for the entity.
+                if entity['name'] in targetItIdsByTitle:
+                    itId = targetItIdsByTitle[entity['name']]
                 else:
+                    # Create a new item.
                     itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
                     self.novel.items[itId] = WorldElement()
                     self.novel.items[itId].title = entity['name']
@@ -448,11 +470,11 @@ class JsonTimeline2(File):
                 itIdsByGuid[entity['guid']] = itId
                 self._itemGuidsById[itId] = entity['guid']
 
-        #--- Abort if there is no Narrative arc.
+        # Abort if there is no Narrative arc.
         if not self._entityNarrativeGuid:
             return
 
-        #--- Get GUID of user defined properties.
+        # Get GUID of user defined properties.
         hasPropertyNotes = False
         hasPropertyDesc = False
         for tplPrp in self._jsonData['template']['properties']:
@@ -514,44 +536,47 @@ class JsonTimeline2(File):
         scIdsByDate = {}
         scnTitles = []
         narrativeEvents = []
-        for evt in self._jsonData['events']:
+        for event in self._jsonData['events']:
 
             # Find out whether the event is associated to a section:
             isNarrative = False
-            for evtRel in evt['relationships']:
+            for evtRel in event['relationships']:
                 if evtRel['role'] == self._roleArcGuid:
                     if evtRel['entity'] == self._entityNarrativeGuid:
                         isNarrative = True
-            if not isNarrative:
-                continue
+                        break
 
-            if evt['title'] in scnTitles:
-                raise Error(f'Ambiguous Aeon event title "{evt["title"]}".')
+            # Check whether the section title is unique.
+            eventTitle = event['title'].strip()
+            if eventTitle in scnTitles:
+                raise Error(f'Ambiguous Aeon event title "{event["title"]}".')
 
-            evt['title'] = evt['title'].strip()
-            scnTitles.append(evt['title'])
-            if evt['title'] in targetScIdByTitle:
-                scId = targetScIdByTitle[evt['title']]
-            else:
+            scnTitles.append(eventTitle)
+
+            # Check whether there is already a section for the event.
+            if eventTitle in targetScIdsByTitle:
+                scId = targetScIdsByTitle[eventTitle]
+            elif isNarrative:
                 # Create a new section.
                 scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
                 self.novel.sections[scId] = Section(
-                    title=evt['title'],
+                    title=eventTitle,
                     status=1,
                     scType=0,
                     scPacing=0,
                     )
-                # print(f'read creates {self.novel.sections[scId].title}')
+            else:
+                continue
 
             narrativeEvents.append(scId)
-            displayId = float(evt['displayId'])
+            displayId = float(event['displayId'])
             if displayId > self._displayIdMax:
                 self._displayIdMax = displayId
 
             #--- Evaluate properties.
             hasDescription = False
             hasNotes = False
-            for evtVal in evt['values']:
+            for evtVal in event['values']:
 
                 # Get section description.
                 if evtVal['property'] == self._propertyDescGuid:
@@ -567,19 +592,19 @@ class JsonTimeline2(File):
 
             #--- Add description and section notes, if missing.
             if not hasDescription:
-                evt['values'].append({'property': self._propertyDescGuid, 'value': ''})
+                event['values'].append({'property': self._propertyDescGuid, 'value': ''})
             if not hasNotes:
-                evt['values'].append({'property': self._propertyNotesGuid, 'value': ''})
+                event['values'].append({'property': self._propertyNotesGuid, 'value': ''})
 
             #--- Get section tags.
-            if evt['tags']:
+            if event['tags']:
                 self.novel.sections[scId].tags = []
-                for evtTag in evt['tags']:
+                for evtTag in event['tags']:
                     self.novel.sections[scId].tags.append(evtTag)
 
             #--- Get date/time/duration
             timestamp = 0
-            for evtRgv in evt['rangeValues']:
+            for evtRgv in event['rangeValues']:
                 if evtRgv['rangeProperty'] == self._tplDateGuid:
                     timestamp = evtRgv['position']['timestamp']
                     if timestamp >= self.DATE_LIMIT:
@@ -652,7 +677,7 @@ class JsonTimeline2(File):
             scLocations = []
             scItems = []
             scArcs = []
-            for evtRel in evt['relationships']:
+            for evtRel in event['relationships']:
                 if evtRel['role'] == self._roleArcGuid:
                     # Make section event "Normal" type section.
                     if evtRel['entity'] == self._entityNarrativeGuid:
@@ -665,6 +690,13 @@ class JsonTimeline2(File):
                     for acId in self._arcGuidsById:
                         if evtRel['entity'] == self._arcGuidsById[acId]:
                             scArcs.append(acId)
+
+                            # Add section reference to the arc.
+                            acSections = self.novel.arcs[acId].sections
+                            if acSections is None:
+                                acSections = []
+                            acSections.append(scId)
+                            self.novel.arcs[acId].sections = acSections
                 elif evtRel['role'] == self._roleCharacterGuid:
                     crId = crIdsByGuid[evtRel['entity']]
                     scCharacters.append(crId)
@@ -684,13 +716,6 @@ class JsonTimeline2(File):
 
             # Add arc reference to the section.
             self.novel.sections[scId].arcs = scArcs
-
-            # Add section reference to the arc.
-            acSections = self.novel.arcs[acId].sections
-            if acSections is None:
-                acSections = []
-            acSections.append(scId)
-            self.novel.arcs[acId].sections = acSections
 
         #--- Mark sections deleted in Aeon "Unused".
         for scId in self.novel.sections:
