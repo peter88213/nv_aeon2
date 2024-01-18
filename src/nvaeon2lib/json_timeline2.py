@@ -686,17 +686,15 @@ class JsonTimeline2(File):
                         if timestamp > self._timestampMax:
                             self._timestampMax = timestamp
                 if evtRel['role'] == self._roleStorylineGuid:
-                    # Collect section arcs.
-                    for acId in self._arcGuidsById:
-                        if evtRel['entity'] == self._arcGuidsById[acId]:
-                            scArcs.append(acId)
+                    acId = acIdsByGuid[evtRel['entity']]
+                    scArcs.append(acId)
 
-                            # Add section reference to the arc.
-                            acSections = self.novel.arcs[acId].sections
-                            if acSections is None:
-                                acSections = []
-                            acSections.append(scId)
-                            self.novel.arcs[acId].sections = acSections
+                    # Add section reference to the arc.
+                    acSections = self.novel.arcs[acId].sections
+                    if acSections is None:
+                        acSections = []
+                    acSections.append(scId)
+                    self.novel.arcs[acId].sections = acSections
                 elif evtRel['role'] == self._roleCharacterGuid:
                     crId = crIdsByGuid[evtRel['entity']]
                     scCharacters.append(crId)
