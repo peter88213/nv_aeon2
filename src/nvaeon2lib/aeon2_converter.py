@@ -57,7 +57,7 @@ class Aeon2Converter(Converter):
         """Convert from noveltree project to other file format.
 
         Positional arguments:
-            source -- NovxFile subclass instance.
+            source -- NovxFile instance.
             target -- JsonTimeline2 instance.
 
         Operation:
