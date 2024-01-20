@@ -315,7 +315,7 @@ class JsonTimeline2(File):
                 'sortOrder': typeCount
                 })
 
-        #--- Get arcs, characters, locations, and items.
+        #--- Get characters, locations, items, and arcs.
         # At the beginning, self.novel contains the  target data (if syncronizing an existing project),
         # or a newly instantiated Novel object (if creating a project).
         # This means, there may be already elements with IDs.
@@ -329,15 +329,6 @@ class JsonTimeline2(File):
                     raise Error(_('Ambiguous noveltree section title "{}".').format(title))
 
                 targetScIdsByTitle[title] = scId
-
-        targetAcIdsByTitle = {}
-        for acId in self.novel.arcs:
-            title = self.novel.arcs[acId].title
-            if title:
-                if title in targetAcIdsByTitle:
-                    raise Error(_('Ambiguous noveltree arc "{}".').format(title))
-
-                targetAcIdsByTitle[title] = acId
 
         targetCrIdsByTitle = {}
         for crId in self.novel.characters:
@@ -366,47 +357,29 @@ class JsonTimeline2(File):
 
                 targetItIdsByTitle[title] = itId
 
+        targetAcIdsByTitle = {}
+        for acId in self.novel.arcs:
+            title = self.novel.arcs[acId].title
+            if title:
+                if title in targetAcIdsByTitle:
+                    raise Error(_('Ambiguous noveltree arc "{}".').format(title))
+
+                targetAcIdsByTitle[title] = acId
+
         # For section relationship lookup:
-        acIdsByGuid = {}
         crIdsByGuid = {}
         lcIdsByGuid = {}
         itIdsByGuid = {}
+        acIdsByGuid = {}
 
         # For ambiguity check:
-        arcNames = []
         characterNames = []
         locationNames = []
         itemNames = []
+        arcNames = []
 
         for entity in self._jsonData['entities']:
-            if entity['entityType'] == self._typeArcGuid:
-
-                # Check whether the arc title is unique.
-                if entity['name'] in arcNames:
-                    raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
-
-                arcNames.append(entity['name'])
-
-                # Check whether there is already an arc for the entity.
-                if entity['name'] in targetAcIdsByTitle:
-                    acId = targetAcIdsByTitle[entity['name']]
-                elif entity['name'] != self._entityNarrative:
-
-                    # Create a new arc, if it's not the "Narrative" indicator.
-                    acId = create_id(self.novel.arcs, prefix=ARC_PREFIX)
-                    self.novel.arcs[acId] = Arc()
-                    self.novel.arcs[acId].title = entity['name']
-                    self.novel.arcs[acId].shortName = entity['name']
-                    self.novel.tree.append(AC_ROOT, acId)
-                if entity['name'] == self._entityNarrative:
-                    self._entityNarrativeGuid = entity['guid']
-                else:
-                    acIdsByGuid[entity['guid']] = acId
-                    self._arcGuidsByName[entity['name']] = entity['guid']
-                    self._arcGuidsById[acId] = entity['guid']
-                    self._arcCount += 1
-
-            elif entity['entityType'] == self._typeCharacterGuid:
+            if entity['entityType'] == self._typeCharacterGuid:
 
                 # Check whether the character title is unique.
                 if entity['name'] in characterNames:
@@ -469,6 +442,33 @@ class JsonTimeline2(File):
                     self.novel.tree.append(IT_ROOT, itId)
                 itIdsByGuid[entity['guid']] = itId
                 self._itemGuidsById[itId] = entity['guid']
+
+            elif entity['entityType'] == self._typeArcGuid:
+
+                # Check whether the arc title is unique.
+                if entity['name'] in arcNames:
+                    raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
+
+                arcNames.append(entity['name'])
+
+                # Check whether there is already an arc for the entity.
+                if entity['name'] in targetAcIdsByTitle:
+                    acId = targetAcIdsByTitle[entity['name']]
+                elif entity['name'] != self._entityNarrative:
+
+                    # Create a new arc, if it's not the "Narrative" indicator.
+                    acId = create_id(self.novel.arcs, prefix=ARC_PREFIX)
+                    self.novel.arcs[acId] = Arc()
+                    self.novel.arcs[acId].title = entity['name']
+                    self.novel.arcs[acId].shortName = entity['name']
+                    self.novel.tree.append(AC_ROOT, acId)
+                if entity['name'] == self._entityNarrative:
+                    self._entityNarrativeGuid = entity['guid']
+                else:
+                    acIdsByGuid[entity['guid']] = acId
+                    self._arcGuidsByName[entity['name']] = entity['guid']
+                    self._arcGuidsById[acId] = entity['guid']
+                    self._arcCount += 1
 
         # Get GUID of user defined properties.
         hasPropertyNotes = False
@@ -670,7 +670,7 @@ class JsonTimeline2(File):
                 scIdsByDate[timestamp] = []
             scIdsByDate[timestamp].append(scId)
 
-            #--- Find sections and get characters, locations, and items.
+            #--- Find sections and get characters, locations, items, and arcs.
             self.novel.sections[scId].scType = 1
             # type = "Unused"
             scCharacters = []
@@ -678,25 +678,12 @@ class JsonTimeline2(File):
             scItems = []
             for evtRel in event['relationships']:
 
-                # Make the section "Normal", if the event is related to the "Narrative" arc.
+                # Make the section "Normal", if the event has a "Narrative" relationship.
                 if evtRel['role'] == self._roleArcGuid:
                     if evtRel['entity'] == self._entityNarrativeGuid:
                         self.novel.sections[scId].scType = 0
                         if timestamp > self._timestampMax:
                             self._timestampMax = timestamp
-
-                # Add arc assignment to the section, if the event has a "Storyline" relationship.
-                if evtRel['role'] == self._roleStorylineGuid:
-                    acId = acIdsByGuid[evtRel['entity']]
-                    self.novel.sections[scId].arcs.append(acId)
-                    # adding arc reference to the section
-
-                    # Add section reference to the arc.
-                    acSections = self.novel.arcs[acId].sections
-                    if acSections is None:
-                        acSections = []
-                    acSections.append(scId)
-                    self.novel.arcs[acId].sections = acSections
 
                 # Add character to the list, if the event has a character role relationship.
                 elif evtRel['role'] == self._roleCharacterGuid:
@@ -712,6 +699,19 @@ class JsonTimeline2(File):
                 elif evtRel['role'] == self._roleItemGuid:
                     itId = itIdsByGuid[evtRel['entity']]
                     scItems.append(itId)
+
+                # Add arc assignment to the section, if the event has a "Storyline" relationship.
+                elif evtRel['role'] == self._roleStorylineGuid:
+                    acId = acIdsByGuid[evtRel['entity']]
+                    self.novel.sections[scId].arcs.append(acId)
+                    # adding arc reference to the section
+
+                    # Add section reference to the arc.
+                    acSections = self.novel.arcs[acId].sections
+                    if acSections is None:
+                        acSections = []
+                    acSections.append(scId)
+                    self.novel.arcs[acId].sections = acSections
 
             # Write the character/location/item lists to the section.
             if scCharacters:
@@ -838,8 +838,8 @@ class JsonTimeline2(File):
 
         #--- Merge first.
         targetEvents = []
-        for evt in self._jsonData['events']:
-            targetEvents.append(evt['title'])
+        for jEvent in self._jsonData['events']:
+            targetEvents.append(jEvent['title'])
 
         linkedCharacters = []
         linkedLocations = []
@@ -859,7 +859,7 @@ class JsonTimeline2(File):
 
                 srcScnTitles.append(source.sections[scId].title)
 
-                #--- Collect characters, locations, and items assigned to sections.
+                #--- Collect characters, locations, items, and arcs assigned to sections.
                 if source.sections[scId].characters:
                     linkedCharacters = list(set(linkedCharacters + source.sections[scId].characters))
                 if source.sections[scId].locations:
@@ -1075,10 +1075,6 @@ class JsonTimeline2(File):
 
             if source.sections[srcId].title in scIdsByTitle:
                 scId = scIdsByTitle[source.sections[srcId].title]
-            elif source.sections[srcId].title in targetEvents:
-                # catch non-narrative events in the target
-                continue
-
             else:
                 #--- Create a new section.
                 scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
@@ -1175,16 +1171,16 @@ class JsonTimeline2(File):
             self._arcCount += 1
 
         #--- Update events from sections.
-        for evt in self._jsonData['events']:
+        for jEvent in self._jsonData['events']:
             try:
-                scId = scIdsByTitle[evt['title']]
+                scId = scIdsByTitle[jEvent['title']]
             except KeyError:
                 continue
 
             #--- Set event date/time/span.
-            if evt['rangeValues'][0]['position']['timestamp'] >= self.DATE_LIMIT:
-                evt['rangeValues'][0]['span'] = get_span(self.novel.sections[scId])
-                evt['rangeValues'][0]['position']['timestamp'] = get_timestamp(self.novel.sections[scId])
+            if jEvent['rangeValues'][0]['position']['timestamp'] >= self.DATE_LIMIT:
+                jEvent['rangeValues'][0]['span'] = get_span(self.novel.sections[scId])
+                jEvent['rangeValues'][0]['position']['timestamp'] = get_timestamp(self.novel.sections[scId])
 
             #--- Calculate moon phase.
             if self._propertyMoonphaseGuid is not None:
@@ -1194,7 +1190,7 @@ class JsonTimeline2(File):
 
             #--- Set section description, notes, and moon phase.
             hasMoonphase = False
-            for evtVal in evt['values']:
+            for evtVal in jEvent['values']:
 
                 # Set section description.
                 if evtVal['property'] == self._propertyDescGuid:
@@ -1213,16 +1209,17 @@ class JsonTimeline2(File):
 
             #--- Add missing event properties.
             if not hasMoonphase and self._propertyMoonphaseGuid is not None:
-                evt['values'].append({'property': self._propertyMoonphaseGuid, 'value': eventMoonphase})
+                jEvent['values'].append({'property': self._propertyMoonphaseGuid, 'value': eventMoonphase})
 
             #--- Set section tags.
             if self.novel.sections[scId].tags:
-                evt['tags'] = self.novel.sections[scId].tags
+                jEvent['tags'] = self.novel.sections[scId].tags
 
             #--- Update characters, locations, items, and arcs.
+
             # Delete assignments.
             newRel = []
-            for evtRel in evt['relationships']:
+            for evtRel in jEvent['relationships']:
                 if evtRel['role'] == self._roleCharacterGuid:
                     continue
 
@@ -1230,6 +1227,9 @@ class JsonTimeline2(File):
                     continue
 
                 elif evtRel['role'] == self._roleItemGuid:
+                    continue
+
+                elif evtRel['role'] == self._roleArcGuid:
                     continue
 
                 else:
@@ -1285,17 +1285,17 @@ class JsonTimeline2(File):
                             'role': self._roleStorylineGuid,
                             })
 
-            evt['relationships'] = newRel
+            jEvent['relationships'] = newRel
 
         #--- Delete "Trash" sections.
-        events = []
-        for evt in self._jsonData['events']:
+        jEvents = []
+        for jEvent in self._jsonData['events']:
             try:
-                scId = scIdsByTitle[evt['title']]
+                scId = scIdsByTitle[jEvent['title']]
             except KeyError:
-                events.append(evt)
+                jEvents.append(jEvent)
             else:
                 if not scId in self._trashEvents:
-                    events.append(evt)
-        self._jsonData['events'] = events
+                    jEvents.append(jEvent)
+        self._jsonData['events'] = jEvents
         save_timeline(self._jsonData, self.filePath)

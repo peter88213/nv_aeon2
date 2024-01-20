@@ -96,7 +96,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'normal.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_AEON, silentMode=True)
-        self.assertStderrEquals('FAIL: Ambiguous Aeon event title "No one enters or leaves Rachett\'s apartment, according to the Conductor".')
+        self.assertStderrEquals('FAIL: Ambiguous Aeon event title "Mrs Hubbard sleeps".')
 
     # @unittest.skip('')
     def test_create_novx(self):
