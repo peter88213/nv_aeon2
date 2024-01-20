@@ -844,6 +844,7 @@ class JsonTimeline2(File):
         linkedCharacters = []
         linkedLocations = []
         linkedItems = []
+        linkedArcs = []
 
         #--- Check the source for ambiguous titles.
         # Check sections.
@@ -865,13 +866,8 @@ class JsonTimeline2(File):
                     linkedLocations = list(set(linkedLocations + source.sections[scId].locations))
                 if source.sections[scId].items:
                     linkedItems = list(set(linkedItems + source.sections[scId].items))
-
-        #--- Collect arcs from source.
-        for arc in source.arcs:
-            arcName = arc.title
-            if not arc.title in self._arcGuidsByName:
-                self._arcGuidsByName[arc.title] = None
-                # new arc; GUID is generated on writing
+                if source.sections[scId].scArcs:
+                    linkedArcs = list(set(linkedArcs + source.sections[scId].scArcs))
 
         # Check characters.
         srcChrNames = []
@@ -905,6 +901,17 @@ class JsonTimeline2(File):
                 raise Error(_('Ambiguous noveltree item "{}".').format(source.items[itId].title))
 
             srcItmTitles.append(source.items[itId].title)
+
+        # Check arcs.
+        srcArcTitles = []
+        for acId in source.arcs:
+            if not acId in linkedArcs:
+                continue
+
+            if source.arcs[acId].title in srcArcTitles:
+                raise Error(_('Ambiguous noveltree arc "{}".').format(source.arcs[acId].title))
+
+            srcArcTitles.append(source.arcs[acId].title)
 
         #--- Check the target for ambiguous titles.
         # Check sections.
@@ -946,8 +953,16 @@ class JsonTimeline2(File):
 
             itIdsByTitle[self.novel.items[itId].title] = itId
 
+        # Check arcs.
+        acIdsByTitle = {}
+        for acId in self.novel.arcs:
+            if self.novel.arcs[acId].title in acIdsByTitle:
+                raise Error(_('Ambiguous Aeon arc "{}".').format(self.novel.arcs[acId].title))
+
+            acIdsByTitle[self.novel.arcs[acId].title] = acId
+
         #--- Update characters from the source.
-        crIdMax = len(self.novel.characters)
+        chrCount = len(self.novel.characters)
         crIdsBySrcId = {}
         for srcCrId in source.characters:
             if source.characters[srcCrId].title in crIdsByTitle:
@@ -966,13 +981,13 @@ class JsonTimeline2(File):
                     'icon': 'person',
                     'name': self.novel.characters[crId].title,
                     'notes': '',
-                    'sortOrder': crIdMax,
+                    'sortOrder': chrCount,
                     'swatchColor': 'darkPink'
                     })
-                crIdMax += 1
+                chrCount += 1
 
         #--- Update locations from the source.
-        lcIdMax = len(self.novel.locations)
+        locCount = len(self.novel.locations)
         lcIdsBySrcId = {}
         for srcLcId in source.locations:
             if source.locations[srcLcId].title in lcIdsByTitle:
@@ -992,13 +1007,13 @@ class JsonTimeline2(File):
                     'icon': 'map',
                     'name': self.novel.locations[lcId].title,
                     'notes': '',
-                    'sortOrder': lcIdMax,
+                    'sortOrder': locCount,
                     'swatchColor': 'orange'
                     })
-                lcIdMax += 1
+                locCount += 1
 
         #--- Update Items from the source.
-        itIdMax = len(self.novel.items)
+        itmCount = len(self.novel.items)
         itIdsBySrcId = {}
         for srcItId in source.items:
             if source.items[srcItId].title in itIdsByTitle:
@@ -1017,10 +1032,37 @@ class JsonTimeline2(File):
                     'icon': 'cube',
                     'name': self.novel.items[itId].title,
                     'notes': '',
-                    'sortOrder': itIdMax,
+                    'sortOrder': itmCount,
                     'swatchColor': 'denim'
                     })
-                itIdMax += 1
+                itmCount += 1
+
+        #--- Update arcs from the source.
+        arcCount = len(self.novel.arcs)
+        acIdsBySrcId = {}
+        for srcAcId in source.arcs:
+            if source.arcs[srcAcId].title in acIdsByTitle:
+                acIdsBySrcId[srcAcId] = acIdsByTitle[source.arcs[srcAcId].title]
+            elif srcAcId in linkedArcs:
+                #--- Create a new Arc if it is assigned to at least one section.
+                acId = create_id(self.novel.arcs, prefix=ARC_PREFIX)
+
+                acIdsBySrcId[srcAcId] = acId
+                self.novel.arcs[acId] = source.arcs[srcAcId]
+                arcName = self.novel.arcs[acId].title
+                newGuid = get_uid(f'{acId}{arcName}')
+                self._arcGuidsById[acId] = newGuid
+                self._jsonData['entities'].append(
+                    {
+                    'entityType': self._typeArcGuid,
+                    'guid': newGuid,
+                    'icon': 'book',
+                    'name': arcName,
+                    'notes': '',
+                    'sortOrder': self._arcCount,
+                    'swatchColor': 'orange'
+                    })
+                arcCount += 1
 
         #--- Update sections from the source.
         for srcId in source.sections:
@@ -1085,9 +1127,13 @@ class JsonTimeline2(File):
                         scItems.append(itIdsBySrcId[itId])
                 self.novel.sections[scId].items = scItems
 
-            #--- Update section arcs and turning points.
-            self.novel.sections[scId].scArcs = source.sections[srcId].scArcs
-            self.novel.sections[scId].scTurningPoints = source.sections[srcId].scTurningPoints
+            #--- Update section arcs.
+            if source.sections[srcId].scArcs is not None:
+                scArcs = []
+                for acId in source.sections[srcId].scArcs:
+                    if acId in acIdsBySrcId:
+                        scArcs.append(acIdsBySrcId[acId])
+                self.novel.sections[scId].scArcs = scArcs
 
             #--- Update section start date/time.
             if source.sections[srcId].time is not None:
@@ -1127,34 +1173,6 @@ class JsonTimeline2(File):
                 'swatchColor': 'orange'
                 })
             self._arcCount += 1
-        narrativeArc = {
-            'entity': self._entityNarrativeGuid,
-            'percentAllocated': 1,
-            'role': self._roleArcGuid,
-            }
-
-        #--- Add missing arcs.
-        arcs = {}
-        for arcName in self._arcGuidsByName:
-            if self._arcGuidsByName[arcName] is None:
-                guid = get_uid(f'entity{arcName}ArcGuid')
-                self._arcGuidsByName[arcName] = guid
-                self._jsonData['entities'].append(
-                    {
-                    'entityType': self._typeArcGuid,
-                    'guid': guid,
-                    'icon': 'book',
-                    'name': arcName,
-                    'notes': '',
-                    'sortOrder': self._arcCount,
-                    'swatchColor': 'orange'
-                    })
-                self._arcCount += 1
-            arcs[arcName] = {
-                'entity': self._arcGuidsByName[arcName],
-                'percentAllocated': 1,
-                'role': self._roleStorylineGuid,
-                }
 
         #--- Update events from sections.
         for evt in self._jsonData['events']:
@@ -1201,7 +1219,7 @@ class JsonTimeline2(File):
             if self.novel.sections[scId].tags:
                 evt['tags'] = self.novel.sections[scId].tags
 
-            #--- Update characters, locations, and items.
+            #--- Update characters, locations, items, and arcs.
             # Delete assignments.
             newRel = []
             for evtRel in evt['relationships']:
@@ -1247,33 +1265,27 @@ class JsonTimeline2(File):
                         'role': self._roleItemGuid,
                         })
 
-            evt['relationships'] = newRel
-
-            #--- Assign "section" events to the "Narrative" arc.
+            # Add arcs.
             if self.novel.sections[scId].scType == 0:
-                if narrativeArc not in evt['relationships']:
-                    evt['relationships'].append(narrativeArc)
+                # Add "Narrative" arc.
+                newRel.append(
+                    {
+                    'entity': self._entityNarrativeGuid,
+                    'percentAllocated': 1,
+                    'role': self._roleArcGuid,
+                    })
 
-                #--- Assign events to arcs.
-                sectionArcs = self.novel.sections[scId].scArcs
-                for arcName in arcs:
-                    if arcName in sectionArcs:
-                        if arcs[arcName] not in evt['relationships']:
-                            evt['relationships'].append(arcs[arcName])
-                    else:
-                        try:
-                            evt['relationships'].remove(arcs[arcName])
-                        except:
-                            pass
+                # Add storyline arcs.
+                if self.novel.sections[scId].scArcs:
+                    for acId in self.novel.sections[scId].scArcs:
+                        newRel.append(
+                            {
+                            'entity': self._arcGuidsById[acId],
+                            'percentAllocated': 1,
+                            'role': self._roleStorylineGuid,
+                            })
 
-            elif self.novel.sections[scId].scType == 1:
-                if narrativeArc in evt['relationships']:
-                    evt['relationships'].remove(narrativeArc)
-
-                #--- Clear arcs, if any.
-                sectionArcs = string_to_list(self.novel.sections[scId].arcs)
-                for arcName in sectionArcs:
-                    evt['relationships'].remove(arcs[arcName])
+            evt['relationships'] = newRel
 
         #--- Delete "Trash" sections.
         events = []

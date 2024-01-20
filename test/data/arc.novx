@@ -28,12 +28,6 @@
         <Time>15:00:00</Time>
       </SECTION>
     </CHAPTER>
-    <CHAPTER id="ch3" type="1" isTrash="1">
-      <Title>Papierkorb</Title>
-    </CHAPTER>
-    <CHAPTER id="ch2" type="1" level="1">
-      <Title>Bögen</Title>
-    </CHAPTER>
   </CHAPTERS>
   <CHARACTERS>
     <CHARACTER id="cr1">
