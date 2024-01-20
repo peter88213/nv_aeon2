@@ -63,9 +63,7 @@ class Plugin():
     _HELP_URL = 'https://peter88213.github.io/noveltree_aeon2/usage'
 
     SETTINGS = dict(
-        default_date_time='2023-01-01 00:00:00',
         narrative_arc='Narrative',
-        property_yw7_sync='yw7sync',
         property_description='Description',
         property_notes='Notes',
         property_moonphase='Moon phase',

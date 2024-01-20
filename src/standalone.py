@@ -19,7 +19,6 @@ from pathlib import Path
 SUFFIX = ''
 APPNAME = 'nv_aeon2'
 SETTINGS = dict(
-    default_date_time='2023-01-01 00:00:00',
     narrative_arc='Narrative',
     property_description='Description',
     property_notes='Notes',
@@ -70,7 +69,7 @@ if __name__ == '__main__':
         epilog='')
     parser.add_argument('sourcePath',
                         metavar='Sourcefile',
-                        help='The path of the aeonzip or yw7 file.')
+                        help='The path of the aeonzip or novx file.')
 
     parser.add_argument('--silent',
                         action="store_true",

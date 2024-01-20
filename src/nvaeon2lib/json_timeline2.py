@@ -109,12 +109,7 @@ class JsonTimeline2(File):
         self._propertyNotesGuid = None
         self._propertyMoonphaseGuid = None
 
-        # Miscellaneous
-        self.referenceDateStr = kwargs['default_date_time']
-        try:
-            self.referenceDate = datetime.fromisoformat(self.referenceDateStr)
-        except ValueError:
-            self.referenceDate = datetime.today()
+        self.referenceDate = None
         self._addMoonphase = kwargs['add_moonphase']
         self._sectionColor = kwargs['color_section']
         self._eventColor = kwargs['color_event']
@@ -139,6 +134,14 @@ class JsonTimeline2(File):
         Raise the "Error" exception in case of error. 
         Overrides the superclass method.
         """
+        self.referenceDate = datetime.today()
+        if self.novel.referenceDate:
+            defaultDateTime = f'{self.novel.referenceDate} 00:00:00'
+            try:
+                self.referenceDate = datetime.fromisoformat(defaultDateTime)
+            except ValueError:
+                pass
+
         self._jsonData = open_timeline(self.filePath)
 
         #--- Get the color definitions.
@@ -834,6 +837,14 @@ class JsonTimeline2(File):
             return event
 
         #--- Merge first.
+        self.referenceDate = datetime.today()
+        if source.referenceDate:
+            defaultDateTime = f'{source.referenceDate} 00:00:00'
+            try:
+                self.referenceDate = datetime.fromisoformat(defaultDateTime)
+            except ValueError:
+                pass
+
         targetEvents = []
         for jEvent in self._jsonData['events']:
             targetEvents.append(jEvent['title'])
