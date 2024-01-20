@@ -27,7 +27,6 @@ from novxlib.novx_globals import LC_ROOT
 from novxlib.novx_globals import LOCATION_PREFIX
 from novxlib.novx_globals import SECTION_PREFIX
 from novxlib.novx_globals import _
-from novxlib.novx_globals import string_to_list
 from nvaeon2lib.aeon2_fop import open_timeline
 from nvaeon2lib.aeon2_fop import save_timeline
 from nvaeon2lib.moonphase import get_moon_phase_plus
@@ -124,12 +123,11 @@ class JsonTimeline2(File):
         self._displayIdMax = 0.0
         self._colors = {}
         self._arcCount = 0
-        self._arcGuidsById = {}
         self._characterGuidsById = {}
         self._locationGuidsById = {}
         self._itemGuidsById = {}
+        self._arcGuidsById = {}
         self._trashEvents = []
-        self._arcGuidsByName = {}
 
     def read(self):
         """Parse the file and get the instance variables.
@@ -466,7 +464,6 @@ class JsonTimeline2(File):
                     self._entityNarrativeGuid = entity['guid']
                 else:
                     acIdsByGuid[entity['guid']] = acId
-                    self._arcGuidsByName[entity['name']] = entity['guid']
                     self._arcGuidsById[acId] = entity['guid']
                     self._arcCount += 1
 
