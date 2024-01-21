@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: unknown\n"
-"POT-Creation-Date: 2024-01-13 18:09:56\n"
-"PO-Revision-Date: 2024-01-13 18:23:05\n"
+"Project-Id-Version: 1.0.0\n"
+"POT-Creation-Date: 2024-01-21 10:38:42\n"
+"PO-Revision-Date: 2024-01-21 10:38:42\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,47 @@ msgstr "Mondphasen hinzufügen oder aktualisieren"
 msgid "Aeon 2 plugin Online help"
 msgstr "Aeon 2-Plugin Online-Hilfe"
 
+msgid "Aeon Timeline 2 project"
+msgstr "Aeon Timeline 2-Projekt"
+
+msgid "Ambiguous Aeon arc \"{}\"."
+msgstr "Bogen \"{}\" mehrfach in Aeon."
+
+msgid "Ambiguous Aeon character \"{}\"."
+msgstr "Figur \"{}\" mehrfach in Aeon."
+
+msgid "Ambiguous Aeon event title \"{}\"."
+msgstr "Ereginistitel \"{}\" mehrfach in Aeon."
+
+msgid "Ambiguous Aeon item \"{}\"."
+msgstr "Gegenstand \"{}\" mehrfach in Aeon."
+
+msgid "Ambiguous Aeon location \"{}\"."
+msgstr "Schauplatz \"{}\" mehrfach in Aeon."
+
+msgid "Ambiguous noveltree arc \"{}\"."
+msgstr "Bogen \"{}\" mehrfach in noveltree."
+
+msgid "Ambiguous noveltree character \"{}\"."
+msgstr "Figur \"{}\" mehrfach in noveltree."
+
+msgid "Ambiguous noveltree item \"{}\"."
+msgstr "Gegenstand \"{}\" mehrfach in noveltree."
+
+msgid "Ambiguous noveltree location \"{}\"."
+msgstr "Schauplatz \"{}\" mehrfach in noveltree."
+
+msgid "Ambiguous noveltree section title \"{}\"."
+msgstr "Abschnittstitel \"{}\" mehrfach in noveltree."
+
 msgid "Cannot determine file date."
 msgstr "Das Dateidatum ist nicht zu ermitteln."
 
 msgid "Cannot overwrite file"
 msgstr "Kann Datei nicht überschreiben"
+
+msgid "Cannot read timeline data"
+msgstr "Kann Zeitleisten-Daten nicht einlesen"
 
 msgid "Cannot write file"
 msgstr "Kann Datei nicht schreiben"
@@ -52,8 +88,17 @@ msgstr "Freitag"
 msgid "Information"
 msgstr "Information"
 
+msgid "Invalid JSON data in timeline"
+msgstr "Ungültige JSON-Daten in der Zeitleiste"
+
 msgid "Monday"
 msgstr "Montag"
+
+msgid "New sections"
+msgstr "Neue Abschnitte"
+
+msgid "No JSON part found in timeline data"
+msgstr "Kein JSON-Teil in der Zeitleistendatei gefunden"
 
 msgid "No valid version found in file"
 msgstr "Keine gültige Versionsangabe in der Datei gefunden"
@@ -93,6 +138,9 @@ msgstr "Die Zeitleiste aktualisieren"
 
 msgid "Wednesday"
 msgstr "Mittwoch"
+
+msgid "\"AD\" era is missing in the calendar."
+msgstr "\"AD\" Ära fehlt im Kalender"
 
 msgid "newer"
 msgstr "neuer"

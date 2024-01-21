@@ -4,7 +4,14 @@ The [noveltree](https://peter88213.github.io/noveltree/) Python program helps au
 
 The *noveltree_aeon2* plugin synchronizes noveltree projects with Aeon Timeline 2.
 
+![Screenshot](Screenshots/screen01.png)
+
 ## Features
+
+### Create a new noveltree project from a timeline
+
+- Transfer "Narrative" sections with date, time, duration, description, tags, and relationships.
+- Create characters, locations, items, and arcs are created.
 
 ### Update an existing noveltree project from a timeline
 
@@ -24,11 +31,15 @@ The *noveltree_aeon2* plugin synchronizes noveltree projects with Aeon Timeline 
 
 - Just update an empty timeline from a noveltree project.
 
+### Add/update moon phase data
+
+- For each event in the timeline, the moon phase can be added as a property.
+
 
 ## Requirements
 
-- Aeon Timeline 2. Note: There is now a separate [converter for Aeon Timeline 3](https://peter88213.github.io/aeon3yw). 
-- [noveltree](https://peter88213.github.io/noveltree/) version 4.0+
+- Aeon Timeline 2 
+- [noveltree](https://peter88213.github.io/noveltree/) version 1.0+
 
 ## Download and install
 

@@ -1,104 +1,55 @@
 #!/usr/bin/python3
-"""Install the nv_aeon2 plugin.
+"""Install the nv_aeon2 plugin. 
 
 Version @release
 
 Copyright (c) 2024 Peter Triesberger
-For further information see https://github.com/peter88213/noveltree_aeon2
+For further information see https://github.com/peter88213/noveltree_collection
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
-import sys
 import os
+import sys
 from shutil import copytree
 from shutil import copyfile
+from shutil import copy2
 from pathlib import Path
 try:
     from tkinter import *
-    from tkinter import messagebox
 except ModuleNotFoundError:
     print('The tkinter module is missing. Please install the tk support package for your python3 version.')
     sys.exit(1)
+from tkinter import messagebox
 
-APPNAME = 'aeon2nv'
 PLUGIN = 'nv_aeon2.py'
-OLD_PLUGIN = 'aeon2nv_noveltree.py'
 VERSION = ' @release'
-INI_FILE = f'{APPNAME}.ini'
-INI_PATH = '/config/'
-SAMPLE_PATH = 'sample/'
-SUCCESS_MESSAGE = '''
-$Appname is installed here:
-$Apppath
-'''
+CONFIGURATION = 'nv_aeon2.ini'
 
 root = Tk()
 processInfo = Label(root, text='')
 message = []
 
-aeon2dir = None
-sampleTemplate = None
+
+def install_template():
+    """Install the Aeon2 sample template, if needed."""
+    try:
+        appDataLocal = os.getenv('LOCALAPPDATA').replace('\\', '/')
+        aeon2dir = f'{appDataLocal}/Scribble Code/Aeon Timeline 2/CustomTemplates/'
+        sampleTemplate = 'noveltree.xml'
+        if not os.path.isfile(aeon2dir + sampleTemplate):
+            copy2(f'sample/{sampleTemplate}', f'{aeon2dir}{sampleTemplate}')
+            output(f'Copying "{sampleTemplate}"')
+        else:
+            if messagebox.askyesno('Aeon Timeline 2 "yWriter" template', f'Update "{aeon2dir}{sampleTemplate}"?'):
+                copy2(f'sample/{sampleTemplate}', f'{aeon2dir}{sampleTemplate}')
+                output(f'Updating "{sampleTemplate}"')
+                root.tplButton['state'] = DISABLED
+    except:
+        pass
 
 
 def output(text):
     message.append(text)
     processInfo.config(text=('\n').join(message))
-
-
-def open_folder(installDir):
-    """Open an installation folder window in the file manager.
-    """
-    try:
-        os.startfile(os.path.normpath(installDir))
-        # Windows
-    except:
-        try:
-            os.system('xdg-open "%s"' % os.path.normpath(installDir))
-            # Linux
-        except:
-            try:
-                os.system('open "%s"' % os.path.normpath(installDir))
-                # Mac
-            except:
-                pass
-
-
-def install(novxlibPath):
-    """Install the script."""
-    # global aeon2dir
-    # global sampleTemplate
-
-    # Create a general novxlib installation directory, if necessary.
-    os.makedirs(novxlibPath, exist_ok=True)
-    installDir = f'{novxlibPath}{APPNAME}'
-    cnfDir = f'{installDir}{INI_PATH}'
-    os.makedirs(cnfDir, exist_ok=True)
-
-    # Install a configuration file, if needed.
-    try:
-        if not os.path.isfile(f'{cnfDir}{INI_FILE}'):
-            copyfile(f'{SAMPLE_PATH}{INI_FILE}', f'{cnfDir}{INI_FILE}')
-            output(f'Copying "{INI_FILE}"')
-        else:
-            output(f'Keeping "{INI_FILE}"')
-    except:
-        pass
-
-
-def install_plugin(novxlibPath):
-    """Install a noveltree plugin if noveltree is installed."""
-    if os.path.isfile(f'./{PLUGIN}'):
-        noveltreeDir = f'{novxlibPath}noveltree'
-        pluginDir = f'{noveltreeDir}/plugin'
-        output(f'Installing noveltree plugin at "{os.path.normpath(pluginDir)}"')
-        os.makedirs(pluginDir, exist_ok=True)
-        copyfile(PLUGIN, f'{pluginDir}/{PLUGIN}')
-        output(f'Copying "{PLUGIN}"')
-    else:
-        output('Error: noveltree plugin file not found.')
-
-    # Install the localization files.
-    copytree('locale', f'{noveltreeDir}/locale', dirs_exist_ok=True)
-    output(f'Copying "locale"')
 
 
 if __name__ == '__main__':
@@ -107,7 +58,7 @@ if __name__ == '__main__':
     os.chdir(scriptDir)
 
     # Open a tk window.
-    root.geometry("800x600")
+    root.geometry("600x250")
     root.title(f'Install {PLUGIN}{VERSION}')
     header = Label(root, text='')
     header.pack(padx=5, pady=5)
@@ -115,19 +66,37 @@ if __name__ == '__main__':
     # Prepare the messaging area.
     processInfo.pack(padx=5, pady=5)
 
-    # Run the installation.
+    # Install the plugin.
     homePath = str(Path.home()).replace('\\', '/')
-    novxlibPath = f'{homePath}/.novxlib/'
-    noveltreeDir = f'{novxlibPath}noveltree'
+    noveltreeDir = f'{homePath}/.noveltree'
     if os.path.isdir(noveltreeDir):
-        try:
-            install_plugin(novxlibPath)
-            install(novxlibPath)
-        except Exception as ex:
-            output(str(ex))
-    else:
-        messagebox.showwarning('The noveltree applilcation seems not to be installed. please install first.')
+        if os.path.isfile(f'./{PLUGIN}'):
+            pluginDir = f'{noveltreeDir}/plugin'
+            os.makedirs(pluginDir, exist_ok=True)
+            copyfile(PLUGIN, f'{pluginDir}/{PLUGIN}')
+            output(f'Sucessfully installed "{PLUGIN}" at "{os.path.normpath(pluginDir)}"')
+        else:
+            output(f'ERROR: file "{PLUGIN}" not found.')
 
+        # Install the localization files.
+        copytree('locale', f'{noveltreeDir}/locale', dirs_exist_ok=True)
+        output(f'Copying "locale"')
+
+        # Install the configuration file.
+        configDir = f'{noveltreeDir}/config'
+        if os.path.isfile(f'{configDir}/{CONFIGURATION}'):
+            output(f'Keeping configuration file')
+        else:
+            os.makedirs(configDir, exist_ok=True)
+            copy2(f'sample/{CONFIGURATION}', configDir)
+            output(f'Copying configuration file')
+
+    else:
+        output(f'ERROR: Cannot find a noveltree installation at "{noveltreeDir}"')
+
+    root.tplButton = Button(text="Install the Aeon2 sample template", command=lambda: install_template())
+    root.tplButton.config(height=1, width=30)
+    root.tplButton.pack(padx=5, pady=5)
     root.quitButton = Button(text="Quit", command=quit)
     root.quitButton.config(height=1, width=30)
     root.quitButton.pack(padx=5, pady=5)

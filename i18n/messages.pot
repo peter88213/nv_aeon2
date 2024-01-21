@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.0\n"
-"POT-Creation-Date: 2024-01-13 18:09:56\n"
+"POT-Creation-Date: 2024-01-21 10:38:42\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -17,16 +17,55 @@ msgstr ""
 msgid "!No {} file available for this project."
 msgstr ""
 
+msgid "\"AD\" era is missing in the calendar."
+msgstr ""
+
 msgid "Add or update moon phase data"
 msgstr ""
 
 msgid "Aeon 2 plugin Online help"
 msgstr ""
 
+msgid "Aeon Timeline 2 project"
+msgstr ""
+
+msgid "Ambiguous Aeon arc \"{}\"."
+msgstr ""
+
+msgid "Ambiguous Aeon character \"{}\"."
+msgstr ""
+
+msgid "Ambiguous Aeon event title \"{}\"."
+msgstr ""
+
+msgid "Ambiguous Aeon item \"{}\"."
+msgstr ""
+
+msgid "Ambiguous Aeon location \"{}\"."
+msgstr ""
+
+msgid "Ambiguous noveltree arc \"{}\"."
+msgstr ""
+
+msgid "Ambiguous noveltree character \"{}\"."
+msgstr ""
+
+msgid "Ambiguous noveltree item \"{}\"."
+msgstr ""
+
+msgid "Ambiguous noveltree location \"{}\"."
+msgstr ""
+
+msgid "Ambiguous noveltree section title \"{}\"."
+msgstr ""
+
 msgid "Cannot determine file date."
 msgstr ""
 
 msgid "Cannot overwrite file"
+msgstr ""
+
+msgid "Cannot read timeline data"
 msgstr ""
 
 msgid "Cannot write file"
@@ -53,7 +92,16 @@ msgstr ""
 msgid "Information"
 msgstr ""
 
+msgid "Invalid JSON data in timeline"
+msgstr ""
+
 msgid "Monday"
+msgstr ""
+
+msgid "New sections"
+msgstr ""
+
+msgid "No JSON part found in timeline data"
 msgstr ""
 
 msgid "No valid version found in file"

@@ -703,7 +703,7 @@ class JsonTimeline2(File):
                 # Add arc assignment to the section, if the event has a "Storyline" relationship.
                 elif evtRel['role'] == self._roleStorylineGuid:
                     acId = acIdsByGuid[evtRel['entity']]
-                    self.novel.sections[scId].arcs.append(acId)
+                    self.novel.sections[scId].scArcs.append(acId)
                     # adding arc reference to the section
 
                     # Add section reference to the arc.
