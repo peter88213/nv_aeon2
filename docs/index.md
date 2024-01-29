@@ -43,9 +43,9 @@ The *noveltree_aeon2* plugin synchronizes noveltree projects with Aeon Timeline 
 
 ## Download and install
 
-[Download the latest release (version 1.0.0)](https://github.com/peter88213/noveltree_aeon2/raw/main/dist/noveltree_aeon2_v1.0.0.zip)
+[Download the latest release (version 1.0.0)](https://github.com/peter88213/noveltree_aeon2/raw/main/dist/nv_aeon2_v1.0.0.zip)
 
-- Extract the "noveltree_aeon2_v1.0.0" folder from the downloaded zipfile "noveltree_aeon2_v1.0.0.zip".
+- Extract the "nv_aeon2_v1.0.0" folder from the downloaded zipfile "nv_aeon2_v1.0.0.zip".
 - Move into this new folder and launch **setup.pyw**. This installs the plugin for the local user.
 
 ---
