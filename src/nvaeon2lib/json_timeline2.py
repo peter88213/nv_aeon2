@@ -381,6 +381,7 @@ class JsonTimeline2(File):
 
         for entity in self._jsonData['entities']:
             if entity['entityType'] == self._typeCharacterGuid:
+                #--- Get character.
 
                 # Check whether the character title is unique.
                 if entity['name'] in characterNames:
@@ -419,6 +420,7 @@ class JsonTimeline2(File):
                         self.novel.characters[crId].deathDate = deathDate.isoformat().split('T')[0]
 
             elif entity['entityType'] == self._typeLocationGuid:
+                #--- Get location.
 
                 # Check whether the location title is unique.
                 if entity['name'] in locationNames:
@@ -439,6 +441,7 @@ class JsonTimeline2(File):
                 self._locationGuidsById[lcId] = entity['guid']
 
             elif entity['entityType'] == self._typeItemGuid:
+                #--- Get item.
 
                 # Check whether the item title is unique.
                 if entity['name'] in itemNames:
@@ -459,6 +462,7 @@ class JsonTimeline2(File):
                 self._itemGuidsById[itId] = entity['guid']
 
             elif entity['entityType'] == self._typeArcGuid:
+                #--- Get arc.
 
                 # Check whether the arc title is unique.
                 if entity['name'] in arcNames:
@@ -813,8 +817,7 @@ class JsonTimeline2(File):
             return str(int(self._displayIdMax))
 
         def build_event(section):
-            """Create a new event from a section.
-            """
+            """Create a new event from a section."""
             event = {
                 'attachments': [],
                 'color': '',
@@ -849,6 +852,16 @@ class JsonTimeline2(File):
             else:
                 event['color'] = self._colors[self._eventColor]
             return event
+
+        def get_character_date(isoDate):
+            """Return the character's birth or death date, if any."""
+            charaDate = datetime.fromisoformat(isoDate)
+            timestamp = int((charaDate - datetime.min).total_seconds())
+            return {
+                "precision": "day",
+                "rangePropertyGuid": self._tplDateGuid,
+                "timestamp": timestamp
+                }
 
         #--- Merge first.
         self.referenceDate = datetime.today()
@@ -986,27 +999,64 @@ class JsonTimeline2(File):
         #--- Update characters from the source.
         chrCount = len(self.novel.characters)
         crIdsBySrcId = {}
+        srcIdsbyCrId = {}
         for srcCrId in source.characters:
             if source.characters[srcCrId].title in crIdsByTitle:
-                crIdsBySrcId[srcCrId] = crIdsByTitle[source.characters[srcCrId].title]
+                crId = crIdsByTitle[source.characters[srcCrId].title]
+                crIdsBySrcId[srcCrId] = crId
+                srcIdsbyCrId[crId] = srcCrId
             elif srcCrId in linkedCharacters:
                 #--- Create a new character if it is assigned to at least one section.
                 crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
                 crIdsBySrcId[srcCrId] = crId
+                srcIdsbyCrId[crId] = srcCrId
                 self.novel.characters[crId] = source.characters[srcCrId]
                 newGuid = get_uid(f'{crId}{self.novel.characters[crId].title}')
                 self._characterGuidsById[crId] = newGuid
-                self._jsonData['entities'].append(
-                    {
-                    'entityType': self._typeCharacterGuid,
-                    'guid': newGuid,
-                    'icon': 'person',
-                    'name': self.novel.characters[crId].title,
-                    'notes': '',
-                    'sortOrder': chrCount,
-                    'swatchColor': 'darkPink'
-                    })
+                jsonCharacter = {}
+                birthDate = self.novel.characters[crId].birthDate
+                if birthDate:
+                    jsonCharacter['createRangePosition'] = get_character_date(birthDate)
+                deathDate = self.novel.characters[crId].deathDate
+                if deathDate:
+                    jsonCharacter['destroyRangePosition'] = get_character_date(deathDate)
+                jsonCharacter['entityType'] = self._typeCharacterGuid
+                jsonCharacter['guid'] = newGuid
+                jsonCharacter['icon'] = 'person'
+                jsonCharacter['name'] = self.novel.characters[crId].title
+                jsonCharacter['notes'] = ''
+                jsonCharacter['sortOrder'] = chrCount
+                jsonCharacter['swatchColor'] = 'darkPink'
+                self._jsonData['entities'].append(jsonCharacter)
                 chrCount += 1
+
+        # Update birth/death date.
+        for entity in self._jsonData['entities']:
+            if not entity['entityType'] == self._typeCharacterGuid:
+                continue
+
+            if not entity['name'] in crIdsByTitle:
+                continue
+
+            # entity is a character.
+            crId = crIdsByTitle[entity['name']]
+            srcCrId = srcIdsbyCrId[crId]
+            birthDate = source.characters[srcCrId].birthDate
+            if birthDate:
+                entity['createRangePosition'] = get_character_date(birthDate)
+            else:
+                try:
+                    del entity['createRangePosition']
+                except KeyError:
+                    pass
+            deathDate = source.characters[srcCrId].deathDate
+            if deathDate:
+                entity['destroyRangePosition'] = get_character_date(deathDate)
+            else:
+                try:
+                    del entity['destroyRangePosition']
+                except KeyError:
+                    pass
 
         #--- Update locations from the source.
         locCount = len(self.novel.locations)
@@ -1016,7 +1066,6 @@ class JsonTimeline2(File):
                 lcIdsBySrcId[srcLcId] = lcIdsByTitle[source.locations[srcLcId].title]
             elif srcLcId in linkedLocations:
                 #--- Create a new location if it is assigned to at least one section.
-
                 lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
                 lcIdsBySrcId[srcLcId] = lcId
                 self.novel.locations[lcId] = source.locations[srcLcId]

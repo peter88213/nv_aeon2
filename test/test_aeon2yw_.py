@@ -162,7 +162,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'created.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_NOVX, silentMode=True)
-        self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'birthday.aeonzip'))
+        self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'birthday_updated.aeonzip'))
 
     def tearDown(self):
         sys.stdout = self.original_output
