@@ -403,6 +403,20 @@ class JsonTimeline2(File):
                     self.novel.characters[crId].notes = entity['notes']
                 else:
                     entity['notes'] = ''
+                createRangePosition = entity.get('createRangePosition', None)
+                if createRangePosition:
+                    timestamp = createRangePosition['timestamp']
+                    if timestamp >= self.DATE_LIMIT:
+                        # Restrict date/time calculation to dates within noveltree's range
+                        birthDate = datetime.min + timedelta(seconds=timestamp)
+                        self.novel.characters[crId].birthDate = birthDate.isoformat().split('T')[0]
+                destroyRangePosition = entity.get('destroyRangePosition', None)
+                if destroyRangePosition:
+                    timestamp = destroyRangePosition['timestamp']
+                    if timestamp >= self.DATE_LIMIT:
+                        # Restrict date/time calculation to dates within noveltree's range
+                        deathDate = datetime.min + timedelta(seconds=timestamp)
+                        self.novel.characters[crId].deathDate = deathDate.isoformat().split('T')[0]
 
             elif entity['entityType'] == self._typeLocationGuid:
 

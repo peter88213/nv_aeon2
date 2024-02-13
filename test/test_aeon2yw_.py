@@ -148,6 +148,22 @@ class NormalOperation(unittest.TestCase):
         standalone.run(TEST_NOVX, silentMode=True)
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'updated1_from_yw.aeonzip'))
 
+    # @unittest.skip('')
+    def test_create_novx_birthday(self):
+        copyfile(TEST_DATA_PATH + 'nv_aeon2.ini', INI_FILE)
+        copyfile(TEST_DATA_PATH + 'birthday.aeonzip', TEST_AEON)
+        os.chdir(TEST_EXEC_PATH)
+        standalone.run(TEST_AEON, silentMode=True)
+        self.assertEqual(read_file(TEST_NOVX), read_file(TEST_DATA_PATH + 'birthday.novx'))
+
+    # @unittest.skip('')
+    def test_update_aeon_birthday(self):
+        copyfile(TEST_DATA_PATH + 'birthday.novx', TEST_NOVX)
+        copyfile(TEST_DATA_PATH + 'created.aeonzip', TEST_AEON)
+        os.chdir(TEST_EXEC_PATH)
+        standalone.run(TEST_NOVX, silentMode=True)
+        self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'birthday.aeonzip'))
+
     def tearDown(self):
         sys.stdout = self.original_output
         sys.stderr = self.original_err
