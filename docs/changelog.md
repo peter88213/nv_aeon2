@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v1.1.0
+
+Synchronize birth dates and death dates.
+
+Based on novxlib v1.0.1
+Compatibility: noveltree v1.0 API
+
 ### v1.0.1
 
 - Switch the online help to https://peter88213.github.io/noveltree-help/.
