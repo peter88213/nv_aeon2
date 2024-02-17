@@ -12,7 +12,7 @@ For English, this is, for example, `en`, for German, it is `de`.
 
 A "message catalog" is a dictionary for the plugin's messages and menu entries.
 
-For creating a message catalog, you download a template with all English messages from [here](https://github.com/peter88213/noveltree_aeon2/blob/main/i18n/messages.pot). 
+For creating a message catalog, you download a template with all English messages from [here](https://github.com/peter88213/nv_aeon2/blob/main/i18n/messages.pot). 
 
 
 Rename `messages.pot` to `<your language code>.po`, then give some specific information in the header data by modifying the following lines:
@@ -63,7 +63,7 @@ Then start *noveltree* and see whether your translation works.
 
 **NOTE:** At startup, *noveltree* tries to load a message dictionary that fits to the system language. If it doesn't find a matching language code in the *locale* directory, it uses English as default language. 
 
-**HINT:** *noveltree_aeon2* comes with German translations. Look at the `de` directory tree, if you need an example. 
+**HINT:** *nv_aeon2* comes with German translations. Look at the `de` directory tree, if you need an example. 
 
 
 ### Contribute your translations
@@ -75,7 +75,7 @@ An easy way may be to put a posting in the [noveltree forum](https://github.com/
 
 ## Development
 
-*noveltree_aeon2* depends on the [novxlib](https://github.com/peter88213/novxlib) and [aeon2nv](https://github.com/peter88213/aeon2nv) libraries which must be present in your file system. It is organized as an Eclipse PyDev project. The official release branch on GitHub is *main*.
+*nv_aeon2* depends on the [novxlib](https://github.com/peter88213/novxlib) and [aeon2nv](https://github.com/peter88213/aeon2nv) libraries which must be present in your file system. It is organized as an Eclipse PyDev project. The official release branch on GitHub is *main*.
 
 ### Mandatory directory structure for building the application script
 
@@ -84,7 +84,7 @@ An easy way may be to put a posting in the [noveltree forum](https://github.com/
 ├── novxlib/
 │   └── src/
 │       └── novxlib/
-└── noveltree_aeon2/
+└── nv_aeon2/
     ├── src/
 	│   └── aeon2nvlib/
     ├── test/
