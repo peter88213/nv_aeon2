@@ -1,4 +1,4 @@
-[Project homepage](https://peter88213.github.io/nv_aeon2) > Instructions for use
+[Project homepage](https://github.com/peter88213/nv_aeon2) > Instructions for use
 
 --- 
 
