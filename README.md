@@ -1,15 +1,65 @@
 # nv_aeon2
 
-An *Aeon Timeline 2* converter plugin for noveltree.
+The [noveltree](https://github.com/peter88213/noveltree/) Python program helps authors organize novels.  
 
-For more information, see the [project homepage](https://peter88213.github.io/nv_aeon2) with description and download instructions.
+The *nv_aeon2* plugin synchronizes noveltree projects with Aeon Timeline 2.
 
-## Feedback? Ideas? Feature requests?
+![Screenshot](docs/Screenshots/screen01.png)
 
-You can go to the [noveltree "discussions" forum](https://github.com/peter88213/noveltree/discussions) and start a thread.
+## Features
+
+### Create a new noveltree project from a timeline
+
+- Transfer "Narrative" sections with date, time, duration, description, tags, and relationships.
+- Create characters, locations, items, and arcs are created.
+
+### Update an existing noveltree project from a timeline
+
+- Update section date, time, duration, description, tags, and relationships.
+- Missing sections, characters, locations, and items are created.
+- Sections are marked "unused" if the associated event is deleted in Aeon.
+
+### Update an existing timeline from a noveltree project
+
+- Update event date, time, duration, description, tags, and relationships.
+- Entity types "Arc", "Character", "Location", and "Item", and a *Narrative* arc are created, if missing.
+- Event properties "Description" and "Notes" are created, if missing.
+- Missing events, characters, locations, and items are created.
+- "Narrative" events are removed if the associated section is deleted in noveltree.
+
+### Create a new timeline from a noveltree project
+
+- Just update an empty timeline from a noveltree project.
+
+### Add/update moon phase data
+
+- For each event in the timeline, the moon phase can be added as a property.
+
+
+## Requirements
+
+- Aeon Timeline 2 
+- [noveltree](https://github.com/peter88213/noveltree/) version 1.8+
+
+## Download and install
+
+[Download the latest release (version 1.2.0)](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v1.2.0.zip)
+
+- Extract the "nv_aeon2_v1.2.0" folder from the downloaded zipfile "nv_aeon2_v1.2.0.zip".
+- Move into this new folder and launch **setup.pyw**. This installs the plugin for the local user.
+
+---
+
+[Changelog](docs/changelog.md)
+
+## Usage and conventions
+
+See the [instructions for use](docs/usage.md)
+
 
 ## License
 
 This is Open Source software, and the *nv_aeon2* plugin is licensed under GPLv3. See the
 [GNU General Public License website](https://www.gnu.org/licenses/gpl-3.0.en.html) for more
 details, or consult the [LICENSE](https://github.com/peter88213/nv_aeon2/blob/main/LICENSE) file.
+

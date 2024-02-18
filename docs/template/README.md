@@ -1,10 +1,10 @@
 # nv_aeon2
 
-The [noveltree](https://peter88213.github.io/noveltree/) Python program helps authors organize novels.  
+The [noveltree](https://github.com/peter88213/noveltree/) Python program helps authors organize novels.  
 
 The *nv_aeon2* plugin synchronizes noveltree projects with Aeon Timeline 2.
 
-![Screenshot](Screenshots/screen01.png)
+![Screenshot](docs/Screenshots/screen01.png)
 
 ## Features
 
@@ -39,22 +39,22 @@ The *nv_aeon2* plugin synchronizes noveltree projects with Aeon Timeline 2.
 ## Requirements
 
 - Aeon Timeline 2 
-- [noveltree](https://peter88213.github.io/noveltree/) version 1.0+
+- [noveltree](https://github.com/peter88213/noveltree/) version 1.8+
 
 ## Download and install
 
-[Download the latest release (version 1.1.0)](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v1.1.0.zip)
+[Download the latest release (version 0.99.0)](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v0.99.0.zip)
 
-- Extract the "nv_aeon2_v1.1.0" folder from the downloaded zipfile "nv_aeon2_v1.1.0.zip".
+- Extract the "nv_aeon2_v0.99.0" folder from the downloaded zipfile "nv_aeon2_v0.99.0.zip".
 - Move into this new folder and launch **setup.pyw**. This installs the plugin for the local user.
 
 ---
 
-[Changelog](changelog)
+[Changelog](docs/changelog.md)
 
 ## Usage and conventions
 
-See the [instructions for use](usage)
+See the [instructions for use](docs/usage.md)
 
 
 ## License
@@ -62,10 +62,4 @@ See the [instructions for use](usage)
 This is Open Source software, and the *nv_aeon2* plugin is licensed under GPLv3. See the
 [GNU General Public License website](https://www.gnu.org/licenses/gpl-3.0.en.html) for more
 details, or consult the [LICENSE](https://github.com/peter88213/nv_aeon2/blob/main/LICENSE) file.
-
-
- 
-
-
-
 

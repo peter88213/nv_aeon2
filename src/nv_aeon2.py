@@ -57,10 +57,10 @@ INI_FILEPATH = '.noveltree/config'
 class Plugin():
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    NOVELTREE_API = '1.0'
+    NOVELTREE_API = '1.8'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://peter88213.github.io/nv_aeon2'
-    _HELP_URL = 'https://peter88213.github.io/noveltree-help/nv_aeon2/'
+    _HELP_URL = f'https://peter88213.github.io/{_("nvhelp-en")}/nv_aeon2/'
 
     SETTINGS = dict(
         narrative_arc='Narrative',

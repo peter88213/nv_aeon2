@@ -2,7 +2,7 @@
 
 --- 
 
-A [noveltree](https://peter88213.github.io/noveltree/) plugin providing synchronization with Aeon Timeline 2. 
+A [noveltree](https://github.com/peter88213/noveltree/) plugin providing synchronization with Aeon Timeline 2. 
 
 ---
 
@@ -19,7 +19,7 @@ The plugin adds an **Aeon Timeline 2** entry to the *noveltree* **Tools** menu, 
 
 # Operation
 
-See the [online help](https://peter88213.github.io/noveltree-help/nv_aeon2/).
+See the [online help](https://peter88213.github.io/nvhelp-en/nv_aeon2/).
 
 ---
 

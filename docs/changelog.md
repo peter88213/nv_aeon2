@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v1.2.0
+
+- Re-structure the website; adjust links.
+
+Based on novxlib v1.1.0
+Compatibility: noveltree v1.8 API
+
 ### v1.1.0
 
 Synchronize birth dates and death dates.
