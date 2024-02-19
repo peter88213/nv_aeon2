@@ -1,3 +1,9 @@
+[![Download the latest release](docs/img/download-button.png)](https://github.com/peter88213/noveltree/raw/main/dist/nv_aeon2_v1.2.0.zip)
+[![Changelog](docs/img/changelog-button.png)](docs/changelog.md)
+[![News](docs/img/news-button.png)](https://github.com/peter88213/noveltree/discussions/1)
+[![Online help](docs/img/help-button.png)](https://peter88213.github.io/nvhelp-en/nv_aeon2/)
+
+
 # nv_aeon2
 
 The [noveltree](https://github.com/peter88213/noveltree/) Python program helps authors organize novels.  
