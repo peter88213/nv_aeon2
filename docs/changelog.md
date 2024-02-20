@@ -4,6 +4,15 @@
 
 ## Changelog
 
+### v2.0.0
+
+Preparations for renaming the application:
+- Refactor the code for v2.0 API.
+- Change the installation directory in the setup script.
+
+Based on novxlib v1.1.0
+Compatibility: noveltree v2.0 API
+
 ### v1.2.0
 
 - Re-structure the website; adjust links.

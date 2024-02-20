@@ -45,7 +45,7 @@ The *nv_aeon2* plugin synchronizes noveltree projects with Aeon Timeline 2.
 ## Requirements
 
 - Aeon Timeline 2 
-- [noveltree](https://github.com/peter88213/noveltree/) version 1.8+
+- [noveltree](https://github.com/peter88213/noveltree/) version 2.0+
 
 ## Download and install
 

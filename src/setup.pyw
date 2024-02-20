@@ -4,7 +4,7 @@
 Version @release
 
 Copyright (c) 2024 Peter Triesberger
-For further information see https://github.com/peter88213/nv_collection
+For further information see https://github.com/peter88213/nv_aeon2
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import os
@@ -68,10 +68,10 @@ if __name__ == '__main__':
 
     # Install the plugin.
     homePath = str(Path.home()).replace('\\', '/')
-    noveltreeDir = f'{homePath}/.noveltree'
-    if os.path.isdir(noveltreeDir):
+    applicationDir = f'{homePath}/.novx'
+    if os.path.isdir(applicationDir):
         if os.path.isfile(f'./{PLUGIN}'):
-            pluginDir = f'{noveltreeDir}/plugin'
+            pluginDir = f'{applicationDir}/plugin'
             os.makedirs(pluginDir, exist_ok=True)
             copyfile(PLUGIN, f'{pluginDir}/{PLUGIN}')
             output(f'Sucessfully installed "{PLUGIN}" at "{os.path.normpath(pluginDir)}"')
@@ -79,11 +79,11 @@ if __name__ == '__main__':
             output(f'ERROR: file "{PLUGIN}" not found.')
 
         # Install the localization files.
-        copytree('locale', f'{noveltreeDir}/locale', dirs_exist_ok=True)
+        copytree('locale', f'{applicationDir}/locale', dirs_exist_ok=True)
         output(f'Copying "locale"')
 
         # Install the configuration file.
-        configDir = f'{noveltreeDir}/config'
+        configDir = f'{applicationDir}/config'
         if os.path.isfile(f'{configDir}/{CONFIGURATION}'):
             output(f'Keeping configuration file')
         else:
@@ -92,7 +92,7 @@ if __name__ == '__main__':
             output(f'Copying configuration file')
 
     else:
-        output(f'ERROR: Cannot find a noveltree installation at "{noveltreeDir}"')
+        output(f'ERROR: Cannot find a noveltree installation at "{applicationDir}"')
 
     root.tplButton = Button(text="Install the Aeon2 sample template", command=lambda: install_template())
     root.tplButton.config(height=1, width=30)
