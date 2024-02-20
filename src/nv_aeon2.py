@@ -1,4 +1,4 @@
-"""Aeon Timeline 2 sync plugin for noveltree.
+"""Aeon Timeline 2 sync plugin for novelibre.
 
 Version @release
 Requires Python 3.6+
@@ -51,7 +51,7 @@ except:
 APPLICATION = 'Aeon Timeline 2'
 PLUGIN = f'{APPLICATION} plugin v@release'
 INI_FILENAME = 'nv_aeon2.ini'
-INI_FILEPATH = '.noveltree/config'
+INI_FILEPATH = '.novelibre/config'
 
 
 class Plugin():
@@ -160,7 +160,7 @@ class Plugin():
                 self._ui.set_status(message)
 
     def _create_novx(self):
-        """Create a noveltree project from a timeline."""
+        """Create a novelibre project from a timeline."""
         timelinePath = filedialog.askopenfilename(
             filetypes=[(JsonTimeline2.DESCRIPTION, JsonTimeline2.EXTENSION)],
             defaultextension=JsonTimeline2.EXTENSION,
@@ -198,7 +198,7 @@ class Plugin():
         return
 
     def _export_from_novx(self):
-        """Update the timeline from noveltree."""
+        """Update the timeline from novelibre."""
         if self._mdl.prjFile:
             timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
             if not os.path.isfile(timelinePath):
@@ -291,7 +291,7 @@ class Plugin():
                     else:
                         cmp = _('older')
                     fileDate = datetime.fromtimestamp(timestamp).replace(microsecond=0).isoformat(sep=' ')
-                    message = _('{0} file is {1} than the noveltree project.\n (last saved on {2})').format(APPLICATION, cmp, fileDate)
+                    message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(APPLICATION, cmp, fileDate)
                 except:
                     message = _('Cannot determine file date.')
             else:

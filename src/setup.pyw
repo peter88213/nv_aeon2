@@ -34,7 +34,7 @@ def install_template():
     try:
         appDataLocal = os.getenv('LOCALAPPDATA').replace('\\', '/')
         aeon2dir = f'{appDataLocal}/Scribble Code/Aeon Timeline 2/CustomTemplates/'
-        sampleTemplate = 'noveltree.xml'
+        sampleTemplate = 'novelibre.xml'
         if not os.path.isfile(aeon2dir + sampleTemplate):
             copy2(f'sample/{sampleTemplate}', f'{aeon2dir}{sampleTemplate}')
             output(f'Copying "{sampleTemplate}"')
@@ -92,7 +92,7 @@ if __name__ == '__main__':
             output(f'Copying configuration file')
 
     else:
-        output(f'ERROR: Cannot find a noveltree installation at "{applicationDir}"')
+        output(f'ERROR: Cannot find a novelibre installation at "{applicationDir}"')
 
     root.tplButton = Button(text="Install the Aeon2 sample template", command=lambda: install_template())
     root.tplButton.config(height=1, width=30)

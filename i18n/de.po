@@ -40,20 +40,20 @@ msgstr "Gegenstand \"{}\" mehrfach in Aeon."
 msgid "Ambiguous Aeon location \"{}\"."
 msgstr "Schauplatz \"{}\" mehrfach in Aeon."
 
-msgid "Ambiguous noveltree arc \"{}\"."
-msgstr "Bogen \"{}\" mehrfach in noveltree."
+msgid "Ambiguous novelibre arc \"{}\"."
+msgstr "Bogen \"{}\" mehrfach in novelibre."
 
-msgid "Ambiguous noveltree character \"{}\"."
-msgstr "Figur \"{}\" mehrfach in noveltree."
+msgid "Ambiguous novelibre character \"{}\"."
+msgstr "Figur \"{}\" mehrfach in novelibre."
 
-msgid "Ambiguous noveltree item \"{}\"."
-msgstr "Gegenstand \"{}\" mehrfach in noveltree."
+msgid "Ambiguous novelibre item \"{}\"."
+msgstr "Gegenstand \"{}\" mehrfach in novelibre."
 
-msgid "Ambiguous noveltree location \"{}\"."
-msgstr "Schauplatz \"{}\" mehrfach in noveltree."
+msgid "Ambiguous novelibre location \"{}\"."
+msgstr "Schauplatz \"{}\" mehrfach in novelibre."
 
-msgid "Ambiguous noveltree section title \"{}\"."
-msgstr "Abschnittstitel \"{}\" mehrfach in noveltree."
+msgid "Ambiguous novelibre section title \"{}\"."
+msgstr "Abschnittstitel \"{}\" mehrfach in novelibre."
 
 msgid "Cannot determine file date."
 msgstr "Das Dateidatum ist nicht zu ermitteln."
@@ -118,11 +118,11 @@ msgstr "Projekt speichern und die Zeitleiste aktualisieren?"
 msgid "Sunday"
 msgstr "Sonntag"
 
-msgid "The project \"{}\" was created with a newer noveltree version."
-msgstr "Das Projekt \"{}\" wurde mit einer neueren Version von noveltree erzeugt."
+msgid "The project \"{}\" was created with a newer novelibre version."
+msgstr "Das Projekt \"{}\" wurde mit einer neueren Version von novelibre erzeugt."
 
-msgid "The project \"{}\" was created with an outdated noveltree version."
-msgstr "Das Projekt \"{}\" wurde mit einer veralteten Version von noveltree erzeugt."
+msgid "The project \"{}\" was created with an outdated novelibre version."
+msgstr "Das Projekt \"{}\" wurde mit einer veralteten Version von novelibre erzeugt."
 
 msgid "Thursday"
 msgstr "Donnerstag"
@@ -145,8 +145,8 @@ msgstr "\"AD\" Ära fehlt im Kalender"
 msgid "newer"
 msgstr "neuer"
 
-msgid "noveltree project"
-msgstr "noveltree-Projekt"
+msgid "novelibre project"
+msgstr "novelibre-Projekt"
 
 msgid "nvhelp-en"
 msgstr "nvhelp-en"
@@ -154,6 +154,6 @@ msgstr "nvhelp-en"
 msgid "older"
 msgstr "älter"
 
-msgid "{0} file is {1} than the noveltree project.\n (last saved on {2})"
-msgstr "{0}-Datei ist {1} als das noveltree-Projekt.\n (zuletzt gespeichert: {2})"
+msgid "{0} file is {1} than the novelibre project.\n (last saved on {2})"
+msgstr "{0}-Datei ist {1} als das novelibre-Projekt.\n (zuletzt gespeichert: {2})"
 

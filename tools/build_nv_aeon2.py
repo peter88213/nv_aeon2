@@ -1,4 +1,4 @@
-"""Build an aeon2nv  noveltree plugin.
+"""Build an aeon2nv  novelibre plugin.
         
 In order to distribute a single script without dependencies, 
 this script "inlines" all modules imported from the novxlib package.

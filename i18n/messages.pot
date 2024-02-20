@@ -44,19 +44,19 @@ msgstr ""
 msgid "Ambiguous Aeon location \"{}\"."
 msgstr ""
 
-msgid "Ambiguous noveltree arc \"{}\"."
+msgid "Ambiguous novelibre arc \"{}\"."
 msgstr ""
 
-msgid "Ambiguous noveltree character \"{}\"."
+msgid "Ambiguous novelibre character \"{}\"."
 msgstr ""
 
-msgid "Ambiguous noveltree item \"{}\"."
+msgid "Ambiguous novelibre item \"{}\"."
 msgstr ""
 
-msgid "Ambiguous noveltree location \"{}\"."
+msgid "Ambiguous novelibre location \"{}\"."
 msgstr ""
 
-msgid "Ambiguous noveltree section title \"{}\"."
+msgid "Ambiguous novelibre section title \"{}\"."
 msgstr ""
 
 msgid "Cannot determine file date."
@@ -122,10 +122,10 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-msgid "The project \"{}\" was created with a newer noveltree version."
+msgid "The project \"{}\" was created with a newer novelibre version."
 msgstr ""
 
-msgid "The project \"{}\" was created with an outdated noveltree version."
+msgid "The project \"{}\" was created with an outdated novelibre version."
 msgstr ""
 
 msgid "Thursday"
@@ -146,7 +146,7 @@ msgstr ""
 msgid "newer"
 msgstr ""
 
-msgid "noveltree project"
+msgid "novelibre project"
 msgstr ""
 
 msgid "nvhelp-en"
@@ -155,5 +155,5 @@ msgstr ""
 msgid "older"
 msgstr ""
 
-msgid "{0} file is {1} than the noveltree project.\n (last saved on {2})"
+msgid "{0} file is {1} than the novelibre project.\n (last saved on {2})"
 msgstr ""

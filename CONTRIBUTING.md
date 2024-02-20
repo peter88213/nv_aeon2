@@ -52,25 +52,25 @@ Add a subdirectory tree to **~/.novx/locale**, and place *nv_aeon2.mo* there, li
 
 ```
 <your home directory>
-└── .noveltree/
+└── .novelibre/
     └── locale/
         └─ <language code>/
            └─ LC_MESSAGES/
               └─ nv_aeon2.mo
 ```
 
-Then start *noveltree* and see whether your translation works. 
+Then start *novelibre* and see whether your translation works. 
 
-**NOTE:** At startup, *noveltree* tries to load a message dictionary that fits to the system language. If it doesn't find a matching language code in the *locale* directory, it uses English as default language. 
+**NOTE:** At startup, *novelibre* tries to load a message dictionary that fits to the system language. If it doesn't find a matching language code in the *locale* directory, it uses English as default language. 
 
 **HINT:** *nv_aeon2* comes with German translations. Look at the `de` directory tree, if you need an example. 
 
 
 ### Contribute your translations
 
-If *noveltree* works fine with your translations, you can consider contributing it. 
+If *novelibre* works fine with your translations, you can consider contributing it. 
 
-An easy way may be to put a posting in the [noveltree forum](https://github.com/peter88213/noveltree/discussions), appending your  `<your language code>.po` file. 
+An easy way may be to put a posting in the [novelibre forum](https://github.com/peter88213/novelibre/discussions), appending your  `<your language code>.po` file. 
 
 
 ## Development

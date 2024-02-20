@@ -41,7 +41,7 @@ def run(sourcePath, silentMode=True, installDir='.'):
     if silentMode:
         ui = Ui('')
     else:
-        ui = UiTk(f'{_("Synchronize Aeon Timeline 2 and noveltree")} @release')
+        ui = UiTk(f'{_("Synchronize Aeon Timeline 2 and novelibre")} @release')
         set_icon(ui.root, icon='aLogo32')
 
     #--- Try to get persistent configuration data

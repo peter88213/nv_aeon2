@@ -2,7 +2,7 @@
 
 --- 
 
-A [noveltree](https://github.com/peter88213/noveltree/) plugin providing synchronization with Aeon Timeline 2. 
+A [novelibre](https://github.com/peter88213/novelibre/) plugin providing synchronization with Aeon Timeline 2. 
 
 ---
 
@@ -11,9 +11,9 @@ A [noveltree](https://github.com/peter88213/noveltree/) plugin providing synchro
 - Unzip the downloaded zipfile into a new folder.
 - Move into this new folder and launch **setup.pyw**. This installs the plugin.
 
-*Note: If you install noveltree at a later time, you can always install the plugin afterwards by running the nv_aeon2 setup script again.*
+*Note: If you install novelibre at a later time, you can always install the plugin afterwards by running the nv_aeon2 setup script again.*
 
-The plugin adds an **Aeon Timeline 2** entry to the *noveltree* **Tools** menu, and an **Aeon 2 plugin Online Help** entry to the **Help** menu. 
+The plugin adds an **Aeon Timeline 2** entry to the *novelibre* **Tools** menu, and an **Aeon 2 plugin Online Help** entry to the **Help** menu. 
 
 ---
 

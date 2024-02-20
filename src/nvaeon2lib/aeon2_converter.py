@@ -17,7 +17,7 @@ from nvaeon2lib.json_timeline2 import JsonTimeline2
 
 
 class Aeon2Converter(Converter):
-    """A converter class for noveltree and Aeon Timeline 2."""
+    """A converter class for novelibre and Aeon Timeline 2."""
 
     def run(self, sourcePath, **kwargs):
         """Create source and target objects and run conversion.
@@ -26,7 +26,7 @@ class Aeon2Converter(Converter):
             sourcePath: str -- the source file path.
         
         The direction of the conversion is determined by the source file type.
-        Only noveltree project files and Aeon Timeline 2 files are accepted.
+        Only novelibre project files and Aeon Timeline 2 files are accepted.
         """
         if not os.path.isfile(sourcePath):
             self.ui.set_status(f'!{_("File not found")}: "{norm_path(sourcePath)}".')
@@ -37,15 +37,15 @@ class Aeon2Converter(Converter):
             # Source is a timeline
             sourceFile = JsonTimeline2(sourcePath, **kwargs)
             if os.path.isfile(f'{fileName}{NovxFile.EXTENSION}'):
-                # Update existing noveltree project from timeline
+                # Update existing novelibre project from timeline
                 targetFile = NovxFile(f'{fileName}{NovxFile.EXTENSION}', **kwargs)
                 self.import_to_novx(sourceFile, targetFile)
             else:
-                # Create new noveltree project from timeline
+                # Create new novelibre project from timeline
                 targetFile = NovxFile(f'{fileName}{NovxFile.EXTENSION}', **kwargs)
                 self.create_novx(sourceFile, targetFile)
         elif fileExtension == NovxFile.EXTENSION:
-            # Update existing timeline from noveltree project
+            # Update existing timeline from novelibre project
             sourceFile = NovxFile(sourcePath, **kwargs)
             targetFile = JsonTimeline2(f'{fileName}{JsonTimeline2.EXTENSION}', **kwargs)
             self.export_from_novx(sourceFile, targetFile)
@@ -54,7 +54,7 @@ class Aeon2Converter(Converter):
             self.ui.set_status(f'!{_("File type is not supported")}: "{norm_path(sourcePath)}".')
 
     def export_from_novx(self, source, target):
-        """Convert from noveltree project to other file format.
+        """Convert from novelibre project to other file format.
 
         Positional arguments:
             source -- NovxFile instance.
