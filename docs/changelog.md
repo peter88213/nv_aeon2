@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v2.1.0
+
+Update for "novelibre".
+
+Based on novxlib v1.1.0
+
 ### v2.0.0
 
 Preparations for renaming the application:
