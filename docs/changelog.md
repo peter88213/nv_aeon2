@@ -4,6 +4,14 @@
 
 ## Changelog
 
+### v3.0.0
+
+- Refactor the code for v3.0 API.
+- Enable the online help in German.
+
+Based on novxlib v2.0.0
+Compatibility: novelibre v3.0 API
+
 ### v2.1.0
 
 Update for "novelibre".
@@ -17,7 +25,7 @@ Preparations for renaming the application:
 - Change the installation directory in the setup script.
 
 Based on novxlib v1.1.0
-Compatibility: noveltree v2.0 API
+Compatibility: novelibre v2.0 API
 
 ### v1.2.0
 
