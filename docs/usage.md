@@ -15,6 +15,20 @@ A [novelibre](https://github.com/peter88213/novelibre/) plugin providing synchro
 
 The plugin adds an **Aeon Timeline 2** entry to the *novelibre* **Tools** menu, and an **Aeon 2 plugin Online Help** entry to the **Help** menu. 
 
+## Install the Aeon Timeline 2 custom themes
+
+After installation, you can copy a "novelibre" template to the
+Aeon2 custom template folder. The easiest way is to create new
+timelines based on this template. It provides the entities and event
+properties that are converted to novelibre by default.
+
+If you click on the **Open the Aeon2 custom template folder**
+button, two Explorer windows will open: the **sample** source folder,
+and the ``AppData\Local\Scribble Code\Aeon Timeline 2\CustomTemplates``
+target folder. Just drag the template files you need from the source
+folder into the target folder. The next time you start *Aeon Timeline 2*, 
+the new template appears in the *Custom Templates* area.
+
 ---
 
 # Operation
