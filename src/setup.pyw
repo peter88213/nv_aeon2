@@ -29,17 +29,6 @@ processInfo = Label(root, text='')
 message = []
 
 
-def open_template_folders():
-    """Open the Aeon2 custom template folder."""
-    try:
-        appDataLocal = os.getenv('LOCALAPPDATA').replace('\\', '/')
-        aeon2dir = f'{appDataLocal}/Scribble Code/Aeon Timeline 2/CustomTemplates/'
-        os.startfile('sample')
-        os.startfile(aeon2dir)
-    except:
-        output(f'ERROR: Cannot open the template folders')
-
-
 def output(text):
     message.append(text)
     processInfo.config(text=('\n').join(message))
@@ -87,9 +76,6 @@ if __name__ == '__main__':
     else:
         output(f'ERROR: Cannot find a novelibre installation at "{applicationDir}"')
 
-    root.tplButton = Button(text="Open the Aeon2 custom template folder", command=open_template_folders)
-    root.tplButton.config(height=1, width=30)
-    root.tplButton.pack(padx=5, pady=5)
     root.quitButton = Button(text="Quit", command=quit)
     root.quitButton.config(height=1, width=30)
     root.quitButton.pack(padx=5, pady=5)
