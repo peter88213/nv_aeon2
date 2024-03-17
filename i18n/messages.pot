@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 3.0.0\n"
-"POT-Creation-Date: 2024-03-08 09:29:40\n"
+"Project-Id-Version: 3.0.1\n"
+"POT-Creation-Date: 2024-03-17 19:18:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -86,16 +86,10 @@ msgstr ""
 msgid "File written"
 msgstr ""
 
-msgid "Friday"
-msgstr ""
-
 msgid "Information"
 msgstr ""
 
 msgid "Invalid JSON data in timeline"
-msgstr ""
-
-msgid "Monday"
 msgstr ""
 
 msgid "New sections"
@@ -110,16 +104,10 @@ msgstr ""
 msgid "No {} file available for this project."
 msgstr ""
 
-msgid "Saturday"
-msgstr ""
-
 msgid "Save the project and update it?"
 msgstr ""
 
 msgid "Save the project and update the timeline?"
-msgstr ""
-
-msgid "Sunday"
 msgstr ""
 
 msgid "The project \"{}\" was created with a newer novelibre version."
@@ -128,19 +116,10 @@ msgstr ""
 msgid "The project \"{}\" was created with an outdated novelibre version."
 msgstr ""
 
-msgid "Thursday"
-msgstr ""
-
-msgid "Tuesday"
-msgstr ""
-
 msgid "Update the project"
 msgstr ""
 
 msgid "Update the timeline"
-msgstr ""
-
-msgid "Wednesday"
 msgstr ""
 
 msgid "newer"

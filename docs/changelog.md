@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v3.0.1
+
+- Show localized file date/time instead of ISO-formatted date/time.
+
+Based on novxlib v3.0.1
+Compatibility: novelibre v3.0 API
+
 ### v3.0.0
 
 - Refactor the code for v3.0 API.

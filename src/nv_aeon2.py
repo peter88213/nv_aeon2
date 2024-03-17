@@ -290,7 +290,7 @@ class Plugin():
                         cmp = _('newer')
                     else:
                         cmp = _('older')
-                    fileDate = datetime.fromtimestamp(timestamp).replace(microsecond=0).isoformat(sep=' ')
+                    fileDate = datetime.fromtimestamp(timestamp).strftime('%c')
                     message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(APPLICATION, cmp, fileDate)
                 except:
                     message = _('Cannot determine file date.')
