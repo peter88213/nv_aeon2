@@ -57,7 +57,7 @@ INI_FILEPATH = '.novelibre/config'
 class Plugin():
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    API_VERSION = '2.1'
+    API_VERSION = '3.0'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
     _HELP_URL = f'https://peter88213.github.io/{_("nvhelp-en")}/nv_aeon2/'
@@ -290,7 +290,7 @@ class Plugin():
                         cmp = _('newer')
                     else:
                         cmp = _('older')
-                    fileDate = datetime.fromtimestamp(timestamp).replace(microsecond=0).isoformat(sep=' ')
+                    fileDate = datetime.fromtimestamp(timestamp).strftime('%c')
                     message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(APPLICATION, cmp, fileDate)
                 except:
                     message = _('Cannot determine file date.')

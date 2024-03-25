@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE novx SYSTEM "novx_1_0.dtd">
+<!DOCTYPE novx SYSTEM "novx_1_1.dtd">
 <?xml-stylesheet href="novx.css" type="text/css"?>
-<novx version="1.0" xml:lang="None-None">
+<novx version="1.1" xml:lang="None-None">
   <PROJECT />
   <CHAPTERS>
     <CHAPTER id="ch1">

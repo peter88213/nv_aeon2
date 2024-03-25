@@ -29,24 +29,6 @@ processInfo = Label(root, text='')
 message = []
 
 
-def install_template():
-    """Install the Aeon2 sample template, if needed."""
-    try:
-        appDataLocal = os.getenv('LOCALAPPDATA').replace('\\', '/')
-        aeon2dir = f'{appDataLocal}/Scribble Code/Aeon Timeline 2/CustomTemplates/'
-        sampleTemplate = 'novelibre.xml'
-        if not os.path.isfile(aeon2dir + sampleTemplate):
-            copy2(f'sample/{sampleTemplate}', f'{aeon2dir}{sampleTemplate}')
-            output(f'Copying "{sampleTemplate}"')
-        else:
-            if messagebox.askyesno('Aeon Timeline 2 "yWriter" template', f'Update "{aeon2dir}{sampleTemplate}"?'):
-                copy2(f'sample/{sampleTemplate}', f'{aeon2dir}{sampleTemplate}')
-                output(f'Updating "{sampleTemplate}"')
-                root.tplButton['state'] = DISABLED
-    except:
-        pass
-
-
 def output(text):
     message.append(text)
     processInfo.config(text=('\n').join(message))
@@ -94,9 +76,6 @@ if __name__ == '__main__':
     else:
         output(f'ERROR: Cannot find a novelibre installation at "{applicationDir}"')
 
-    root.tplButton = Button(text="Install the Aeon2 sample template", command=lambda: install_template())
-    root.tplButton.config(height=1, width=30)
-    root.tplButton.pack(padx=5, pady=5)
     root.quitButton = Button(text="Quit", command=quit)
     root.quitButton.config(height=1, width=30)
     root.quitButton.pack(padx=5, pady=5)
