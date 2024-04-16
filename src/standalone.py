@@ -22,6 +22,7 @@ SETTINGS = dict(
     narrative_arc='Narrative',
     property_description='Description',
     property_notes='Notes',
+    property_moonphase='Moon phase',
     role_location='Location',
     role_item='Item',
     role_character='Participant',
@@ -30,10 +31,10 @@ SETTINGS = dict(
     type_item='Item',
     color_section='Red',
     color_event='Yellow',
-    color_point='Blue',
 )
 OPTIONS = dict(
     add_moonphase=False,
+    lock_on_export=False,
 )
 
 

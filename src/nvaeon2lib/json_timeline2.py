@@ -49,7 +49,6 @@ class JsonTimeline2(File):
     # JSON representation of "yes" in Aeon2 "yes/no" properties
     DATE_LIMIT = (datetime(1, 1, 1) - datetime.min).total_seconds()
     # Dates before 1-01-01 can not be displayed properly in novelibre
-    PROPERTY_MOONPHASE = 'Moon phase'
 
     def __init__(self, filePath, **kwargs):
         """Initialize instance variables.
@@ -61,6 +60,7 @@ class JsonTimeline2(File):
             narrative_arc: str -- name of the user-defined "Narrative" arc.
             property_description: str -- name of the user-defined section description property.
             property_notes: str -- name of the user-defined section notes property.
+            property_moonphase: str -- name of the user-defined section notes property.
             role_location: str -- name of the user-defined role for section locations.
             role_item: str -- name of the user-defined role for items in a section.
             role_character: str -- name of the user-defined role for characters in a section.
@@ -82,6 +82,7 @@ class JsonTimeline2(File):
         # JSON[template][properties][name]
         self._propertyDesc = kwargs['property_description']
         self._propertyNotes = kwargs['property_notes']
+        self._propertyMoonphase = kwargs['property_moonphase']
 
         # JSON[template][types][name][roles]
         self._roleLocation = kwargs['role_location']
@@ -113,7 +114,6 @@ class JsonTimeline2(File):
         self._addMoonphase = kwargs['add_moonphase']
         self._sectionColor = kwargs['color_section']
         self._eventColor = kwargs['color_event']
-        self._pointColor = kwargs['color_point']
         self._timestampMax = 0
         self._displayIdMax = 0.0
         self._colors = {}
@@ -498,7 +498,7 @@ class JsonTimeline2(File):
             elif tplPrp['name'] == self._propertyNotes:
                 self._propertyNotesGuid = tplPrp['guid']
                 hasPropertyNotes = True
-            elif tplPrp['name'] == self.PROPERTY_MOONPHASE:
+            elif tplPrp['name'] == self._propertyMoonphase:
                 self._propertyMoonphaseGuid = tplPrp['guid']
 
         #--- Create user defined properties, if missing.
@@ -541,7 +541,7 @@ class JsonTimeline2(File):
                 'guid': self._propertyMoonphaseGuid,
                 'icon': 'flag',
                 'isMandatory': False,
-                'name': self.PROPERTY_MOONPHASE,
+                'name': self._propertyMoonphase,
                 'sortOrder': n,
                 'type': 'text'
                 })

@@ -75,11 +75,11 @@ class Plugin():
         type_item='Item',
         color_section='Red',
         color_event='Yellow',
-        color_point='Blue',
 
     )
     OPTIONS = dict(
         add_moonphase=False,
+        lock_on_export=False,
     )
 
     def install(self, model, view, controller, prefs):
@@ -303,8 +303,9 @@ class Plugin():
         if self._mdl.prjFile:
             timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
             if os.path.isfile(timelinePath):
-                if self._ctrl.lock():
-                    open_document(timelinePath)
+                if self.OPTIONS['lock_on_export']:
+                    self._ctrl.lock()
+                open_document(timelinePath)
             else:
                 self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
 
