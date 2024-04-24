@@ -4,6 +4,14 @@
 
 ## Changelog
 
+### v3.3.2
+
+- Indent the novx files up to the content paragraph level, but not
+inline elements within paragraphs.
+- Set the default locale when creating a new project.
+
+Based on novxlib v3.5.2
+
 ### v3.3.1
 
 - Fix a bug where single spaces between emphasized text in section content are lost when writing novx files.

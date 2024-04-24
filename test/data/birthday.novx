@@ -1,4 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE novx SYSTEM "novx_1_3.dtd">
 <?xml-stylesheet href="novx.css" type="text/css"?>
-<novx version="1.3" xml:lang="None-None"><PROJECT /><CHAPTERS><CHAPTER id="ch1"><Title>New sections</Title><SECTION id="sc1"><Title>NaNoWriMo 2021</Title><Desc><p>Poirot interrogates Author B.C. Toyle at his home.</p></Desc><Tags>Work</Tags><Date>2021-11-01</Date><Time>00:00:00</Time><LastsDays>30</LastsDays><Characters ids="cr1 cr2" /><Locations ids="lc1" /><Items ids="it1" /></SECTION><SECTION id="sc2"><Title>Narrative event</Title><Date>2021-11-02</Date><Time>15:00:00</Time></SECTION></CHAPTER></CHAPTERS><CHARACTERS><CHARACTER id="cr1"><Title>Poirot</Title><BirthDate>1874-04-01</BirthDate><DeathDate>1954-10-18</DeathDate></CHARACTER><CHARACTER id="cr2"><Title>B.C. Toyle</Title><BirthDate>1948-12-02</BirthDate></CHARACTER></CHARACTERS><LOCATIONS><LOCATION id="lc1"><Title>Santa Barbara</Title></LOCATION></LOCATIONS><ITEMS><ITEM id="it1"><Title>Typewriter</Title></ITEM></ITEMS><ARCS /><PROJECTNOTES /></novx>
+<novx version="1.3" xml:lang="de-DE">
+  <PROJECT />
+  <CHAPTERS>
+    <CHAPTER id="ch1">
+      <Title>New sections</Title>
+      <SECTION id="sc1">
+        <Title>NaNoWriMo 2021</Title>
+        <Desc>
+          <p>Poirot interrogates Author B.C. Toyle at his home.</p>
+        </Desc>
+        <Tags>Work</Tags>
+        <Date>2021-11-01</Date>
+        <Time>00:00:00</Time>
+        <LastsDays>30</LastsDays>
+        <Characters ids="cr1 cr2" />
+        <Locations ids="lc1" />
+        <Items ids="it1" />
+      </SECTION>
+      <SECTION id="sc2">
+        <Title>Narrative event</Title>
+        <Date>2021-11-02</Date>
+        <Time>15:00:00</Time>
+      </SECTION>
+    </CHAPTER>
+  </CHAPTERS>
+  <CHARACTERS>
+    <CHARACTER id="cr1">
+      <Title>Poirot</Title>
+      <BirthDate>1874-04-01</BirthDate>
+      <DeathDate>1954-10-18</DeathDate>
+    </CHARACTER>
+    <CHARACTER id="cr2">
+      <Title>B.C. Toyle</Title>
+      <BirthDate>1948-12-02</BirthDate>
+    </CHARACTER>
+  </CHARACTERS>
+  <LOCATIONS>
+    <LOCATION id="lc1">
+      <Title>Santa Barbara</Title>
+    </LOCATION>
+  </LOCATIONS>
+  <ITEMS>
+    <ITEM id="it1">
+      <Title>Typewriter</Title>
+    </ITEM>
+  </ITEMS>
+  <ARCS />
+  <PROJECTNOTES />
+</novx>
