@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v3.3.1
+
+- Fix a bug where single spaces between emphasized text in section content are lost when writing novx files.
+
+Based on novxlib v3.5.0
+
 ### v3.3.0
 
 - Add "property_moonphase" setting for the moon phase label.
