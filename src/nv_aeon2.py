@@ -199,28 +199,41 @@ class Plugin():
 
     def _export_from_novx(self):
         """Update the timeline from novelibre."""
-        if self._mdl.prjFile:
-            timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
-            if not os.path.isfile(timelinePath):
-                self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
+        if not self._mdl.prjFile:
+            return
+
+        self._ui.propertiesView.apply_changes()
+        self._ui.restore_status()
+        if not self._mdl.prjFile.filePath:
+            if not self._ctrl.save_project():
                 return
 
-            self._ui.restore_status()
-            if self._ui.ask_yes_no(_('Save the project and update the timeline?')):
-                self._ctrl.save_project()
-                kwargs = self._get_configuration(timelinePath)
-                source = NovxFile(self._mdl.prjFile.filePath, **kwargs)
-                source.novel = Novel(tree=NvTree())
-                target = JsonTimeline2(timelinePath, **kwargs)
-                target.novel = Novel(tree=NvTree())
-                try:
-                    source.read()
-                    target.read()
-                    target.write(source.novel)
-                    message = f'{_("File written")}: "{norm_path(target.filePath)}".'
-                except Error as ex:
-                    message = f'!{str(ex)}'
-                self._ui.set_status(message)
+        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        if not os.path.isfile(timelinePath):
+            self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
+            return
+
+        if self._mdl.isModified:
+            if not self._ui.ask_yes_no(_('Save the project and update the timeline?')):
+                return
+
+            self._ctrl.save_project()
+        elif not self._ui.ask_yes_no(_('Update the timeline?')):
+            return
+
+        kwargs = self._get_configuration(timelinePath)
+        source = NovxFile(self._mdl.prjFile.filePath, **kwargs)
+        source.novel = Novel(tree=NvTree())
+        target = JsonTimeline2(timelinePath, **kwargs)
+        target.novel = Novel(tree=NvTree())
+        try:
+            source.read()
+            target.read()
+            target.write(source.novel)
+            message = f'{_("File written")}: "{norm_path(target.filePath)}".'
+        except Error as ex:
+            message = f'!{str(ex)}'
+        self._ui.set_status(message)
 
     def _get_configuration(self, sourcePath):
         """ Read persistent configuration data for Aeon 2 conversion.

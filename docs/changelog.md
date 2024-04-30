@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v3.3.3
+
+- Do not unnecessarily save the project when updating the timeline.
+
+Based on novxlib v3.5.3
+
 ### v3.3.2
 
 - Indent the novx files up to the content paragraph level, but not

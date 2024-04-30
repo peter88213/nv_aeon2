@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 3.3.2\n"
-"POT-Creation-Date: 2024-04-24 16:21:24\n"
-"PO-Revision-Date: 2024-04-24 16:21:24\n"
+"Project-Id-Version: 3.3.3\n"
+"POT-Creation-Date: 2024-04-30 15:25:53\n"
+"PO-Revision-Date: 2024-04-30 15:25:53\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -132,6 +132,9 @@ msgstr "Das Projekt aktualisieren"
 
 msgid "Update the timeline"
 msgstr "Die Zeitleiste aktualisieren"
+
+msgid "Update the timeline?"
+msgstr "Die Zeitleiste aktualisieren?"
 
 msgid "\"AD\" era is missing in the calendar."
 msgstr "\"AD\" Ära fehlt im Kalender"
