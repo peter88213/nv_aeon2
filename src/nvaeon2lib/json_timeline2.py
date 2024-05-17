@@ -581,7 +581,7 @@ class JsonTimeline2(File):
                     title=eventTitle,
                     status=1,
                     scType=0,
-                    scPacing=0,
+                    scene=0,
                     )
             else:
                 continue
@@ -1153,7 +1153,7 @@ class JsonTimeline2(File):
                 self.novel.sections[scId].title = source.sections[srcId].title
                 scIdsByTitle[self.novel.sections[scId].title] = scId
                 self.novel.sections[scId].scType = source.sections[srcId].scType
-                self.novel.sections[scId].scPacing = source.sections[srcId].scPacing
+                self.novel.sections[scId].scene = source.sections[srcId].scene
                 newEvent = build_event(self.novel.sections[scId])
                 self._jsonData['events'].append(newEvent)
             self.novel.sections[scId].status = source.sections[srcId].status

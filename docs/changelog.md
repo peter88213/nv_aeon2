@@ -4,6 +4,13 @@
 
 ## Changelog
 
+
+### v4.0.0
+
+- Library update. Now reading and writing *.novx* version 1.4 files.
+
+Based on novxlib v4.0.0
+
 ### v3.3.3
 
 - Do not unnecessarily save the project when updating the timeline.

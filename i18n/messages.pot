@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 3.3.3\n"
-"POT-Creation-Date: 2024-04-30 15:25:53\n"
+"Project-Id-Version: 4.0.0\n"
+"POT-Creation-Date: 2024-05-17 12:58:04\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -111,6 +111,9 @@ msgid "No JSON part found in timeline data"
 msgstr ""
 
 msgid "No valid version found in file"
+msgstr ""
+
+msgid "No valid xml root element found in file"
 msgstr ""
 
 msgid "No {} file available for this project."

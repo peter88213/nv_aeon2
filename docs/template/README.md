@@ -45,7 +45,7 @@ The *nv_aeon2* plugin synchronizes novelibre projects with Aeon Timeline 2.
 ## Requirements
 
 - Aeon Timeline 2 
-- [novelibre](https://github.com/peter88213/novelibre/) version 3.6+
+- [novelibre](https://github.com/peter88213/novelibre/) version 4.0+
 
 ## Download and install
 

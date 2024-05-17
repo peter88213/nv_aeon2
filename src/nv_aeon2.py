@@ -57,7 +57,7 @@ INI_FILEPATH = '.novelibre/config'
 class Plugin():
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    API_VERSION = '3.6'
+    API_VERSION = '4.0'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
     _HELP_URL = f'https://peter88213.github.io/{_("nvhelp-en")}/nv_aeon2/'
