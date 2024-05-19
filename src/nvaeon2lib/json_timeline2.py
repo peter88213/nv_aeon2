@@ -136,91 +136,44 @@ class JsonTimeline2(File):
         """
         self._set_reference_date()
         self._jsonData = open_timeline(self.filePath)
-        self._r_read_color_definitions()
-        self._r_read_date_definition()
-        self._r_check_template_era()
-        self._r_read_guid_of_user_defined_types_and_roles()
-        self._r_add_arc_type_if_missing()
-        self._r_add_character_type_if_missing()
-        self._r_add_location_type_if_missing()
-        self._r_add_item_type_if_missing()
 
-        #--- Get characters, locations, items, and arcs.
+        #--- Fetch JSON template data that may also be needed for writing.
+        self._r_fetch_color_definitions()
+        self._r_fetch_date_definition()
+        self._r_fetch_arc_type_and_roles_guid()
+        self._r_fetch_character_type_and_roles_guid()
+        self._r_fetch_location_type_and_roles_guid()
+        self._r_fetch_item_type_and_roles_guid()
+        self._r_fetch_property_moonphase_guid()
+        self._r_fetch_property_notes_guid()
+        self._r_fetch_property_desc_guid()
 
-        # At the beginning, self.novel contains the  target data (if syncronizing an existing project),
-        # or a newly instantiated Novel object (if creating a project).
+        # At the beginning, self.novel contains either
+        # - the  target data (if syncronizing an existing project), or
+        # - a newly instantiated Novel object (if creating a project).
         # This means, there may be already elements with IDs.
         # In order to reuse them, they are collected in the "target element ID by title" dictionaries.
+
+        #--- Check the target model elements and raise an exception if there are ambiguous titles.
         targetScIdsByTitle = self._r_check_target_sections()
         targetCrIdsByTitle = self._r_check_target_characters()
         targetItIdsByTitle = self._r_check_target_items()
         targetLcIdsByTitle = self._r_check_target_locations()
         targetAcIdsByTitle = self._r_check_target_arcs()
 
-        crIdsByGuid = self._r_get_characters(targetCrIdsByTitle)
-        lcIdsByGuid = self._r_get_locations(targetLcIdsByTitle)
-        itIdsByGuid = self._r_get_items(targetItIdsByTitle)
-        acIdsByGuid = self._r_get_arcs(targetAcIdsByTitle)
+        #--- Check the source entities and raise an exception if there are ambiguous titles.
+        self._r_check_source_characters()
+        self._r_check_source_locations()
+        self._r_check_source_items()
+        self._r_check_source_arcs()
 
-        # Get GUID of user defined properties.
-        hasPropertyNotes = False
-        hasPropertyDesc = False
-        for tplPrp in self._jsonData['template']['properties']:
-            if tplPrp['name'] == self._propertyDesc:
-                self._propertyDescGuid = tplPrp['guid']
-                hasPropertyDesc = True
-            elif tplPrp['name'] == self._propertyNotes:
-                self._propertyNotesGuid = tplPrp['guid']
-                hasPropertyNotes = True
-            elif tplPrp['name'] == self._propertyMoonphase:
-                self._propertyMoonphaseGuid = tplPrp['guid']
+        #--- List the JSON entities and create missing target model elements.
+        crIdsByGuid = self._r_fetch_character_guids_by_id(targetCrIdsByTitle)
+        lcIdsByGuid = self._r_fetch_location_guids_by_id(targetLcIdsByTitle)
+        itIdsByGuid = self._r_fetch_item_guids_by_id(targetItIdsByTitle)
+        acIdsByGuid = self._r_fetch_arc_guids_by_id(targetAcIdsByTitle)
 
-        #--- Create user defined properties, if missing.
-        if not hasPropertyNotes:
-            for tplPrp in self._jsonData['template']['properties']:
-                tplPrp['sortOrder'] += 1
-            self._propertyNotesGuid = get_uid('_propertyNotesGuid')
-            self._jsonData['template']['properties'].insert(0, {
-                'calcMode': 'default',
-                'calculate': False,
-                'fadeEvents': False,
-                'guid': self._propertyNotesGuid,
-                'icon': 'tag',
-                'isMandatory': False,
-                'name': self._propertyNotes,
-                'sortOrder': 0,
-                'type': 'multitext'
-                })
-        if not hasPropertyDesc:
-            n = len(self._jsonData['template']['properties'])
-            self._propertyDescGuid = get_uid('_propertyDescGuid')
-            self._jsonData['template']['properties'].append({
-                'calcMode': 'default',
-                'calculate': False,
-                'fadeEvents': False,
-                'guid': self._propertyDescGuid,
-                'icon': 'tag',
-                'isMandatory': False,
-                'name': self._propertyDesc,
-                'sortOrder': n,
-                'type': 'multitext'
-                })
-        if self._addMoonphase and self._propertyMoonphaseGuid is None:
-            n = len(self._jsonData['template']['properties'])
-            self._propertyMoonphaseGuid = get_uid('_propertyMoonphaseGuid')
-            self._jsonData['template']['properties'].append({
-                'calcMode': 'default',
-                'calculate': False,
-                'fadeEvents': False,
-                'guid': self._propertyMoonphaseGuid,
-                'icon': 'flag',
-                'isMandatory': False,
-                'name': self._propertyMoonphase,
-                'sortOrder': n,
-                'type': 'text'
-                })
-
-        # Abort if there is no Narrative arc.
+        #--- Abort here if there is no Narrative arc.
         if not self._entityNarrativeGuid:
             return
 
@@ -448,8 +401,7 @@ class JsonTimeline2(File):
         """Write instance variables to the file.
         
         Update instance variables from a source instance.              
-        Update date/time/duration from the source,
-        if the section title matches.
+        Update date/time/duration from the source, if the section title matches.
         Overrides the superclass method.
         """
 
@@ -481,54 +433,131 @@ class JsonTimeline2(File):
 
         #--- Begin writing
 
-        self._w_add_narrative_arc_if_missing()
-        self._w_update_events_from_sections(scIdsByTitle)
+        #--- Complete the JSON template if needed.
+        self._r_create_json_type_character_if_missing()
+        self._r_create_json_type_location_if_missing()
+        self._r_create_json_type_item_if_missing()
+        self._r_create_json_type_arc_if_missing()
+        self._r_create_json_role_arc_if_missing()
+        self._r_create_json_role_storyline_if_missing()
+        self._r_create_json_property_notes_if_missing()
+        self._r_create_json_property_desc_if_missing()
+        self._r_create_json_property_moonphase_if_missing()
+
+        self._w_create_json_narrative_arc_if_missing()
+        self._w_update_json_events_from_sections(scIdsByTitle)
         self._w_delete_trashed_events(scIdsByTitle)
         save_timeline(self._jsonData, self.filePath)
 
-    def _r_add_arc_type_if_missing(self):
-        if self._typeArcGuid is None:
-            self._typeArcGuid = get_uid('typeArcGuid')
-            typeCount = len(self._jsonData['template']['types'])
-            self._jsonData['template']['types'].append({
-                    'color':'iconYellow',
-                    'guid':self._typeArcGuid,
-                    'icon':'book',
-                    'name':'Arc',
-                    'persistent':True,
-                    'roles':[],
-                    'sortOrder':typeCount})
+    def _r_create_json_property_desc_if_missing(self):
+        if self._propertyDescGuid is not None:
+            return
+
+            n = len(self._jsonData['template']['properties'])
+            self._propertyDescGuid = get_uid('_propertyDescGuid')
+            self._jsonData['template']['properties'].append({'calcMode':'default',
+                    'calculate':False,
+                    'fadeEvents':False,
+                    'guid':self._propertyDescGuid,
+                    'icon':'tag',
+                    'isMandatory':False,
+                    'name':self._propertyDesc,
+                    'sortOrder':n,
+                    'type':'multitext'})
+
+    def _r_create_json_property_moonphase_if_missing(self):
+        if self._propertyMoonphaseGuid is not None:
+            return
+
+        if not self._addMoonphase:
+            return
+
+        n = len(self._jsonData['template']['properties'])
+        self._propertyMoonphaseGuid = get_uid('_propertyMoonphaseGuid')
+        self._jsonData['template']['properties'].append({'calcMode':'default',
+                'calculate':False,
+                'fadeEvents':False,
+                'guid':self._propertyMoonphaseGuid,
+                'icon':'flag',
+                'isMandatory':False,
+                'name':self._propertyMoonphase,
+                'sortOrder':n,
+                'type':'text'})
+
+    def _r_create_json_property_notes_if_missing(self):
+        if self._propertyNotesGuid is not None:
+            return
+
+        for tplPrp in self._jsonData['template']['properties']:
+            tplPrp['sortOrder'] += 1
+
+        self._propertyNotesGuid = get_uid('_propertyNotesGuid')
+        self._jsonData['template']['properties'].insert(0, {'calcMode':'default',
+                'calculate':False,
+                'fadeEvents':False,
+                'guid':self._propertyNotesGuid,
+                'icon':'tag',
+                'isMandatory':False,
+                'name':self._propertyNotes,
+                'sortOrder':0,
+                'type':'multitext'})
+
+    def _r_create_json_role_arc_if_missing(self):
+        if self._roleArcGuid is not None:
+            return
+
         for entityType in self._jsonData['template']['types']:
             if entityType['name'] == 'Arc':
-                if self._roleArcGuid is None:
-                    self._roleArcGuid = get_uid('_roleArcGuid')
-                    entityType['roles'].append(
-                        {
-                            'allowsMultipleForEntity':True,
-                            'allowsMultipleForEvent':True,
-                            'allowsPercentAllocated':False,
-                            'guid':self._roleArcGuid,
-                            'icon':'circle text',
-                            'mandatoryForEntity':False,
-                            'mandatoryForEvent':False,
-                            'name':'Arc',
-                            'sortOrder':0})
-                if self._roleStorylineGuid is None:
-                    self._roleStorylineGuid = get_uid('_roleStorylineGuid')
-                    entityType['roles'].append(
-                        {
-                            'allowsMultipleForEntity':True,
-                            'allowsMultipleForEvent':True,
-                            'allowsPercentAllocated':False,
-                            'guid':self._roleStorylineGuid,
-                            'icon':'circle filled text',
-                            'mandatoryForEntity':False,
-                            'mandatoryForEvent':False,
-                            'name':'Storyline',
-                            'sortOrder':0})
+                self._roleArcGuid = get_uid('_roleArcGuid')
+                entityType['roles'].append(
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleArcGuid,
+                        'icon':'circle text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':'Arc',
+                        'sortOrder':0})
                 return
 
-    def _r_add_character_type_if_missing(self):
+    def _r_create_json_role_storyline_if_missing(self):
+        if self._roleStorylineGuid is not None:
+            return
+
+        for entityType in self._jsonData['template']['types']:
+            if entityType['name'] == 'Arc':
+                self._roleStorylineGuid = get_uid('_roleStorylineGuid')
+                entityType['roles'].append(
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleStorylineGuid,
+                        'icon':'circle filled text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':'Storyline',
+                        'sortOrder':0})
+                return
+
+    def _r_create_json_type_arc_if_missing(self):
+        if self._typeArcGuid is not None:
+            return
+
+        self._typeArcGuid = get_uid('typeArcGuid')
+        typeCount = len(self._jsonData['template']['types'])
+        self._jsonData['template']['types'].append({
+                'color':'iconYellow',
+                'guid':self._typeArcGuid,
+                'icon':'book',
+                'name':'Arc',
+                'persistent':True,
+                'roles':[],
+                'sortOrder':typeCount})
+
+    def _r_create_json_type_character_if_missing(self):
         if self._typeCharacterGuid is not None:
             return
 
@@ -554,32 +583,33 @@ class JsonTimeline2(File):
                         'sortOrder':0}],
                 'sortOrder':typeCount})
 
-    def _r_add_item_type_if_missing(self):
+    def _r_create_json_type_item_if_missing(self):
         if self._typeItemGuid is not None:
             return
-            self._typeItemGuid = get_uid('_typeItemGuid')
-            self._roleItemGuid = get_uid('_roleItemGuid')
-            typeCount = len(self._jsonData['template']['types'])
-            self._jsonData['template']['types'].append({
-                    'color':'iconPurple',
-                    'guid':self._typeItemGuid,
-                    'icon':'cube',
-                    'name':self._typeItem,
-                    'persistent':True,
-                    'roles':[
-                        {
-                            'allowsMultipleForEntity':True,
-                            'allowsMultipleForEvent':True,
-                            'allowsPercentAllocated':False,
-                            'guid':self._roleItemGuid,
-                            'icon':'circle text',
-                            'mandatoryForEntity':False,
-                            'mandatoryForEvent':False,
-                            'name':self._roleItem,
-                            'sortOrder':0}],
-                    'sortOrder':typeCount})
 
-    def _r_add_location_type_if_missing(self):
+        self._typeItemGuid = get_uid('_typeItemGuid')
+        self._roleItemGuid = get_uid('_roleItemGuid')
+        typeCount = len(self._jsonData['template']['types'])
+        self._jsonData['template']['types'].append({
+                'color':'iconPurple',
+                'guid':self._typeItemGuid,
+                'icon':'cube',
+                'name':self._typeItem,
+                'persistent':True,
+                'roles':[
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleItemGuid,
+                        'icon':'circle text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':self._roleItem,
+                        'sortOrder':0}],
+                'sortOrder':typeCount})
+
+    def _r_create_json_type_location_if_missing(self):
         if self._typeLocationGuid is not None:
             return
 
@@ -605,62 +635,7 @@ class JsonTimeline2(File):
                         'sortOrder':0}],
                 'sortOrder':typeCount})
 
-    def _r_check_target_arcs(self):
-        targetAcIdsByTitle = {}
-        for acId in self.novel.plotLines:
-            title = self.novel.plotLines[acId].title
-            if title:
-                if title in targetAcIdsByTitle:
-                    raise Error(_('Ambiguous novelibre arc "{}".').format(title))
-                targetAcIdsByTitle[title] = acId
-        return targetAcIdsByTitle
-
-    def _r_check_target_characters(self):
-        targetCrIdsByTitle = {}
-        for crId in self.novel.characters:
-            title = self.novel.characters[crId].title
-            if title:
-                if title in targetCrIdsByTitle:
-                    raise Error(_('Ambiguous novelibre character "{}".').format(title))
-                targetCrIdsByTitle[title] = crId
-        return targetCrIdsByTitle
-
-    def _r_check_target_items(self):
-        targetItIdsByTitle = {}
-        for itId in self.novel.items:
-            title = self.novel.items[itId].title
-            if title:
-                if title in targetItIdsByTitle:
-                    raise Error(_('Ambiguous novelibre item "{}".').format(title))
-                targetItIdsByTitle[title] = itId
-        return targetItIdsByTitle
-
-    def _r_check_target_locations(self):
-        targetLcIdsByTitle = {}
-        for lcId in self.novel.locations:
-            title = self.novel.locations[lcId].title
-            if title:
-                if title in targetLcIdsByTitle:
-                    raise Error(_('Ambiguous novelibre location "{}".').format(title))
-                targetLcIdsByTitle[title] = lcId
-        return targetLcIdsByTitle
-
-    def _r_check_target_sections(self):
-        targetScIdsByTitle = {}
-        for scId in self.novel.sections:
-            title = self.novel.sections[scId].title
-            if title:
-                if title in targetScIdsByTitle:
-                    raise Error(_('Ambiguous novelibre section title "{}".').format(title))
-                targetScIdsByTitle[title] = scId
-        return targetScIdsByTitle
-
-    def _r_check_template_era(self):
-        if self._tplDateGuid is None:
-            raise Error(_('"AD" era is missing in the calendar.'))
-
-    def _r_get_arcs(self, targetAcIdsByTitle):
-        acIdsByGuid = {}
+    def _r_check_source_arcs(self):
         arcNames = []
         for entity in self._jsonData['entities']:
             if entity['entityType'] != self._typeArcGuid:
@@ -671,6 +646,103 @@ class JsonTimeline2(File):
                 raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
 
             arcNames.append(entity['name'])
+
+    def _r_check_source_characters(self):
+        characterNames = []
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeCharacterGuid:
+                continue
+
+            # Check whether the character title is unique.
+            if entity['name'] in characterNames:
+                raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
+
+            characterNames.append(entity['name'])
+
+    def _r_check_source_items(self):
+        itemNames = []
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeItemGuid:
+                continue
+
+            # Check whether the item title is unique.
+            if entity['name'] in itemNames:
+                raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
+
+            itemNames.append(entity['name'])
+
+    def _r_check_source_locations(self):
+        locationNames = []
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeLocationGuid:
+                continue
+
+            # Check whether the location title is unique.
+            if entity['name'] in locationNames:
+                raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
+
+            locationNames.append(entity['name'])
+
+    def _r_check_target_arcs(self):
+        targetAcIdsByTitle = {}
+        for acId in self.novel.plotLines:
+            title = self.novel.plotLines[acId].title
+            if title:
+                if title in targetAcIdsByTitle:
+                    raise Error(_('Ambiguous novelibre arc "{}".').format(title))
+
+                targetAcIdsByTitle[title] = acId
+        return targetAcIdsByTitle
+
+    def _r_check_target_characters(self):
+        targetCrIdsByTitle = {}
+        for crId in self.novel.characters:
+            title = self.novel.characters[crId].title
+            if title:
+                if title in targetCrIdsByTitle:
+                    raise Error(_('Ambiguous novelibre character "{}".').format(title))
+
+                targetCrIdsByTitle[title] = crId
+        return targetCrIdsByTitle
+
+    def _r_check_target_items(self):
+        targetItIdsByTitle = {}
+        for itId in self.novel.items:
+            title = self.novel.items[itId].title
+            if title:
+                if title in targetItIdsByTitle:
+                    raise Error(_('Ambiguous novelibre item "{}".').format(title))
+
+                targetItIdsByTitle[title] = itId
+        return targetItIdsByTitle
+
+    def _r_check_target_locations(self):
+        targetLcIdsByTitle = {}
+        for lcId in self.novel.locations:
+            title = self.novel.locations[lcId].title
+            if title:
+                if title in targetLcIdsByTitle:
+                    raise Error(_('Ambiguous novelibre location "{}".').format(title))
+
+                targetLcIdsByTitle[title] = lcId
+        return targetLcIdsByTitle
+
+    def _r_check_target_sections(self):
+        targetScIdsByTitle = {}
+        for scId in self.novel.sections:
+            title = self.novel.sections[scId].title
+            if title:
+                if title in targetScIdsByTitle:
+                    raise Error(_('Ambiguous novelibre section title "{}".').format(title))
+
+                targetScIdsByTitle[title] = scId
+        return targetScIdsByTitle
+
+    def _r_fetch_arc_guids_by_id(self, targetAcIdsByTitle):
+        acIdsByGuid = {}
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeArcGuid:
+                continue
 
             # Check whether there is already an arc for the entity.
             if entity['name'] in targetAcIdsByTitle:
@@ -691,18 +763,22 @@ class JsonTimeline2(File):
                 self._arcCount += 1
         return acIdsByGuid
 
-    def _r_get_characters(self, targetCrIdsByTitle):
+    def _r_fetch_arc_type_and_roles_guid(self):
+        for tplTyp in self._jsonData['template']['types']:
+            if tplTyp['name'] == 'Arc':
+                self._typeArcGuid = tplTyp['guid']
+                for tplTypRol in tplTyp['roles']:
+                    if tplTypRol['name'] == 'Arc':
+                        self._roleArcGuid = tplTypRol['guid']
+                    elif tplTypRol['name'] == 'Storyline':
+                        self._roleStorylineGuid = tplTypRol['guid']
+                continue
+
+    def _r_fetch_character_guids_by_id(self, targetCrIdsByTitle):
         crIdsByGuid = {}
-        characterNames = []
         for entity in self._jsonData['entities']:
             if entity['entityType'] != self._typeCharacterGuid:
                 continue
-
-            # Check whether the character title is unique.
-            if entity['name'] in characterNames:
-                raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
-
-            characterNames.append(entity['name'])
 
             # Check whether there is already a character for the entity.
             if entity['name'] in targetCrIdsByTitle:
@@ -733,18 +809,36 @@ class JsonTimeline2(File):
                     self.novel.characters[crId].deathDate = deathDate.isoformat().split('T')[0]
         return crIdsByGuid
 
-    def _r_get_items(self, targetItIdsByTitle):
+    def _r_fetch_character_type_and_roles_guid(self):
+        for tplTyp in self._jsonData['template']['types']:
+            if tplTyp['name'] == self._typeCharacter:
+                self._typeCharacterGuid = tplTyp['guid']
+                for tplTypRol in tplTyp['roles']:
+                    if tplTypRol['name'] == self._roleCharacter:
+                        self._roleCharacterGuid = tplTypRol['guid']
+                        break
+                continue
+
+    def _r_fetch_color_definitions(self):
+        for tplCol in self._jsonData['template']['colors']:
+            self._colors[tplCol['name']] = tplCol['guid']
+
+    def _r_fetch_date_definition(self):
+        for tplRgp in self._jsonData['template']['rangeProperties']:
+            if tplRgp['type'] == 'date':
+                for tplRgpCalEra in tplRgp['calendar']['eras']:
+                    if tplRgpCalEra['name'] == 'AD':
+                        self._tplDateGuid = tplRgp['guid']
+                        break
+
+        if self._tplDateGuid is None:
+            raise Error(_('"AD" era is missing in the calendar.'))
+
+    def _r_fetch_item_guids_by_id(self, targetItIdsByTitle):
         itIdsByGuid = {}
-        itemNames = []
         for entity in self._jsonData['entities']:
             if entity['entityType'] != self._typeItemGuid:
                 continue
-
-            # Check whether the item title is unique.
-            if entity['name'] in itemNames:
-                raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
-
-            itemNames.append(entity['name'])
 
             # Check whether there is already an item for the entity.
             if entity['name'] in targetItIdsByTitle:
@@ -758,18 +852,21 @@ class JsonTimeline2(File):
             self._itemGuidsById[itId] = entity['guid']
         return itIdsByGuid
 
-    def _r_get_locations(self, targetLcIdsByTitle):
+    def _r_fetch_item_type_and_roles_guid(self):
+        for tplTyp in self._jsonData['template']['types']:
+            if tplTyp['name'] == self._typeItem:
+                self._typeItemGuid = tplTyp['guid']
+                for tplTypRol in tplTyp['roles']:
+                    if tplTypRol['name'] == self._roleItem:
+                        self._roleItemGuid = tplTypRol['guid']
+                        break
+                continue
+
+    def _r_fetch_location_guids_by_id(self, targetLcIdsByTitle):
         lcIdsByGuid = {}
-        locationNames = []
         for entity in self._jsonData['entities']:
             if entity['entityType'] != self._typeLocationGuid:
                 continue
-
-            # Check whether the location title is unique.
-            if entity['name'] in locationNames:
-                raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
-
-            locationNames.append(entity['name'])
 
             # Check whether there is already a location for the entity.
             if entity['name'] in targetLcIdsByTitle:
@@ -783,45 +880,33 @@ class JsonTimeline2(File):
             self._locationGuidsById[lcId] = entity['guid']
         return lcIdsByGuid
 
-    def _r_read_guid_of_user_defined_types_and_roles(self):
+    def _r_fetch_location_type_and_roles_guid(self):
         for tplTyp in self._jsonData['template']['types']:
-            if tplTyp['name'] == 'Arc':
-                self._typeArcGuid = tplTyp['guid']
-                for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == 'Arc':
-                        self._roleArcGuid = tplTypRol['guid']
-                    elif tplTypRol['name'] == 'Storyline':
-                        self._roleStorylineGuid = tplTypRol['guid']
-            elif tplTyp['name'] == self._typeCharacter:
-                self._typeCharacterGuid = tplTyp['guid']
-                for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == self._roleCharacter:
-                        self._roleCharacterGuid = tplTypRol['guid']
-            elif tplTyp['name'] == self._typeLocation:
+            if tplTyp['name'] == self._typeLocation:
                 self._typeLocationGuid = tplTyp['guid']
                 for tplTypRol in tplTyp['roles']:
                     if tplTypRol['name'] == self._roleLocation:
                         self._roleLocationGuid = tplTypRol['guid']
                         break
+                continue
 
-            elif tplTyp['name'] == self._typeItem:
-                self._typeItemGuid = tplTyp['guid']
-                for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == self._roleItem:
-                        self._roleItemGuid = tplTypRol['guid']
-                        break
+    def _r_fetch_property_desc_guid(self):
+        for tplPrp in self._jsonData['template']['properties']:
+            if tplPrp['name'] == self._propertyDesc:
+                self._propertyDescGuid = tplPrp['guid']
+                return
 
-    def _r_read_color_definitions(self):
-        for tplCol in self._jsonData['template']['colors']:
-            self._colors[tplCol['name']] = tplCol['guid']
+    def _r_fetch_property_moonphase_guid(self):
+        for tplPrp in self._jsonData['template']['properties']:
+            if tplPrp['name'] == self._propertyMoonphase:
+                self._propertyMoonphaseGuid = tplPrp['guid']
+                break
 
-    def _r_read_date_definition(self):
-        for tplRgp in self._jsonData['template']['rangeProperties']:
-            if tplRgp['type'] == 'date':
-                for tplRgpCalEra in tplRgp['calendar']['eras']:
-                    if tplRgpCalEra['name'] == 'AD':
-                        self._tplDateGuid = tplRgp['guid']
-                        break
+    def _r_fetch_property_notes_guid(self):
+        for tplPrp in self._jsonData['template']['properties']:
+            if tplPrp['name'] == self._propertyNotes:
+                self._propertyNotesGuid = tplPrp['guid']
+                return
 
     def _set_reference_date(self):
         self.referenceDate = datetime.today()
@@ -832,60 +917,25 @@ class JsonTimeline2(File):
             except ValueError:
                 pass
 
-    def _w_add_narrative_arc_if_missing(self):
-        if self._entityNarrativeGuid is None:
-            self._entityNarrativeGuid = get_uid('entityNarrativeGuid')
-            self._jsonData['entities'].append({
-                    'entityType':self._typeArcGuid,
-                    'guid':self._entityNarrativeGuid,
-                    'icon':'book',
-                    'name':self._entityNarrative,
-                    'notes':'',
-                    'sortOrder':self._arcCount,
-                    'swatchColor':'orange'})
-            self._arcCount += 1
+    def _w_create_json_narrative_arc_if_missing(self):
+        if self._entityNarrativeGuid is not None:
+            return
 
-    def _w_build_event(self, section):
-        """Create a new event from a section."""
-        event = {
-            'attachments': [],
-            'color': '',
-            'displayId': self._w_get_display_id(),
-            'guid': get_uid(f'section{section.title}'),
-            'links': [],
-            'locked': False,
-            'priority': 500,
-            'rangeValues': [{
-                'minimumZoom':-1,
-                'position': {
-                    'precision': 'minute',
-                    'timestamp': self.DATE_LIMIT
-                    },
-                'rangeProperty': self._tplDateGuid,
-                'span': {},
-                }],
-            'relationships': [],
-            'tags': [],
-            'title': section.title,
-            'values': [{
-                'property': self._propertyNotesGuid,
-                'value': ''
-                },
-                {
-                'property': self._propertyDescGuid,
-                'value': ''
-                }],
-            }
-        if section.scType == 0:
-            event['color'] = self._colors[self._sectionColor]
-        else:
-            event['color'] = self._colors[self._eventColor]
-        return event
+        self._entityNarrativeGuid = get_uid('entityNarrativeGuid')
+        self._jsonData['entities'].append({
+                'entityType':self._typeArcGuid,
+                'guid':self._entityNarrativeGuid,
+                'icon':'book',
+                'name':self._entityNarrative,
+                'notes':'',
+                'sortOrder':self._arcCount,
+                'swatchColor':'orange'})
+        self._arcCount += 1
 
-    def _w_check_source_arcs(self, source, linkedArcs):
+    def _w_check_source_arcs(self, source, relatedArcs):
         srcArcTitles = []
         for acId in source.plotLines:
-            if not acId in linkedArcs:
+            if not acId in relatedArcs:
                 continue
 
             if source.plotLines[acId].title in srcArcTitles:
@@ -893,10 +943,10 @@ class JsonTimeline2(File):
 
             srcArcTitles.append(source.plotLines[acId].title)
 
-    def _w_check_source_characters(self, source, linkedCharacters):
+    def _w_check_source_characters(self, source, relatedCharacters):
         srcChrNames = []
         for crId in source.characters:
-            if not crId in linkedCharacters:
+            if not crId in relatedCharacters:
                 continue
 
             if source.characters[crId].title in srcChrNames:
@@ -904,10 +954,10 @@ class JsonTimeline2(File):
 
             srcChrNames.append(source.characters[crId].title)
 
-    def _w_check_source_locations(self, source, linkedLocations):
+    def _w_check_source_locations(self, source, relatedLocations):
         srcLocTitles = []
         for lcId in source.locations:
-            if not lcId in linkedLocations:
+            if not lcId in relatedLocations:
                 continue
 
             if source.locations[lcId].title in srcLocTitles:
@@ -915,10 +965,10 @@ class JsonTimeline2(File):
 
             srcLocTitles.append(source.locations[lcId].title)
 
-    def _w_check_source_items(self, source, linkedItems):
+    def _w_check_source_items(self, source, relatedItems):
         srcItmTitles = []
         for itId in source.items:
-            if not itId in linkedItems:
+            if not itId in relatedItems:
                 continue
 
             if source.items[itId].title in srcItmTitles:
@@ -1001,7 +1051,7 @@ class JsonTimeline2(File):
                 jEvents.append(jEvent)
         self._jsonData['events'] = jEvents
 
-    def _w_get_character_date(self, isoDate):
+    def _w_get_json_character_date(self, isoDate):
         """Return the character's birth or death date, if any."""
         charaDate = datetime.fromisoformat(isoDate)
         timestamp = int((charaDate - datetime.min).total_seconds())
@@ -1014,6 +1064,43 @@ class JsonTimeline2(File):
     def _w_get_display_id(self):
         self._displayIdMax += 1
         return str(int(self._displayIdMax))
+
+    def _w_get_new_json_event(self, section):
+        """Create a new event from a section."""
+        event = {
+            'attachments': [],
+            'color': '',
+            'displayId': self._w_get_display_id(),
+            'guid': get_uid(f'section{section.title}'),
+            'links': [],
+            'locked': False,
+            'priority': 500,
+            'rangeValues': [{
+                'minimumZoom':-1,
+                'position': {
+                    'precision': 'minute',
+                    'timestamp': self.DATE_LIMIT
+                    },
+                'rangeProperty': self._tplDateGuid,
+                'span': {},
+                }],
+            'relationships': [],
+            'tags': [],
+            'title': section.title,
+            'values': [{
+                'property': self._propertyNotesGuid,
+                'value': ''
+                },
+                {
+                'property': self._propertyDescGuid,
+                'value': ''
+                }],
+            }
+        if section.scType == 0:
+            event['color'] = self._colors[self._sectionColor]
+        else:
+            event['color'] = self._colors[self._eventColor]
+        return event
 
     def _w_get_related_elements(self, source):
         """Return lists of characters, locations, items, and arcs assigned to sections."""
@@ -1075,7 +1162,9 @@ class JsonTimeline2(File):
         for srcAcId in source.plotLines:
             if source.plotLines[srcAcId].title in acIdsByTitle:
                 acIdsBySrcId[srcAcId] = acIdsByTitle[source.plotLines[srcAcId].title]
-            elif srcAcId in linkedArcs:  #--- Create a new Arc if it is assigned to at least one section.
+            elif srcAcId in linkedArcs:
+
+                #--- Create a new Arc if it is assigned to at least one section.
                 acId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
                 acIdsBySrcId[srcAcId] = acId
                 self.novel.plotLines[acId] = source.plotLines[srcAcId]
@@ -1103,7 +1192,9 @@ class JsonTimeline2(File):
                 crId = crIdsByTitle[source.characters[srcCrId].title]
                 crIdsBySrcId[srcCrId] = crId
                 srcIdsbyCrId[crId] = srcCrId
-            elif srcCrId in linkedCharacters:  #--- Create a new character if it is assigned to at least one section.
+            elif srcCrId in linkedCharacters:
+
+                #--- Create a new character if it is assigned to at least one section.
                 crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
                 crIdsBySrcId[srcCrId] = crId
                 srcIdsbyCrId[crId] = srcCrId
@@ -1113,10 +1204,10 @@ class JsonTimeline2(File):
                 jsonCharacter = {}
                 birthDate = self.novel.characters[crId].birthDate
                 if birthDate:
-                    jsonCharacter['createRangePosition'] = self._w_get_character_date(birthDate)
+                    jsonCharacter['createRangePosition'] = self._w_get_json_character_date(birthDate)
                 deathDate = self.novel.characters[crId].deathDate
                 if deathDate:
-                    jsonCharacter['destroyRangePosition'] = self._w_get_character_date(deathDate)
+                    jsonCharacter['destroyRangePosition'] = self._w_get_json_character_date(deathDate)
                 jsonCharacter['entityType'] = self._typeCharacterGuid
                 jsonCharacter['guid'] = newGuid
                 jsonCharacter['icon'] = 'person'
@@ -1140,18 +1231,18 @@ class JsonTimeline2(File):
             srcCrId = srcIdsbyCrId[crId]
             birthDate = source.characters[srcCrId].birthDate
             if birthDate:
-                entity['createRangePosition'] = self._w_get_character_date(birthDate)
+                entity['createRangePosition'] = self._w_get_json_character_date(birthDate)
             elif 'createRangePosition' in entity:
                     del entity['createRangePosition']
             deathDate = source.characters[srcCrId].deathDate
             if deathDate:
-                entity['destroyRangePosition'] = self._w_get_character_date(deathDate)
+                entity['destroyRangePosition'] = self._w_get_json_character_date(deathDate)
             elif 'destroyRangePosition' in entity:
                     del entity['destroyRangePosition']
 
         return crIdsBySrcId
 
-    def _w_update_events_from_sections(self, scIdsByTitle):
+    def _w_update_json_events_from_sections(self, scIdsByTitle):
         for jEvent in self._jsonData['events']:
             if not jEvent['title'] in scIdsByTitle:
                 continue
@@ -1274,7 +1365,9 @@ class JsonTimeline2(File):
         for srcItId in source.items:
             if source.items[srcItId].title in itIdsByTitle:
                 itIdsBySrcId[srcItId] = itIdsByTitle[source.items[srcItId].title]
-            elif srcItId in linkedItems:  #--- Create a new Item if it is assigned to at least one section.
+            elif srcItId in linkedItems:
+
+                #--- Create a new Item if it is assigned to at least one section.
                 itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
                 itIdsBySrcId[srcItId] = itId
                 self.novel.items[itId] = source.items[srcItId]
@@ -1297,7 +1390,9 @@ class JsonTimeline2(File):
         for srcLcId in source.locations:
             if source.locations[srcLcId].title in lcIdsByTitle:
                 lcIdsBySrcId[srcLcId] = lcIdsByTitle[source.locations[srcLcId].title]
-            elif srcLcId in linkedLocations:  #--- Create a new location if it is assigned to at least one section.
+            elif srcLcId in linkedLocations:
+
+                #--- Create a new location if it is assigned to at least one section.
                 lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
                 lcIdsBySrcId[srcLcId] = lcId
                 self.novel.locations[lcId] = source.locations[srcLcId]
@@ -1334,7 +1429,7 @@ class JsonTimeline2(File):
                 scIdsByTitle[self.novel.sections[scId].title] = scId
                 self.novel.sections[scId].scType = source.sections[srcId].scType
                 self.novel.sections[scId].scene = source.sections[srcId].scene
-                newEvent = self._w_build_event(self.novel.sections[scId])
+                newEvent = self._w_get_new_json_event(self.novel.sections[scId])
                 self._jsonData['events'].append(newEvent)
             self.novel.sections[scId].status = source.sections[srcId].status
 
