@@ -129,35 +129,39 @@ class Plugin():
         If the moon phase event property already exists, just update.
         """
         #--- Try to get persistent configuration data
-        if self._mdl.prjFile:
-            timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
-            if os.path.isfile(timelinePath):
-                sourceDir = os.path.dirname(timelinePath)
-                if not sourceDir:
-                    sourceDir = '.'
-                try:
-                    homeDir = str(Path.home()).replace('\\', '/')
-                    pluginCnfDir = f'{homeDir}/{INI_FILEPATH}'
-                except:
-                    pluginCnfDir = '.'
-                iniFiles = [f'{pluginCnfDir}/{INI_FILENAME}', f'{sourceDir}/{INI_FILENAME}']
-                configuration = Configuration(self.SETTINGS, self.OPTIONS)
-                for iniFile in iniFiles:
-                    configuration.read(iniFile)
-                kwargs = {}
-                kwargs.update(configuration.settings)
-                kwargs.update(configuration.options)
-                kwargs['add_moonphase'] = True
-                timeline = JsonTimeline2(timelinePath, **kwargs)
-                timeline.novel = Novel(tree=NvTree())
-                try:
-                    timeline.read()
-                    timeline.write(timeline.novel)
-                except Error as ex:
-                    message = f'!{str(ex)}'
-                else:
-                    message = f'{_("File written")}: "{norm_path(timeline.filePath)}".'
-                self._ui.set_status(message)
+        if not self._mdl.prjFile:
+            return
+
+        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        if not os.path.isfile(timelinePath):
+            return
+
+        sourceDir = os.path.dirname(timelinePath)
+        if not sourceDir:
+            sourceDir = '.'
+        try:
+            homeDir = str(Path.home()).replace('\\', '/')
+            pluginCnfDir = f'{homeDir}/{INI_FILEPATH}'
+        except:
+            pluginCnfDir = '.'
+        iniFiles = [f'{pluginCnfDir}/{INI_FILENAME}', f'{sourceDir}/{INI_FILENAME}']
+        configuration = Configuration(self.SETTINGS, self.OPTIONS)
+        for iniFile in iniFiles:
+            configuration.read(iniFile)
+        kwargs = {}
+        kwargs.update(configuration.settings)
+        kwargs.update(configuration.options)
+        kwargs['add_moonphase'] = True
+        timeline = JsonTimeline2(timelinePath, **kwargs)
+        timeline.novel = Novel(tree=NvTree())
+        try:
+            timeline.read()
+            timeline.write(timeline.novel)
+        except Error as ex:
+            message = f'!{str(ex)}'
+        else:
+            message = f'{_("File written")}: "{norm_path(timeline.filePath)}".'
+        self._ui.set_status(message)
 
     def _create_novx(self):
         """Create a novelibre project from a timeline."""
@@ -198,7 +202,12 @@ class Plugin():
         return
 
     def _export_from_novx(self):
-        """Update the timeline from novelibre."""
+        """Update the timeline file from the novx file.
+        
+        Note:
+        The model's novel is not used as the conversion source here.
+        It is considered safer to use a copy of the novel read from the file.
+        """
         if not self._mdl.prjFile:
             return
 
@@ -207,6 +216,7 @@ class Plugin():
         if not self._mdl.prjFile.filePath:
             if not self._ctrl.save_project():
                 return
+                # cannot create a timeline if no novx project exists
 
         timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
         if not os.path.isfile(timelinePath):
@@ -259,66 +269,75 @@ class Plugin():
         return kwargs
 
     def _import_to_novx(self):
-        """Update the current project from the timeline.
+        """Update the current project file from the timeline file.
         
         Note:
         The NvWorkFile object of the open project cannot be used as target object.
         This is because the JsonTimeline2 source object's IDs do not match, so 
         the sections and other elements are identified by their titles when merging.
+        If anything goes wrong during the conversion, the model remains untouched.
         """
-        if self._mdl.prjFile:
-            timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
-            if not os.path.isfile(timelinePath):
-                self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
-                return
+        if not self._mdl.prjFile:
+            return
 
-            if self._ui.ask_yes_no(_('Save the project and update it?')):
-                self._ctrl.save_project()
-                kwargs = self._get_configuration(timelinePath)
-                source = JsonTimeline2(timelinePath, **kwargs)
-                target = NovxFile(self._mdl.prjFile.filePath, **kwargs)
-                try:
-                    target.novel = Novel(tree=NvTree())
-                    target.read()
-                    source.novel = target.novel
-                    source.read()
-                    target.novel = source.novel
-                    target.write()
-                    message = f'{_("File written")}: "{norm_path(target.filePath)}".'
-                except Error as ex:
-                    message = f'!{str(ex)}'
+        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        if not os.path.isfile(timelinePath):
+            self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
+            return
 
-                # Reopen the project.
-                self._ctrl.open_project(filePath=self._mdl.prjFile.filePath, doNotSave=True)
-                self._ui.set_status(message)
+        if not self._ui.ask_yes_no(_('Save the project and update it?')):
+            return
+
+        self._ctrl.save_project()
+        kwargs = self._get_configuration(timelinePath)
+        source = JsonTimeline2(timelinePath, **kwargs)
+        target = NovxFile(self._mdl.prjFile.filePath, **kwargs)
+        try:
+            target.novel = Novel(tree=NvTree())
+            target.read()
+            source.novel = target.novel
+            source.read()
+            target.novel = source.novel
+            target.write()
+            message = f'{_("File written")}: "{norm_path(target.filePath)}".'
+        except Error as ex:
+            message = f'!{str(ex)}'
+
+        # Reopen the project.
+        self._ctrl.open_project(filePath=self._mdl.prjFile.filePath, doNotSave=True)
+        self._ui.set_status(message)
 
     def _info(self):
         """Show information about the Aeon Timeline 2 file."""
-        if self._mdl.prjFile:
-            timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
-            if os.path.isfile(timelinePath):
-                try:
-                    timestamp = os.path.getmtime(timelinePath)
-                    if timestamp > self._mdl.prjFile.timestamp:
-                        cmp = _('newer')
-                    else:
-                        cmp = _('older')
-                    fileDate = datetime.fromtimestamp(timestamp).strftime('%c')
-                    message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(APPLICATION, cmp, fileDate)
-                except:
-                    message = _('Cannot determine file date.')
-            else:
-                message = _('No {} file available for this project.').format(APPLICATION)
-            messagebox.showinfo(PLUGIN, message)
+        if not self._mdl.prjFile:
+            return
+
+        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        if os.path.isfile(timelinePath):
+            try:
+                timestamp = os.path.getmtime(timelinePath)
+                if timestamp > self._mdl.prjFile.timestamp:
+                    cmp = _('newer')
+                else:
+                    cmp = _('older')
+                fileDate = datetime.fromtimestamp(timestamp).strftime('%c')
+                message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(APPLICATION, cmp, fileDate)
+            except:
+                message = _('Cannot determine file date.')
+        else:
+            message = _('No {} file available for this project.').format(APPLICATION)
+        messagebox.showinfo(PLUGIN, message)
 
     def _launch_application(self):
         """Launch Aeon Timeline 2 with the current project."""
-        if self._mdl.prjFile:
-            timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
-            if os.path.isfile(timelinePath):
-                if self.OPTIONS['lock_on_export']:
-                    self._ctrl.lock()
-                open_document(timelinePath)
-            else:
-                self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
+        if not self._mdl.prjFile:
+            return
+
+        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        if os.path.isfile(timelinePath):
+            if self.OPTIONS['lock_on_export']:
+                self._ctrl.lock()
+            open_document(timelinePath)
+        else:
+            self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
 
