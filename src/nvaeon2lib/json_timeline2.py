@@ -136,186 +136,31 @@ class JsonTimeline2(File):
         """
         self._set_reference_date()
         self._jsonData = open_timeline(self.filePath)
-        self._read_color_definitions()
-        self._read_date_definition()
-        self._check_template_era()
-        self._read_guid_of_user_defined_types_and_roles()
-        self._add_arc_type_if_missing()
-        self._add_character_type_if_missing()
-        self._add_location_type_if_missing()
-        self._add_item_type_if_missing()
+        self._r_read_color_definitions()
+        self._r_read_date_definition()
+        self._r_check_template_era()
+        self._r_read_guid_of_user_defined_types_and_roles()
+        self._r_add_arc_type_if_missing()
+        self._r_add_character_type_if_missing()
+        self._r_add_location_type_if_missing()
+        self._r_add_item_type_if_missing()
 
         #--- Get characters, locations, items, and arcs.
+
         # At the beginning, self.novel contains the  target data (if syncronizing an existing project),
         # or a newly instantiated Novel object (if creating a project).
         # This means, there may be already elements with IDs.
         # In order to reuse them, they are collected in the "target element ID by title" dictionaries.
+        targetScIdsByTitle = self._r_check_target_sections()
+        targetCrIdsByTitle = self._r_check_target_characters()
+        targetItIdsByTitle = self._r_check_target_items()
+        targetLcIdsByTitle = self._r_check_target_locations()
+        targetAcIdsByTitle = self._r_check_target_arcs()
 
-        targetScIdsByTitle = {}
-        for scId in self.novel.sections:
-            title = self.novel.sections[scId].title
-            if title:
-                if title in targetScIdsByTitle:
-                    raise Error(_('Ambiguous novelibre section title "{}".').format(title))
-
-                targetScIdsByTitle[title] = scId
-
-        targetCrIdsByTitle = {}
-        for crId in self.novel.characters:
-            title = self.novel.characters[crId].title
-            if title:
-                if title in targetCrIdsByTitle:
-                    raise Error(_('Ambiguous novelibre character "{}".').format(title))
-
-                targetCrIdsByTitle[title] = crId
-
-        targetLcIdsByTitle = {}
-        for lcId in self.novel.locations:
-            title = self.novel.locations[lcId].title
-            if title:
-                if title in targetLcIdsByTitle:
-                    raise Error(_('Ambiguous novelibre location "{}".').format(title))
-
-                targetLcIdsByTitle[title] = lcId
-
-        targetItIdsByTitle = {}
-        for itId in self.novel.items:
-            title = self.novel.items[itId].title
-            if title:
-                if title in targetItIdsByTitle:
-                    raise Error(_('Ambiguous novelibre item "{}".').format(title))
-
-                targetItIdsByTitle[title] = itId
-
-        targetAcIdsByTitle = {}
-        for acId in self.novel.plotLines:
-            title = self.novel.plotLines[acId].title
-            if title:
-                if title in targetAcIdsByTitle:
-                    raise Error(_('Ambiguous novelibre arc "{}".').format(title))
-
-                targetAcIdsByTitle[title] = acId
-
-        # For section relationship lookup:
-        crIdsByGuid = {}
-        lcIdsByGuid = {}
-        itIdsByGuid = {}
-        acIdsByGuid = {}
-
-        # For ambiguity check:
-        characterNames = []
-        locationNames = []
-        itemNames = []
-        arcNames = []
-
-        for entity in self._jsonData['entities']:
-            if entity['entityType'] == self._typeCharacterGuid:
-                #--- Get character.
-
-                # Check whether the character title is unique.
-                if entity['name'] in characterNames:
-                    raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
-
-                characterNames.append(entity['name'])
-
-                # Check whether there is already a character for the entity.
-                if entity['name'] in targetCrIdsByTitle:
-                    crId = targetCrIdsByTitle[entity['name']]
-                else:
-                    # Create a new character.
-                    crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
-                    self.novel.characters[crId] = Character()
-                    self.novel.characters[crId].title = entity['name']
-                    self.novel.tree.append(CR_ROOT, crId)
-                crIdsByGuid[entity['guid']] = crId
-                self._characterGuidsById[crId] = entity['guid']
-                if entity['notes']:
-                    self.novel.characters[crId].notes = entity['notes']
-                else:
-                    entity['notes'] = ''
-                createRangePosition = entity.get('createRangePosition', None)
-                if createRangePosition:
-                    timestamp = createRangePosition['timestamp']
-                    if timestamp >= self.DATE_LIMIT:
-                        # Restrict date/time calculation to dates within novelibre's range
-                        birthDate = datetime.min + timedelta(seconds=timestamp)
-                        self.novel.characters[crId].birthDate = birthDate.isoformat().split('T')[0]
-                destroyRangePosition = entity.get('destroyRangePosition', None)
-                if destroyRangePosition:
-                    timestamp = destroyRangePosition['timestamp']
-                    if timestamp >= self.DATE_LIMIT:
-                        # Restrict date/time calculation to dates within novelibre's range
-                        deathDate = datetime.min + timedelta(seconds=timestamp)
-                        self.novel.characters[crId].deathDate = deathDate.isoformat().split('T')[0]
-
-            elif entity['entityType'] == self._typeLocationGuid:
-                #--- Get location.
-
-                # Check whether the location title is unique.
-                if entity['name'] in locationNames:
-                    raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
-
-                locationNames.append(entity['name'])
-
-                # Check whether there is already a location for the entity.
-                if entity['name'] in targetLcIdsByTitle:
-                    lcId = targetLcIdsByTitle[entity['name']]
-                else:
-                    # Create a new location.
-                    lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
-                    self.novel.locations[lcId] = WorldElement()
-                    self.novel.locations[lcId].title = entity['name']
-                    self.novel.tree.append(LC_ROOT, lcId)
-                lcIdsByGuid[entity['guid']] = lcId
-                self._locationGuidsById[lcId] = entity['guid']
-
-            elif entity['entityType'] == self._typeItemGuid:
-                #--- Get item.
-
-                # Check whether the item title is unique.
-                if entity['name'] in itemNames:
-                    raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
-
-                itemNames.append(entity['name'])
-
-                # Check whether there is already an item for the entity.
-                if entity['name'] in targetItIdsByTitle:
-                    itId = targetItIdsByTitle[entity['name']]
-                else:
-                    # Create a new item.
-                    itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
-                    self.novel.items[itId] = WorldElement()
-                    self.novel.items[itId].title = entity['name']
-                    self.novel.tree.append(IT_ROOT, itId)
-                itIdsByGuid[entity['guid']] = itId
-                self._itemGuidsById[itId] = entity['guid']
-
-            elif entity['entityType'] == self._typeArcGuid:
-                #--- Get arc.
-
-                # Check whether the arc title is unique.
-                if entity['name'] in arcNames:
-                    raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
-
-                arcNames.append(entity['name'])
-
-                # Check whether there is already an arc for the entity.
-                if entity['name'] in targetAcIdsByTitle:
-                    acId = targetAcIdsByTitle[entity['name']]
-                elif entity['name'] != self._entityNarrative:
-
-                    # Create a new arc, if it's not the "Narrative" indicator.
-                    acId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
-                    self.novel.plotLines[acId] = PlotLine()
-                    self.novel.plotLines[acId].title = entity['name']
-                    self.novel.plotLines[acId].shortName = entity['name']
-                    self.novel.tree.append(PL_ROOT, acId)
-                if entity['name'] == self._entityNarrative:
-                    self._entityNarrativeGuid = entity['guid']
-                else:
-                    acIdsByGuid[entity['guid']] = acId
-                    self._arcGuidsById[acId] = entity['guid']
-                    self._arcCount += 1
+        crIdsByGuid = self._r_get_characters(targetCrIdsByTitle)
+        lcIdsByGuid = self._r_get_locations(targetLcIdsByTitle)
+        itIdsByGuid = self._r_get_items(targetItIdsByTitle)
+        acIdsByGuid = self._r_get_arcs(targetAcIdsByTitle)
 
         # Get GUID of user defined properties.
         hasPropertyNotes = False
@@ -609,24 +454,647 @@ class JsonTimeline2(File):
         """
 
         #--- Merge first.
+
         self._set_reference_date()
 
         #--- Check the source for ambiguous titles.
-        srcScnTitles = self._check_source_sections(source)
-        linkedCharacters, linkedLocations, linkedItems, linkedArcs = self._get_assigned_elements(source)
-        self._check_source_characters(source, linkedCharacters)
-        self._check_source_locations(source, linkedLocations)
-        self._check_source_items(source, linkedItems)
-        self._check_source_arcs(source, linkedArcs)
+        srcScnTitles = self._w_check_source_sections(source)
+        relatedCharacters, relatedLocations, relatedItems, relatedArcs = self._w_get_related_elements(source)
+        self._w_check_source_characters(source, relatedCharacters)
+        self._w_check_source_locations(source, relatedLocations)
+        self._w_check_source_items(source, relatedItems)
+        self._w_check_source_arcs(source, relatedArcs)
 
         #--- Check the target for ambiguous titles.
-        scIdsByTitle = self._check_target_sections(srcScnTitles)
-        crIdsByTitle = self._check_target_characters()
-        lcIdsByTitle = self._check_target_locations()
-        itIdsByTitle = self._check_target_items()
-        acIdsByTitle = self._check_target_arcs()
+        scIdsByTitle = self._w_check_target_sections(srcScnTitles)
+        crIdsByTitle = self._w_check_target_characters()
+        lcIdsByTitle = self._w_check_target_locations()
+        itIdsByTitle = self._w_check_target_items()
+        acIdsByTitle = self._w_check_target_arcs()
 
-        #--- Update characters from the source.
+        #--- Update JSON data from the source.
+        crIdsBySrcId = self._w_update_characters_from_source(source, crIdsByTitle, relatedCharacters)
+        lcIdsBySrcId = self._w_update_locations_from_source(source, lcIdsByTitle, relatedLocations)
+        itIdsBySrcId = self._w_update_items_from_source(source, itIdsByTitle, relatedItems)
+        acIdsBySrcId = self._w_update_arcs_from_source(source, acIdsByTitle, relatedArcs)
+        self._w_update_sections_from_source(source, scIdsByTitle, crIdsBySrcId, lcIdsBySrcId, itIdsBySrcId, acIdsBySrcId)
+
+        #--- Begin writing
+
+        self._w_add_narrative_arc_if_missing()
+        self._w_update_events_from_sections(scIdsByTitle)
+        self._w_delete_trashed_events(scIdsByTitle)
+        save_timeline(self._jsonData, self.filePath)
+
+    def _r_add_arc_type_if_missing(self):
+        if self._typeArcGuid is None:
+            self._typeArcGuid = get_uid('typeArcGuid')
+            typeCount = len(self._jsonData['template']['types'])
+            self._jsonData['template']['types'].append({
+                    'color':'iconYellow',
+                    'guid':self._typeArcGuid,
+                    'icon':'book',
+                    'name':'Arc',
+                    'persistent':True,
+                    'roles':[],
+                    'sortOrder':typeCount})
+        for entityType in self._jsonData['template']['types']:
+            if entityType['name'] == 'Arc':
+                if self._roleArcGuid is None:
+                    self._roleArcGuid = get_uid('_roleArcGuid')
+                    entityType['roles'].append(
+                        {
+                            'allowsMultipleForEntity':True,
+                            'allowsMultipleForEvent':True,
+                            'allowsPercentAllocated':False,
+                            'guid':self._roleArcGuid,
+                            'icon':'circle text',
+                            'mandatoryForEntity':False,
+                            'mandatoryForEvent':False,
+                            'name':'Arc',
+                            'sortOrder':0})
+                if self._roleStorylineGuid is None:
+                    self._roleStorylineGuid = get_uid('_roleStorylineGuid')
+                    entityType['roles'].append(
+                        {
+                            'allowsMultipleForEntity':True,
+                            'allowsMultipleForEvent':True,
+                            'allowsPercentAllocated':False,
+                            'guid':self._roleStorylineGuid,
+                            'icon':'circle filled text',
+                            'mandatoryForEntity':False,
+                            'mandatoryForEvent':False,
+                            'name':'Storyline',
+                            'sortOrder':0})
+                return
+
+    def _r_add_character_type_if_missing(self):
+        if self._typeCharacterGuid is not None:
+            return
+
+        self._typeCharacterGuid = get_uid('_typeCharacterGuid')
+        self._roleCharacterGuid = get_uid('_roleCharacterGuid')
+        typeCount = len(self._jsonData['template']['types'])
+        self._jsonData['template']['types'].append({
+                'color':'iconRed',
+                'guid':self._typeCharacterGuid,
+                'icon':'person',
+                'name':self._typeCharacter,
+                'persistent':False,
+                'roles':[
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleCharacterGuid,
+                        'icon':'circle text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':self._roleCharacter,
+                        'sortOrder':0}],
+                'sortOrder':typeCount})
+
+    def _r_add_item_type_if_missing(self):
+        if self._typeItemGuid is not None:
+            return
+            self._typeItemGuid = get_uid('_typeItemGuid')
+            self._roleItemGuid = get_uid('_roleItemGuid')
+            typeCount = len(self._jsonData['template']['types'])
+            self._jsonData['template']['types'].append({
+                    'color':'iconPurple',
+                    'guid':self._typeItemGuid,
+                    'icon':'cube',
+                    'name':self._typeItem,
+                    'persistent':True,
+                    'roles':[
+                        {
+                            'allowsMultipleForEntity':True,
+                            'allowsMultipleForEvent':True,
+                            'allowsPercentAllocated':False,
+                            'guid':self._roleItemGuid,
+                            'icon':'circle text',
+                            'mandatoryForEntity':False,
+                            'mandatoryForEvent':False,
+                            'name':self._roleItem,
+                            'sortOrder':0}],
+                    'sortOrder':typeCount})
+
+    def _r_add_location_type_if_missing(self):
+        if self._typeLocationGuid is not None:
+            return
+
+        self._typeLocationGuid = get_uid('_typeLocationGuid')
+        self._roleLocationGuid = get_uid('_roleLocationGuid')
+        typeCount = len(self._jsonData['template']['types'])
+        self._jsonData['template']['types'].append({
+                'color':'iconOrange',
+                'guid':self._typeLocationGuid,
+                'icon':'map',
+                'name':self._typeLocation,
+                'persistent':True,
+                'roles':[
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleLocationGuid,
+                        'icon':'circle text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':self._roleLocation,
+                        'sortOrder':0}],
+                'sortOrder':typeCount})
+
+    def _r_check_target_arcs(self):
+        targetAcIdsByTitle = {}
+        for acId in self.novel.plotLines:
+            title = self.novel.plotLines[acId].title
+            if title:
+                if title in targetAcIdsByTitle:
+                    raise Error(_('Ambiguous novelibre arc "{}".').format(title))
+                targetAcIdsByTitle[title] = acId
+        return targetAcIdsByTitle
+
+    def _r_check_target_characters(self):
+        targetCrIdsByTitle = {}
+        for crId in self.novel.characters:
+            title = self.novel.characters[crId].title
+            if title:
+                if title in targetCrIdsByTitle:
+                    raise Error(_('Ambiguous novelibre character "{}".').format(title))
+                targetCrIdsByTitle[title] = crId
+        return targetCrIdsByTitle
+
+    def _r_check_target_items(self):
+        targetItIdsByTitle = {}
+        for itId in self.novel.items:
+            title = self.novel.items[itId].title
+            if title:
+                if title in targetItIdsByTitle:
+                    raise Error(_('Ambiguous novelibre item "{}".').format(title))
+                targetItIdsByTitle[title] = itId
+        return targetItIdsByTitle
+
+    def _r_check_target_locations(self):
+        targetLcIdsByTitle = {}
+        for lcId in self.novel.locations:
+            title = self.novel.locations[lcId].title
+            if title:
+                if title in targetLcIdsByTitle:
+                    raise Error(_('Ambiguous novelibre location "{}".').format(title))
+                targetLcIdsByTitle[title] = lcId
+        return targetLcIdsByTitle
+
+    def _r_check_target_sections(self):
+        targetScIdsByTitle = {}
+        for scId in self.novel.sections:
+            title = self.novel.sections[scId].title
+            if title:
+                if title in targetScIdsByTitle:
+                    raise Error(_('Ambiguous novelibre section title "{}".').format(title))
+                targetScIdsByTitle[title] = scId
+        return targetScIdsByTitle
+
+    def _r_check_template_era(self):
+        if self._tplDateGuid is None:
+            raise Error(_('"AD" era is missing in the calendar.'))
+
+    def _r_get_arcs(self, targetAcIdsByTitle):
+        acIdsByGuid = {}
+        arcNames = []
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeArcGuid:
+                continue
+
+            # Check whether the arc title is unique.
+            if entity['name'] in arcNames:
+                raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
+
+            arcNames.append(entity['name'])
+
+            # Check whether there is already an arc for the entity.
+            if entity['name'] in targetAcIdsByTitle:
+                acId = targetAcIdsByTitle[entity['name']]
+            elif entity['name'] != self._entityNarrative:
+
+                # Create a new arc, if it's not the "Narrative" indicator.
+                acId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
+                self.novel.plotLines[acId] = PlotLine()
+                self.novel.plotLines[acId].title = entity['name']
+                self.novel.plotLines[acId].shortName = entity['name']
+                self.novel.tree.append(PL_ROOT, acId)
+            if entity['name'] == self._entityNarrative:
+                self._entityNarrativeGuid = entity['guid']
+            else:
+                acIdsByGuid[entity['guid']] = acId
+                self._arcGuidsById[acId] = entity['guid']
+                self._arcCount += 1
+        return acIdsByGuid
+
+    def _r_get_characters(self, targetCrIdsByTitle):
+        crIdsByGuid = {}
+        characterNames = []
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeCharacterGuid:
+                continue
+
+            # Check whether the character title is unique.
+            if entity['name'] in characterNames:
+                raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
+
+            characterNames.append(entity['name'])
+
+            # Check whether there is already a character for the entity.
+            if entity['name'] in targetCrIdsByTitle:
+                crId = targetCrIdsByTitle[entity['name']]
+            else:
+                crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
+                self.novel.characters[crId] = Character()
+                self.novel.characters[crId].title = entity['name']
+                self.novel.tree.append(CR_ROOT, crId)  # Create a new character.
+            crIdsByGuid[entity['guid']] = crId
+            self._characterGuidsById[crId] = entity['guid']
+            if entity['notes']:
+                self.novel.characters[crId].notes = entity['notes']
+            else:
+                entity['notes'] = ''
+            createRangePosition = entity.get('createRangePosition', None)
+            if createRangePosition:
+                timestamp = createRangePosition['timestamp']
+                if timestamp >= self.DATE_LIMIT:
+                    # Restrict date/time calculation to dates within novelibre's range
+                    birthDate = datetime.min + timedelta(seconds=timestamp)
+                    self.novel.characters[crId].birthDate = birthDate.isoformat().split('T')[0]
+            destroyRangePosition = entity.get('destroyRangePosition', None)
+            if destroyRangePosition:
+                timestamp = destroyRangePosition['timestamp']
+                if timestamp >= self.DATE_LIMIT:  # Restrict date/time calculation to dates within novelibre's range
+                    deathDate = datetime.min + timedelta(seconds=timestamp)
+                    self.novel.characters[crId].deathDate = deathDate.isoformat().split('T')[0]
+        return crIdsByGuid
+
+    def _r_get_items(self, targetItIdsByTitle):
+        itIdsByGuid = {}
+        itemNames = []
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeItemGuid:
+                continue
+
+            # Check whether the item title is unique.
+            if entity['name'] in itemNames:
+                raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
+
+            itemNames.append(entity['name'])
+
+            # Check whether there is already an item for the entity.
+            if entity['name'] in targetItIdsByTitle:
+                itId = targetItIdsByTitle[entity['name']]
+            else:
+                itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
+                self.novel.items[itId] = WorldElement()
+                self.novel.items[itId].title = entity['name']
+                self.novel.tree.append(IT_ROOT, itId)  # Create a new item.
+            itIdsByGuid[entity['guid']] = itId
+            self._itemGuidsById[itId] = entity['guid']
+        return itIdsByGuid
+
+    def _r_get_locations(self, targetLcIdsByTitle):
+        lcIdsByGuid = {}
+        locationNames = []
+        for entity in self._jsonData['entities']:
+            if entity['entityType'] != self._typeLocationGuid:
+                continue
+
+            # Check whether the location title is unique.
+            if entity['name'] in locationNames:
+                raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
+
+            locationNames.append(entity['name'])
+
+            # Check whether there is already a location for the entity.
+            if entity['name'] in targetLcIdsByTitle:
+                lcId = targetLcIdsByTitle[entity['name']]
+            else:
+                lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
+                self.novel.locations[lcId] = WorldElement()
+                self.novel.locations[lcId].title = entity['name']
+                self.novel.tree.append(LC_ROOT, lcId)  # Create a new location.
+            lcIdsByGuid[entity['guid']] = lcId
+            self._locationGuidsById[lcId] = entity['guid']
+        return lcIdsByGuid
+
+    def _r_read_guid_of_user_defined_types_and_roles(self):
+        for tplTyp in self._jsonData['template']['types']:
+            if tplTyp['name'] == 'Arc':
+                self._typeArcGuid = tplTyp['guid']
+                for tplTypRol in tplTyp['roles']:
+                    if tplTypRol['name'] == 'Arc':
+                        self._roleArcGuid = tplTypRol['guid']
+                    elif tplTypRol['name'] == 'Storyline':
+                        self._roleStorylineGuid = tplTypRol['guid']
+            elif tplTyp['name'] == self._typeCharacter:
+                self._typeCharacterGuid = tplTyp['guid']
+                for tplTypRol in tplTyp['roles']:
+                    if tplTypRol['name'] == self._roleCharacter:
+                        self._roleCharacterGuid = tplTypRol['guid']
+            elif tplTyp['name'] == self._typeLocation:
+                self._typeLocationGuid = tplTyp['guid']
+                for tplTypRol in tplTyp['roles']:
+                    if tplTypRol['name'] == self._roleLocation:
+                        self._roleLocationGuid = tplTypRol['guid']
+                        break
+
+            elif tplTyp['name'] == self._typeItem:
+                self._typeItemGuid = tplTyp['guid']
+                for tplTypRol in tplTyp['roles']:
+                    if tplTypRol['name'] == self._roleItem:
+                        self._roleItemGuid = tplTypRol['guid']
+                        break
+
+    def _r_read_color_definitions(self):
+        for tplCol in self._jsonData['template']['colors']:
+            self._colors[tplCol['name']] = tplCol['guid']
+
+    def _r_read_date_definition(self):
+        for tplRgp in self._jsonData['template']['rangeProperties']:
+            if tplRgp['type'] == 'date':
+                for tplRgpCalEra in tplRgp['calendar']['eras']:
+                    if tplRgpCalEra['name'] == 'AD':
+                        self._tplDateGuid = tplRgp['guid']
+                        break
+
+    def _set_reference_date(self):
+        self.referenceDate = datetime.today()
+        if self.novel.referenceDate:
+            defaultDateTime = f'{self.novel.referenceDate} 00:00:00'
+            try:
+                self.referenceDate = datetime.fromisoformat(defaultDateTime)
+            except ValueError:
+                pass
+
+    def _w_add_narrative_arc_if_missing(self):
+        if self._entityNarrativeGuid is None:
+            self._entityNarrativeGuid = get_uid('entityNarrativeGuid')
+            self._jsonData['entities'].append({
+                    'entityType':self._typeArcGuid,
+                    'guid':self._entityNarrativeGuid,
+                    'icon':'book',
+                    'name':self._entityNarrative,
+                    'notes':'',
+                    'sortOrder':self._arcCount,
+                    'swatchColor':'orange'})
+            self._arcCount += 1
+
+    def _w_build_event(self, section):
+        """Create a new event from a section."""
+        event = {
+            'attachments': [],
+            'color': '',
+            'displayId': self._w_get_display_id(),
+            'guid': get_uid(f'section{section.title}'),
+            'links': [],
+            'locked': False,
+            'priority': 500,
+            'rangeValues': [{
+                'minimumZoom':-1,
+                'position': {
+                    'precision': 'minute',
+                    'timestamp': self.DATE_LIMIT
+                    },
+                'rangeProperty': self._tplDateGuid,
+                'span': {},
+                }],
+            'relationships': [],
+            'tags': [],
+            'title': section.title,
+            'values': [{
+                'property': self._propertyNotesGuid,
+                'value': ''
+                },
+                {
+                'property': self._propertyDescGuid,
+                'value': ''
+                }],
+            }
+        if section.scType == 0:
+            event['color'] = self._colors[self._sectionColor]
+        else:
+            event['color'] = self._colors[self._eventColor]
+        return event
+
+    def _w_check_source_arcs(self, source, linkedArcs):
+        srcArcTitles = []
+        for acId in source.plotLines:
+            if not acId in linkedArcs:
+                continue
+
+            if source.plotLines[acId].title in srcArcTitles:
+                raise Error(_('Ambiguous novelibre arc "{}".').format(source.plotLines[acId].title))
+
+            srcArcTitles.append(source.plotLines[acId].title)
+
+    def _w_check_source_characters(self, source, linkedCharacters):
+        srcChrNames = []
+        for crId in source.characters:
+            if not crId in linkedCharacters:
+                continue
+
+            if source.characters[crId].title in srcChrNames:
+                raise Error(_('Ambiguous novelibre character "{}".').format(source.characters[crId].title))
+
+            srcChrNames.append(source.characters[crId].title)
+
+    def _w_check_source_locations(self, source, linkedLocations):
+        srcLocTitles = []
+        for lcId in source.locations:
+            if not lcId in linkedLocations:
+                continue
+
+            if source.locations[lcId].title in srcLocTitles:
+                raise Error(_('Ambiguous novelibre location "{}".').format(source.locations[lcId].title))
+
+            srcLocTitles.append(source.locations[lcId].title)
+
+    def _w_check_source_items(self, source, linkedItems):
+        srcItmTitles = []
+        for itId in source.items:
+            if not itId in linkedItems:
+                continue
+
+            if source.items[itId].title in srcItmTitles:
+                raise Error(_('Ambiguous novelibre item "{}".').format(source.items[itId].title))
+
+            srcItmTitles.append(source.items[itId].title)
+
+    def _w_check_source_sections(self, source):
+        srcScnTitles = []
+        for chId in source.chapters:
+            if source.chapters[chId].isTrash:
+                continue
+
+            for scId in source.tree.get_children(chId):
+                if source.sections[scId].title in srcScnTitles:
+                    raise Error(_('Ambiguous novelibre section title "{}".').format(source.sections[scId].title))
+
+                srcScnTitles.append(source.sections[scId].title)
+        return srcScnTitles
+
+    def _w_check_target_arcs(self):
+        acIdsByTitle = {}
+        for acId in self.novel.plotLines:
+            if self.novel.plotLines[acId].title in acIdsByTitle:
+                raise Error(_('Ambiguous Aeon arc "{}".').format(self.novel.plotLines[acId].title))
+
+            acIdsByTitle[self.novel.plotLines[acId].title] = acId
+        return acIdsByTitle
+
+    def _w_check_target_characters(self):
+        crIdsByTitle = {}
+        for crId in self.novel.characters:
+            if self.novel.characters[crId].title in crIdsByTitle:
+                raise Error(_('Ambiguous Aeon character "{}".').format(self.novel.characters[crId].title))
+
+            crIdsByTitle[self.novel.characters[crId].title] = crId
+        return crIdsByTitle
+
+    def _w_check_target_items(self):
+        itIdsByTitle = {}
+        for itId in self.novel.items:
+            if self.novel.items[itId].title in itIdsByTitle:
+                raise Error(_('Ambiguous Aeon item "{}".').format(self.novel.items[itId].title))
+
+            itIdsByTitle[self.novel.items[itId].title] = itId
+        return itIdsByTitle
+
+    def _w_check_target_locations(self):
+        lcIdsByTitle = {}
+        for lcId in self.novel.locations:
+            if self.novel.locations[lcId].title in lcIdsByTitle:
+                raise Error(_('Ambiguous Aeon location "{}".').format(self.novel.locations[lcId].title))
+
+            lcIdsByTitle[self.novel.locations[lcId].title] = lcId
+        return lcIdsByTitle
+
+    def _w_check_target_sections(self, srcScnTitles):
+        scIdsByTitle = {}
+        for scId in self.novel.sections:
+            if self.novel.sections[scId].title in scIdsByTitle:
+                raise Error(_('Ambiguous Aeon event title "{}".').format(self.novel.sections[scId].title))
+            scIdsByTitle[self.novel.sections[scId].title] = scId
+            # print(f'merge finds {self.novel.sections[scId].title}')
+            #--- Mark non-section events.
+            # This is to recognize "Trash" sections.
+            if not self.novel.sections[scId].title in srcScnTitles:
+                if not self.novel.sections[scId].scType == 1:
+                    self._trashEvents.append(scId)
+        return scIdsByTitle
+
+    def _w_delete_trashed_events(self, scIdsByTitle):
+        jEvents = []
+        for jEvent in self._jsonData['events']:
+            jTitle = jEvent['title']
+            if jTitle in scIdsByTitle:
+                scId = scIdsByTitle[jTitle]
+                if not scId in self._trashEvents:
+                    jEvents.append(jEvent)
+            else:
+                jEvents.append(jEvent)
+        self._jsonData['events'] = jEvents
+
+    def _w_get_character_date(self, isoDate):
+        """Return the character's birth or death date, if any."""
+        charaDate = datetime.fromisoformat(isoDate)
+        timestamp = int((charaDate - datetime.min).total_seconds())
+        return {
+            "precision": "day",
+            "rangePropertyGuid": self._tplDateGuid,
+            "timestamp": timestamp
+            }
+
+    def _w_get_display_id(self):
+        self._displayIdMax += 1
+        return str(int(self._displayIdMax))
+
+    def _w_get_related_elements(self, source):
+        """Return lists of characters, locations, items, and arcs assigned to sections."""
+        relatedCharacters = []
+        relatedLocations = []
+        relatedItems = []
+        relatedArcs = []
+        for chId in source.chapters:
+            if source.chapters[chId].isTrash:
+                continue
+
+            for scId in source.tree.get_children(chId):
+                if source.sections[scId].characters:
+                    relatedCharacters = list(set(relatedCharacters + source.sections[scId].characters))
+                if source.sections[scId].locations:
+                    relatedLocations = list(set(relatedLocations + source.sections[scId].locations))
+                if source.sections[scId].items:
+                    relatedItems = list(set(relatedItems + source.sections[scId].items))
+                if source.sections[scId].scPlotLines:
+                    relatedArcs = list(set(relatedArcs + source.sections[scId].scPlotLines))
+        return relatedCharacters, relatedLocations, relatedItems, relatedArcs
+
+    def _w_get_span(self, section):
+        """Return a time span dictionary from the section duration.
+        
+        Positional arguments:
+            section -- Section instance
+        """
+        span = {}
+        if section.lastsDays:
+            span['days'] = int(section.lastsDays)
+        if section.lastsHours:
+            span['hours'] = int(section.lastsHours)
+        if section.lastsMinutes:
+            span['minutes'] = int(section.lastsMinutes)
+        return span
+
+    def _w_get_timestamp(self, section):
+        """Return a timestamp integer from the section date.
+        
+        Positional arguments:
+            section -- Section instance
+        """
+        self._timestampMax += 1
+        timestamp = int(self._timestampMax)
+        try:
+            if section.date:
+                isoDt = section.date
+                if section.time:
+                    isoDt = (f'{isoDt} {section.time}')
+            timestamp = int((datetime.fromisoformat(isoDt) - datetime.min).total_seconds())
+        except:
+            pass
+        return timestamp
+
+    def _w_update_arcs_from_source(self, source, acIdsByTitle, linkedArcs):
+        arcCount = len(self.novel.plotLines)
+        acIdsBySrcId = {}
+        for srcAcId in source.plotLines:
+            if source.plotLines[srcAcId].title in acIdsByTitle:
+                acIdsBySrcId[srcAcId] = acIdsByTitle[source.plotLines[srcAcId].title]
+            elif srcAcId in linkedArcs:  #--- Create a new Arc if it is assigned to at least one section.
+                acId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
+                acIdsBySrcId[srcAcId] = acId
+                self.novel.plotLines[acId] = source.plotLines[srcAcId]
+                arcName = self.novel.plotLines[acId].title
+                newGuid = get_uid(f'{acId}{arcName}')
+                self._arcGuidsById[acId] = newGuid
+                self._jsonData['entities'].append(
+                    {
+                        'entityType':self._typeArcGuid,
+                        'guid':newGuid,
+                        'icon':'book',
+                        'name':arcName,
+                        'notes':'',
+                        'sortOrder':self._arcCount,
+                        'swatchColor':'orange'})
+                arcCount += 1
+        return acIdsBySrcId
+
+    def _w_update_characters_from_source(self, source, crIdsByTitle, linkedCharacters):
         chrCount = len(self.novel.characters)
         crIdsBySrcId = {}
         srcIdsbyCrId = {}
@@ -635,8 +1103,7 @@ class JsonTimeline2(File):
                 crId = crIdsByTitle[source.characters[srcCrId].title]
                 crIdsBySrcId[srcCrId] = crId
                 srcIdsbyCrId[crId] = srcCrId
-            elif srcCrId in linkedCharacters:
-                #--- Create a new character if it is assigned to at least one section.
+            elif srcCrId in linkedCharacters:  #--- Create a new character if it is assigned to at least one section.
                 crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
                 crIdsBySrcId[srcCrId] = crId
                 srcIdsbyCrId[crId] = srcCrId
@@ -646,10 +1113,10 @@ class JsonTimeline2(File):
                 jsonCharacter = {}
                 birthDate = self.novel.characters[crId].birthDate
                 if birthDate:
-                    jsonCharacter['createRangePosition'] = self._get_character_date(birthDate)
+                    jsonCharacter['createRangePosition'] = self._w_get_character_date(birthDate)
                 deathDate = self.novel.characters[crId].deathDate
                 if deathDate:
-                    jsonCharacter['destroyRangePosition'] = self._get_character_date(deathDate)
+                    jsonCharacter['destroyRangePosition'] = self._w_get_character_date(deathDate)
                 jsonCharacter['entityType'] = self._typeCharacterGuid
                 jsonCharacter['guid'] = newGuid
                 jsonCharacter['icon'] = 'person'
@@ -673,215 +1140,28 @@ class JsonTimeline2(File):
             srcCrId = srcIdsbyCrId[crId]
             birthDate = source.characters[srcCrId].birthDate
             if birthDate:
-                entity['createRangePosition'] = self._get_character_date(birthDate)
-            else:
-                try:
+                entity['createRangePosition'] = self._w_get_character_date(birthDate)
+            elif 'createRangePosition' in entity:
                     del entity['createRangePosition']
-                except KeyError:
-                    pass
             deathDate = source.characters[srcCrId].deathDate
             if deathDate:
-                entity['destroyRangePosition'] = self._get_character_date(deathDate)
-            else:
-                try:
+                entity['destroyRangePosition'] = self._w_get_character_date(deathDate)
+            elif 'destroyRangePosition' in entity:
                     del entity['destroyRangePosition']
-                except KeyError:
-                    pass
 
-        #--- Update locations from the source.
-        locCount = len(self.novel.locations)
-        lcIdsBySrcId = {}
-        for srcLcId in source.locations:
-            if source.locations[srcLcId].title in lcIdsByTitle:
-                lcIdsBySrcId[srcLcId] = lcIdsByTitle[source.locations[srcLcId].title]
-            elif srcLcId in linkedLocations:
-                #--- Create a new location if it is assigned to at least one section.
-                lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
-                lcIdsBySrcId[srcLcId] = lcId
-                self.novel.locations[lcId] = source.locations[srcLcId]
-                newGuid = get_uid(f'{lcId}{self.novel.locations[lcId].title}')
-                self._locationGuidsById[lcId] = newGuid
-                self._jsonData['entities'].append(
-                    {
-                    'entityType': self._typeLocationGuid,
-                    'guid': newGuid,
-                    'icon': 'map',
-                    'name': self.novel.locations[lcId].title,
-                    'notes': '',
-                    'sortOrder': locCount,
-                    'swatchColor': 'orange'
-                    })
-                locCount += 1
+        return crIdsBySrcId
 
-        #--- Update Items from the source.
-        itmCount = len(self.novel.items)
-        itIdsBySrcId = {}
-        for srcItId in source.items:
-            if source.items[srcItId].title in itIdsByTitle:
-                itIdsBySrcId[srcItId] = itIdsByTitle[source.items[srcItId].title]
-            elif srcItId in linkedItems:
-                #--- Create a new Item if it is assigned to at least one section.
-                itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
-                itIdsBySrcId[srcItId] = itId
-                self.novel.items[itId] = source.items[srcItId]
-                newGuid = get_uid(f'{itId}{self.novel.items[itId].title}')
-                self._itemGuidsById[itId] = newGuid
-                self._jsonData['entities'].append(
-                    {
-                    'entityType': self._typeItemGuid,
-                    'guid': newGuid,
-                    'icon': 'cube',
-                    'name': self.novel.items[itId].title,
-                    'notes': '',
-                    'sortOrder': itmCount,
-                    'swatchColor': 'denim'
-                    })
-                itmCount += 1
-
-        #--- Update arcs from the source.
-        arcCount = len(self.novel.plotLines)
-        acIdsBySrcId = {}
-        for srcAcId in source.plotLines:
-            if source.plotLines[srcAcId].title in acIdsByTitle:
-                acIdsBySrcId[srcAcId] = acIdsByTitle[source.plotLines[srcAcId].title]
-            elif srcAcId in linkedArcs:
-                #--- Create a new Arc if it is assigned to at least one section.
-                acId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
-
-                acIdsBySrcId[srcAcId] = acId
-                self.novel.plotLines[acId] = source.plotLines[srcAcId]
-                arcName = self.novel.plotLines[acId].title
-                newGuid = get_uid(f'{acId}{arcName}')
-                self._arcGuidsById[acId] = newGuid
-                self._jsonData['entities'].append(
-                    {
-                    'entityType': self._typeArcGuid,
-                    'guid': newGuid,
-                    'icon': 'book',
-                    'name': arcName,
-                    'notes': '',
-                    'sortOrder': self._arcCount,
-                    'swatchColor': 'orange'
-                    })
-                arcCount += 1
-
-        #--- Update sections from the source.
-        for srcId in source.sections:
-            if source.sections[srcId].scType != 0:
-                # Remove unused section from the "Narrative" arc.
-                if source.sections[srcId].title in scIdsByTitle:
-                    scId = scIdsByTitle[source.sections[srcId].title]
-                    self.novel.sections[scId].scType = 1
-                continue
-
-            if source.sections[srcId].title in scIdsByTitle:
-                scId = scIdsByTitle[source.sections[srcId].title]
-            else:
-                #--- Create a new section.
-                scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
-                self.novel.sections[scId] = Section()
-                self.novel.sections[scId].title = source.sections[srcId].title
-                scIdsByTitle[self.novel.sections[scId].title] = scId
-                self.novel.sections[scId].scType = source.sections[srcId].scType
-                self.novel.sections[scId].scene = source.sections[srcId].scene
-                newEvent = self._build_event(self.novel.sections[scId])
-                self._jsonData['events'].append(newEvent)
-            self.novel.sections[scId].status = source.sections[srcId].status
-
-            #--- Update section type.
-            if source.sections[srcId].scType is not None:
-                self.novel.sections[scId].scType = source.sections[srcId].scType
-
-            #--- Update section tags.
-            if source.sections[srcId].tags is not None:
-                self.novel.sections[scId].tags = source.sections[srcId].tags
-
-            #--- Update section description.
-            if source.sections[srcId].desc is not None:
-                self.novel.sections[scId].desc = source.sections[srcId].desc
-
-            #--- Update section characters.
-            if source.sections[srcId].characters is not None:
-                scCharacters = []
-                for crId in source.sections[srcId].characters:
-                    if crId in crIdsBySrcId:
-                        scCharacters.append(crIdsBySrcId[crId])
-                self.novel.sections[scId].characters = scCharacters
-
-            #--- Update section locations.
-            if source.sections[srcId].locations is not None:
-                scLocations = []
-                for lcId in source.sections[srcId].locations:
-                    if lcId in lcIdsBySrcId:
-                        scLocations.append(lcIdsBySrcId[lcId])
-                self.novel.sections[scId].locations = scLocations
-
-            #--- Update section items.
-            if source.sections[srcId].items is not None:
-                scItems = []
-                for itId in source.sections[srcId].items:
-                    if itId in itIdsBySrcId:
-                        scItems.append(itIdsBySrcId[itId])
-                self.novel.sections[scId].items = scItems
-
-            #--- Update section arcs.
-            if source.sections[srcId].scPlotLines is not None:
-                scArcs = []
-                for acId in source.sections[srcId].scPlotLines:
-                    if acId in acIdsBySrcId:
-                        scArcs.append(acIdsBySrcId[acId])
-                self.novel.sections[scId].scPlotLines = scArcs
-
-            #--- Update section start date/time.
-            if source.sections[srcId].time is not None:
-                self.novel.sections[scId].time = source.sections[srcId].time
-
-            #--- Calculate event date from unspecific section date, if any:
-            if source.sections[srcId].day is not None:
-                dayInt = int(source.sections[srcId].day)
-                sectionDelta = timedelta(days=dayInt)
-                self.novel.sections[scId].date = (self.referenceDate + sectionDelta).isoformat().split('T')[0]
-            elif (source.sections[srcId].date is None) and (source.sections[srcId].time is not None):
-                self.novel.sections[scId].date = self.referenceDate.isoformat().split('T')[0]
-            else:
-                self.novel.sections[scId].date = source.sections[srcId].date
-
-            #--- Update section duration.
-            if source.sections[srcId].lastsMinutes is not None:
-                self.novel.sections[scId].lastsMinutes = source.sections[srcId].lastsMinutes
-            if source.sections[srcId].lastsHours is not None:
-                self.novel.sections[scId].lastsHours = source.sections[srcId].lastsHours
-            if source.sections[srcId].lastsDays is not None:
-                self.novel.sections[scId].lastsDays = source.sections[srcId].lastsDays
-
-        #--- Begin writing
-
-        #--- Add "Narrative" arc, if missing.
-        if self._entityNarrativeGuid is None:
-            self._entityNarrativeGuid = get_uid('entityNarrativeGuid')
-            self._jsonData['entities'].append(
-                {
-                'entityType': self._typeArcGuid,
-                'guid': self._entityNarrativeGuid,
-                'icon': 'book',
-                'name': self._entityNarrative,
-                'notes': '',
-                'sortOrder': self._arcCount,
-                'swatchColor': 'orange'
-                })
-            self._arcCount += 1
-
-        #--- Update events from sections.
+    def _w_update_events_from_sections(self, scIdsByTitle):
         for jEvent in self._jsonData['events']:
-            try:
-                scId = scIdsByTitle[jEvent['title']]
-            except KeyError:
+            if not jEvent['title'] in scIdsByTitle:
                 continue
+
+            scId = scIdsByTitle[jEvent['title']]
 
             #--- Set event date/time/span.
             if jEvent['rangeValues'][0]['position']['timestamp'] >= self.DATE_LIMIT:
-                jEvent['rangeValues'][0]['span'] = self._get_span(self.novel.sections[scId])
-                jEvent['rangeValues'][0]['position']['timestamp'] = self._get_timestamp(self.novel.sections[scId])
+                jEvent['rangeValues'][0]['span'] = self._w_get_span(self.novel.sections[scId])
+                jEvent['rangeValues'][0]['position']['timestamp'] = self._w_get_timestamp(self.novel.sections[scId])
 
             #--- Calculate moon phase.
             if self._propertyMoonphaseGuid is not None:
@@ -988,397 +1268,139 @@ class JsonTimeline2(File):
 
             jEvent['relationships'] = newRel
 
-        #--- Delete "Trash" sections.
-        jEvents = []
-        for jEvent in self._jsonData['events']:
-            try:
-                scId = scIdsByTitle[jEvent['title']]
-            except KeyError:
-                jEvents.append(jEvent)
+    def _w_update_items_from_source(self, source, itIdsByTitle, linkedItems):
+        itmCount = len(self.novel.items)
+        itIdsBySrcId = {}
+        for srcItId in source.items:
+            if source.items[srcItId].title in itIdsByTitle:
+                itIdsBySrcId[srcItId] = itIdsByTitle[source.items[srcItId].title]
+            elif srcItId in linkedItems:  #--- Create a new Item if it is assigned to at least one section.
+                itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
+                itIdsBySrcId[srcItId] = itId
+                self.novel.items[itId] = source.items[srcItId]
+                newGuid = get_uid(f'{itId}{self.novel.items[itId].title}')
+                self._itemGuidsById[itId] = newGuid
+                self._jsonData['entities'].append({
+                        'entityType':self._typeItemGuid,
+                        'guid':newGuid,
+                        'icon':'cube',
+                        'name':self.novel.items[itId].title,
+                        'notes':'',
+                        'sortOrder':itmCount,
+                        'swatchColor':'denim'})
+                itmCount += 1
+        return itIdsBySrcId
+
+    def _w_update_locations_from_source(self, source, lcIdsByTitle, linkedLocations):
+        locCount = len(self.novel.locations)
+        lcIdsBySrcId = {}
+        for srcLcId in source.locations:
+            if source.locations[srcLcId].title in lcIdsByTitle:
+                lcIdsBySrcId[srcLcId] = lcIdsByTitle[source.locations[srcLcId].title]
+            elif srcLcId in linkedLocations:  #--- Create a new location if it is assigned to at least one section.
+                lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
+                lcIdsBySrcId[srcLcId] = lcId
+                self.novel.locations[lcId] = source.locations[srcLcId]
+                newGuid = get_uid(f'{lcId}{self.novel.locations[lcId].title}')
+                self._locationGuidsById[lcId] = newGuid
+                self._jsonData['entities'].append({
+                        'entityType':self._typeLocationGuid,
+                        'guid':newGuid,
+                        'icon':'map',
+                        'name':self.novel.locations[lcId].title,
+                        'notes':'',
+                        'sortOrder':locCount,
+                        'swatchColor':'orange'})
+                locCount += 1
+
+        return lcIdsBySrcId
+
+    def _w_update_sections_from_source(self, source, scIdsByTitle, crIdsBySrcId, lcIdsBySrcId, itIdsBySrcId, acIdsBySrcId):
+        for srcId in source.sections:
+            if source.sections[srcId].scType != 0:
+                # Remove unused section from the "Narrative" arc.
+                if source.sections[srcId].title in scIdsByTitle:
+                    scId = scIdsByTitle[source.sections[srcId].title]
+                    self.novel.sections[scId].scType = 1
+                continue
+
+            if source.sections[srcId].title in scIdsByTitle:
+                scId = scIdsByTitle[source.sections[srcId].title]
             else:
-                if not scId in self._trashEvents:
-                    jEvents.append(jEvent)
-        self._jsonData['events'] = jEvents
-        save_timeline(self._jsonData, self.filePath)
+                #--- Create a new section.
+                scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
+                self.novel.sections[scId] = Section()
+                self.novel.sections[scId].title = source.sections[srcId].title
+                scIdsByTitle[self.novel.sections[scId].title] = scId
+                self.novel.sections[scId].scType = source.sections[srcId].scType
+                self.novel.sections[scId].scene = source.sections[srcId].scene
+                newEvent = self._w_build_event(self.novel.sections[scId])
+                self._jsonData['events'].append(newEvent)
+            self.novel.sections[scId].status = source.sections[srcId].status
 
-    def _add_arc_type_if_missing(self):
-        if self._typeArcGuid is None:
-            self._typeArcGuid = get_uid('typeArcGuid')
-            typeCount = len(self._jsonData['template']['types'])
-            self._jsonData['template']['types'].append({
-                    'color':'iconYellow',
-                    'guid':self._typeArcGuid,
-                    'icon':'book',
-                    'name':'Arc',
-                    'persistent':True,
-                    'roles':[],
-                    'sortOrder':typeCount})
-        for entityType in self._jsonData['template']['types']:
-            if entityType['name'] == 'Arc':
-                if self._roleArcGuid is None:
-                    self._roleArcGuid = get_uid('_roleArcGuid')
-                    entityType['roles'].append(
-                        {
-                            'allowsMultipleForEntity':True,
-                            'allowsMultipleForEvent':True,
-                            'allowsPercentAllocated':False,
-                            'guid':self._roleArcGuid,
-                            'icon':'circle text',
-                            'mandatoryForEntity':False,
-                            'mandatoryForEvent':False,
-                            'name':'Arc',
-                            'sortOrder':0})
-                if self._roleStorylineGuid is None:
-                    self._roleStorylineGuid = get_uid('_roleStorylineGuid')
-                    entityType['roles'].append(
-                        {
-                            'allowsMultipleForEntity':True,
-                            'allowsMultipleForEvent':True,
-                            'allowsPercentAllocated':False,
-                            'guid':self._roleStorylineGuid,
-                            'icon':'circle filled text',
-                            'mandatoryForEntity':False,
-                            'mandatoryForEvent':False,
-                            'name':'Storyline',
-                            'sortOrder':0})
-                return
+            #--- Update section type.
+            if source.sections[srcId].scType is not None:
+                self.novel.sections[scId].scType = source.sections[srcId].scType
 
-    def _add_character_type_if_missing(self):
-        if self._typeCharacterGuid is not None:
-            return
+            #--- Update section tags.
+            if source.sections[srcId].tags is not None:
+                self.novel.sections[scId].tags = source.sections[srcId].tags
 
-        self._typeCharacterGuid = get_uid('_typeCharacterGuid')
-        self._roleCharacterGuid = get_uid('_roleCharacterGuid')
-        typeCount = len(self._jsonData['template']['types'])
-        self._jsonData['template']['types'].append({
-                'color':'iconRed',
-                'guid':self._typeCharacterGuid,
-                'icon':'person',
-                'name':self._typeCharacter,
-                'persistent':False,
-                'roles':[
-                    {
-                        'allowsMultipleForEntity':True,
-                        'allowsMultipleForEvent':True,
-                        'allowsPercentAllocated':False,
-                        'guid':self._roleCharacterGuid,
-                        'icon':'circle text',
-                        'mandatoryForEntity':False,
-                        'mandatoryForEvent':False,
-                        'name':self._roleCharacter,
-                        'sortOrder':0}],
-                'sortOrder':typeCount})
+            #--- Update section description.
+            if source.sections[srcId].desc is not None:
+                self.novel.sections[scId].desc = source.sections[srcId].desc
 
-    def _add_item_type_if_missing(self):
-        if self._typeItemGuid is not None:
-            return
-            self._typeItemGuid = get_uid('_typeItemGuid')
-            self._roleItemGuid = get_uid('_roleItemGuid')
-            typeCount = len(self._jsonData['template']['types'])
-            self._jsonData['template']['types'].append({
-                    'color':'iconPurple',
-                    'guid':self._typeItemGuid,
-                    'icon':'cube',
-                    'name':self._typeItem,
-                    'persistent':True,
-                    'roles':[
-                        {
-                            'allowsMultipleForEntity':True,
-                            'allowsMultipleForEvent':True,
-                            'allowsPercentAllocated':False,
-                            'guid':self._roleItemGuid,
-                            'icon':'circle text',
-                            'mandatoryForEntity':False,
-                            'mandatoryForEvent':False,
-                            'name':self._roleItem,
-                            'sortOrder':0}],
-                    'sortOrder':typeCount})
+            #--- Update section characters.
+            if source.sections[srcId].characters is not None:
+                scCharacters = []
+                for crId in source.sections[srcId].characters:
+                    if crId in crIdsBySrcId:
+                        scCharacters.append(crIdsBySrcId[crId])
+                self.novel.sections[scId].characters = scCharacters
 
-    def _add_location_type_if_missing(self):
-        if self._typeLocationGuid is not None:
-            return
+            #--- Update section locations.
+            if source.sections[srcId].locations is not None:
+                scLocations = []
+                for lcId in source.sections[srcId].locations:
+                    if lcId in lcIdsBySrcId:
+                        scLocations.append(lcIdsBySrcId[lcId])
+                self.novel.sections[scId].locations = scLocations
 
-        self._typeLocationGuid = get_uid('_typeLocationGuid')
-        self._roleLocationGuid = get_uid('_roleLocationGuid')
-        typeCount = len(self._jsonData['template']['types'])
-        self._jsonData['template']['types'].append({
-                'color':'iconOrange',
-                'guid':self._typeLocationGuid,
-                'icon':'map',
-                'name':self._typeLocation,
-                'persistent':True,
-                'roles':[
-                    {
-                        'allowsMultipleForEntity':True,
-                        'allowsMultipleForEvent':True,
-                        'allowsPercentAllocated':False,
-                        'guid':self._roleLocationGuid,
-                        'icon':'circle text',
-                        'mandatoryForEntity':False,
-                        'mandatoryForEvent':False,
-                        'name':self._roleLocation,
-                        'sortOrder':0}],
-                'sortOrder':typeCount})
+            #--- Update section items.
+            if source.sections[srcId].items is not None:
+                scItems = []
+                for itId in source.sections[srcId].items:
+                    if itId in itIdsBySrcId:
+                        scItems.append(itIdsBySrcId[itId])
+                self.novel.sections[scId].items = scItems
 
-    def _check_source_arcs(self, source, linkedArcs):
-        srcArcTitles = []
-        for acId in source.plotLines:
-            if not acId in linkedArcs:
-                continue
+            #--- Update section arcs.
+            if source.sections[srcId].scPlotLines is not None:
+                scArcs = []
+                for acId in source.sections[srcId].scPlotLines:
+                    if acId in acIdsBySrcId:
+                        scArcs.append(acIdsBySrcId[acId])
+                self.novel.sections[scId].scPlotLines = scArcs
 
-            if source.plotLines[acId].title in srcArcTitles:
-                raise Error(_('Ambiguous novelibre arc "{}".').format(source.plotLines[acId].title))
+            #--- Update section start date/time.
+            if source.sections[srcId].time is not None:
+                self.novel.sections[scId].time = source.sections[srcId].time
 
-            srcArcTitles.append(source.plotLines[acId].title)
+            #--- Calculate event date from unspecific section date, if any:
+            if source.sections[srcId].day is not None:
+                dayInt = int(source.sections[srcId].day)
+                sectionDelta = timedelta(days=dayInt)
+                self.novel.sections[scId].date = (self.referenceDate + sectionDelta).isoformat().split('T')[0]
+            elif (source.sections[srcId].date is None) and (source.sections[srcId].time is not None):
+                self.novel.sections[scId].date = self.referenceDate.isoformat().split('T')[0]
+            else:
+                self.novel.sections[scId].date = source.sections[srcId].date
 
-    def _check_source_characters(self, source, linkedCharacters):
-        srcChrNames = []
-        for crId in source.characters:
-            if not crId in linkedCharacters:
-                continue
-
-            if source.characters[crId].title in srcChrNames:
-                raise Error(_('Ambiguous novelibre character "{}".').format(source.characters[crId].title))
-
-            srcChrNames.append(source.characters[crId].title)
-
-    def _check_source_locations(self, source, linkedLocations):
-        srcLocTitles = []
-        for lcId in source.locations:
-            if not lcId in linkedLocations:
-                continue
-
-            if source.locations[lcId].title in srcLocTitles:
-                raise Error(_('Ambiguous novelibre location "{}".').format(source.locations[lcId].title))
-
-            srcLocTitles.append(source.locations[lcId].title)
-
-    def _check_source_items(self, source, linkedItems):
-        srcItmTitles = []
-        for itId in source.items:
-            if not itId in linkedItems:
-                continue
-
-            if source.items[itId].title in srcItmTitles:
-                raise Error(_('Ambiguous novelibre item "{}".').format(source.items[itId].title))
-
-            srcItmTitles.append(source.items[itId].title)
-
-    def _check_source_sections(self, source):
-        srcScnTitles = []
-        for chId in source.chapters:
-            if source.chapters[chId].isTrash:
-                continue
-
-            for scId in source.tree.get_children(chId):
-                if source.sections[scId].title in srcScnTitles:
-                    raise Error(_('Ambiguous novelibre section title "{}".').format(source.sections[scId].title))
-
-                srcScnTitles.append(source.sections[scId].title)
-        return srcScnTitles
-
-    def _check_template_era(self):
-        if self._tplDateGuid is None:
-            raise Error(_('"AD" era is missing in the calendar.'))
-
-    def _get_assigned_elements(self, source):
-        """Return lists of characters, locations, items, and arcs assigned to sections."""
-        linkedCharacters = []
-        linkedLocations = []
-        linkedItems = []
-        linkedArcs = []
-        for chId in source.chapters:
-            if source.chapters[chId].isTrash:
-                continue
-
-            for scId in source.tree.get_children(chId):
-                if source.sections[scId].characters:
-                    linkedCharacters = list(set(linkedCharacters + source.sections[scId].characters))
-                if source.sections[scId].locations:
-                    linkedLocations = list(set(linkedLocations + source.sections[scId].locations))
-                if source.sections[scId].items:
-                    linkedItems = list(set(linkedItems + source.sections[scId].items))
-                if source.sections[scId].scPlotLines:
-                    linkedArcs = list(set(linkedArcs + source.sections[scId].scPlotLines))
-        return linkedCharacters, linkedLocations, linkedItems, linkedArcs
-
-    def _get_character_date(self, isoDate):
-        """Return the character's birth or death date, if any."""
-        charaDate = datetime.fromisoformat(isoDate)
-        timestamp = int((charaDate - datetime.min).total_seconds())
-        return {
-            "precision": "day",
-            "rangePropertyGuid": self._tplDateGuid,
-            "timestamp": timestamp
-            }
-
-    def _get_display_id(self):
-        self._displayIdMax += 1
-        return str(int(self._displayIdMax))
-
-    def _get_span(self, section):
-        """Return a time span dictionary from the section duration.
-        
-        Positional arguments:
-            section -- Section instance
-        """
-        span = {}
-        if section.lastsDays:
-            span['days'] = int(section.lastsDays)
-        if section.lastsHours:
-            span['hours'] = int(section.lastsHours)
-        if section.lastsMinutes:
-            span['minutes'] = int(section.lastsMinutes)
-        return span
-
-    def _check_target_arcs(self):
-        acIdsByTitle = {}
-        for acId in self.novel.plotLines:
-            if self.novel.plotLines[acId].title in acIdsByTitle:
-                raise Error(_('Ambiguous Aeon arc "{}".').format(self.novel.plotLines[acId].title))
-            acIdsByTitle[self.novel.plotLines[acId].title] = acId
-        return acIdsByTitle
-
-    def _check_target_characters(self):
-        crIdsByTitle = {}
-        for crId in self.novel.characters:
-            if self.novel.characters[crId].title in crIdsByTitle:
-                raise Error(_('Ambiguous Aeon character "{}".').format(self.novel.characters[crId].title))
-
-            crIdsByTitle[self.novel.characters[crId].title] = crId
-        return crIdsByTitle
-
-    def _check_target_items(self):
-        itIdsByTitle = {}
-        for itId in self.novel.items:
-            if self.novel.items[itId].title in itIdsByTitle:
-                raise Error(_('Ambiguous Aeon item "{}".').format(self.novel.items[itId].title))
-            itIdsByTitle[self.novel.items[itId].title] = itId
-        return itIdsByTitle
-
-    def _check_target_locations(self):
-        lcIdsByTitle = {}
-        for lcId in self.novel.locations:
-            if self.novel.locations[lcId].title in lcIdsByTitle:
-                raise Error(_('Ambiguous Aeon location "{}".').format(self.novel.locations[lcId].title))
-            lcIdsByTitle[self.novel.locations[lcId].title] = lcId
-        return lcIdsByTitle
-
-    def _check_target_sections(self, srcScnTitles):
-        scIdsByTitle = {}
-        for scId in self.novel.sections:
-            if self.novel.sections[scId].title in scIdsByTitle:
-                raise Error(_('Ambiguous Aeon event title "{}".').format(self.novel.sections[scId].title))
-            scIdsByTitle[self.novel.sections[scId].title] = scId
-            # print(f'merge finds {self.novel.sections[scId].title}')
-            #--- Mark non-section events.
-            # This is to recognize "Trash" sections.
-            if not self.novel.sections[scId].title in srcScnTitles:
-                if not self.novel.sections[scId].scType == 1:
-                    self._trashEvents.append(scId)
-        return scIdsByTitle
-
-    def _get_timestamp(self, section):
-        """Return a timestamp integer from the section date.
-        
-        Positional arguments:
-            section -- Section instance
-        """
-        self._timestampMax += 1
-        timestamp = int(self._timestampMax)
-        try:
-            if section.date:
-                isoDt = section.date
-                if section.time:
-                    isoDt = (f'{isoDt} {section.time}')
-            timestamp = int((datetime.fromisoformat(isoDt) - datetime.min).total_seconds())
-        except:
-            pass
-        return timestamp
-
-    def _read_guid_of_user_defined_types_and_roles(self):
-        for tplTyp in self._jsonData['template']['types']:
-            if tplTyp['name'] == 'Arc':
-                self._typeArcGuid = tplTyp['guid']
-                for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == 'Arc':
-                        self._roleArcGuid = tplTypRol['guid']
-                    elif tplTypRol['name'] == 'Storyline':
-                        self._roleStorylineGuid = tplTypRol['guid']
-            elif tplTyp['name'] == self._typeCharacter:
-                self._typeCharacterGuid = tplTyp['guid']
-                for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == self._roleCharacter:
-                        self._roleCharacterGuid = tplTypRol['guid']
-            elif tplTyp['name'] == self._typeLocation:
-                self._typeLocationGuid = tplTyp['guid']
-                for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == self._roleLocation:
-                        self._roleLocationGuid = tplTypRol['guid']
-                        break
-
-            elif tplTyp['name'] == self._typeItem:
-                self._typeItemGuid = tplTyp['guid']
-                for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == self._roleItem:
-                        self._roleItemGuid = tplTypRol['guid']
-                        break
-
-    def _read_color_definitions(self):
-        for tplCol in self._jsonData['template']['colors']:
-            self._colors[tplCol['name']] = tplCol['guid']
-
-    def _read_date_definition(self):
-        for tplRgp in self._jsonData['template']['rangeProperties']:
-            if tplRgp['type'] == 'date':
-                for tplRgpCalEra in tplRgp['calendar']['eras']:
-                    if tplRgpCalEra['name'] == 'AD':
-                        self._tplDateGuid = tplRgp['guid']
-                        break
-
-    def _set_reference_date(self):
-        self.referenceDate = datetime.today()
-        if self.novel.referenceDate:
-            defaultDateTime = f'{self.novel.referenceDate} 00:00:00'
-            try:
-                self.referenceDate = datetime.fromisoformat(defaultDateTime)
-            except ValueError:
-                pass
-
-    def _build_event(self, section):
-        """Create a new event from a section."""
-        event = {
-            'attachments': [],
-            'color': '',
-            'displayId': self._get_display_id(),
-            'guid': get_uid(f'section{section.title}'),
-            'links': [],
-            'locked': False,
-            'priority': 500,
-            'rangeValues': [{
-                'minimumZoom':-1,
-                'position': {
-                    'precision': 'minute',
-                    'timestamp': self.DATE_LIMIT
-                    },
-                'rangeProperty': self._tplDateGuid,
-                'span': {},
-                }],
-            'relationships': [],
-            'tags': [],
-            'title': section.title,
-            'values': [{
-                'property': self._propertyNotesGuid,
-                'value': ''
-                },
-                {
-                'property': self._propertyDescGuid,
-                'value': ''
-                }],
-            }
-        if section.scType == 0:
-            event['color'] = self._colors[self._sectionColor]
-        else:
-            event['color'] = self._colors[self._eventColor]
-        return event
+            #--- Update section duration.
+            if source.sections[srcId].lastsMinutes is not None:
+                self.novel.sections[scId].lastsMinutes = source.sections[srcId].lastsMinutes
+            if source.sections[srcId].lastsHours is not None:
+                self.novel.sections[scId].lastsHours = source.sections[srcId].lastsHours
+            if source.sections[srcId].lastsDays is not None:
+                self.novel.sections[scId].lastsDays = source.sections[srcId].lastsDays
 
