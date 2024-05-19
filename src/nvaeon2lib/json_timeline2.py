@@ -155,6 +155,7 @@ class JsonTimeline2(File):
         # In order to reuse them, they are collected in the "target element ID by title" dictionaries.
 
         #--- Check the target model elements and raise an exception if there are ambiguous titles.
+        #    Get local lookup dictionaries.
         targetScIdsByTitle = self._r_check_target_sections()
         targetCrIdsByTitle = self._r_check_target_characters()
         targetItIdsByTitle = self._r_check_target_items()
@@ -168,6 +169,7 @@ class JsonTimeline2(File):
         self._r_check_source_arcs()
 
         #--- List the JSON entities and create missing target model elements.
+        #    Get local lookup dictionaries.
         crIdsByGuid = self._r_fetch_character_guids_by_id(targetCrIdsByTitle)
         lcIdsByGuid = self._r_fetch_location_guids_by_id(targetLcIdsByTitle)
         itIdsByGuid = self._r_fetch_item_guids_by_id(targetItIdsByTitle)
@@ -408,16 +410,21 @@ class JsonTimeline2(File):
 
         #--- Merge first.
 
-        #--- Check the source for ambiguous titles.
+        # Get local lists of source model elements that are related to sections.
         relatedCharacters, relatedLocations, relatedItems, relatedArcs = self._w_get_related_elements(source)
+
+        #--- Check the source for ambiguous titles.
+        #    Ignore elements that are not related to a section.
         self._w_check_source_characters(source, relatedCharacters)
         self._w_check_source_locations(source, relatedLocations)
         self._w_check_source_items(source, relatedItems)
         self._w_check_source_arcs(source, relatedArcs)
+
         srcScnTitles = self._w_check_source_sections(source)
         self._w_collect_trashed_sections(srcScnTitles)
 
         #--- Check the target for ambiguous titles.
+        #    Get local lookup dictionaries.
         scIdsByTitle = self._w_check_target_sections()
         crIdsByTitle = self._w_check_target_characters()
         lcIdsByTitle = self._w_check_target_locations()
@@ -933,6 +940,7 @@ class JsonTimeline2(File):
         self._arcCount += 1
 
     def _w_check_source_arcs(self, source, relatedArcs):
+        """Ignore elements that are not related to a section."""
         srcArcTitles = []
         for acId in source.plotLines:
             if not acId in relatedArcs:
@@ -944,6 +952,7 @@ class JsonTimeline2(File):
             srcArcTitles.append(source.plotLines[acId].title)
 
     def _w_check_source_characters(self, source, relatedCharacters):
+        """Ignore elements that are not related to a section."""
         srcChrNames = []
         for crId in source.characters:
             if not crId in relatedCharacters:
@@ -955,6 +964,7 @@ class JsonTimeline2(File):
             srcChrNames.append(source.characters[crId].title)
 
     def _w_check_source_locations(self, source, relatedLocations):
+        """Ignore elements that are not related to a section."""
         srcLocTitles = []
         for lcId in source.locations:
             if not lcId in relatedLocations:
@@ -966,6 +976,7 @@ class JsonTimeline2(File):
             srcLocTitles.append(source.locations[lcId].title)
 
     def _w_check_source_items(self, source, relatedItems):
+        """Ignore elements that are not related to a section."""
         srcItmTitles = []
         for itId in source.items:
             if not itId in relatedItems:
