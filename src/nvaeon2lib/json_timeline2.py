@@ -404,21 +404,21 @@ class JsonTimeline2(File):
         Update date/time/duration from the source, if the section title matches.
         Overrides the superclass method.
         """
+        self._set_reference_date()
 
         #--- Merge first.
 
-        self._set_reference_date()
-
         #--- Check the source for ambiguous titles.
-        srcScnTitles = self._w_check_source_sections(source)
         relatedCharacters, relatedLocations, relatedItems, relatedArcs = self._w_get_related_elements(source)
         self._w_check_source_characters(source, relatedCharacters)
         self._w_check_source_locations(source, relatedLocations)
         self._w_check_source_items(source, relatedItems)
         self._w_check_source_arcs(source, relatedArcs)
+        srcScnTitles = self._w_check_source_sections(source)
+        self._w_collect_trashed_sections(srcScnTitles)
 
         #--- Check the target for ambiguous titles.
-        scIdsByTitle = self._w_check_target_sections(srcScnTitles)
+        scIdsByTitle = self._w_check_target_sections()
         crIdsByTitle = self._w_check_target_characters()
         lcIdsByTitle = self._w_check_target_locations()
         itIdsByTitle = self._w_check_target_items()
@@ -1025,19 +1025,25 @@ class JsonTimeline2(File):
             lcIdsByTitle[self.novel.locations[lcId].title] = lcId
         return lcIdsByTitle
 
-    def _w_check_target_sections(self, srcScnTitles):
+    def _w_check_target_sections(self):
         scIdsByTitle = {}
         for scId in self.novel.sections:
             if self.novel.sections[scId].title in scIdsByTitle:
+
                 raise Error(_('Ambiguous Aeon event title "{}".').format(self.novel.sections[scId].title))
             scIdsByTitle[self.novel.sections[scId].title] = scId
-            # print(f'merge finds {self.novel.sections[scId].title}')
-            #--- Mark non-section events.
-            # This is to recognize "Trash" sections.
-            if not self.novel.sections[scId].title in srcScnTitles:
-                if not self.novel.sections[scId].scType == 1:
-                    self._trashEvents.append(scId)
         return scIdsByTitle
+
+    def _w_collect_trashed_sections(self, srcScnTitles):
+        """List non-section events."""
+        for scId in self.novel.sections:
+            if self.novel.sections[scId].title in srcScnTitles:
+                continue
+
+            if self.novel.sections[scId].scType == 1:
+                continue
+
+            self._trashEvents.append(scId)
 
     def _w_delete_trashed_events(self, scIdsByTitle):
         jEvents = []
