@@ -5,9 +5,10 @@
 ## Changelog
 
 
-### v4.0.1
+### v4.0.2
 
 - Library update. Now reading and writing *.novx* version 1.4 files.
+- Refactor: split the JsonTimeline2 read() and write() methods.
 
 Based on novxlib v4.0.1
 

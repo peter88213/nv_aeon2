@@ -180,6 +180,7 @@ class JsonTimeline2(File):
             return
 
         #--- Build target sections from the source events.
+        #    Get local lookup dictionaries.
         narrativeEvents, scIdsByDate = self._r_update_or_create_sections(
             targetScIdsByTitle,
             crIdsByGuid,
@@ -226,6 +227,7 @@ class JsonTimeline2(File):
         acIdsByTitle = self._w_check_target_arcs()
 
         #--- Update JSON data from the source.
+        #    Get local lookup dictionaries.
         crIdsBySrcId = self._w_update_characters_from_source(source,
             crIdsByTitle,
             relatedCharacters
@@ -263,9 +265,11 @@ class JsonTimeline2(File):
         self._w_create_json_property_desc_if_missing()
         self._w_create_json_property_moonphase_if_missing()
 
+        #--- Update the target JSON timeline elements.
         self._w_create_json_narrative_arc_if_missing()
         self._w_update_json_events_from_sections(scIdsByTitle)
         self._w_delete_trashed_events(scIdsByTitle)
+
         save_timeline(self._jsonData, self.filePath)
 
     def _r_adjust_timestamp(self):
@@ -381,22 +385,20 @@ class JsonTimeline2(File):
             if entity['entityType'] != self._typeArcGuid:
                 continue
 
-            # Check whether there is already an arc for the entity.
+            # Check whether there is already a plot line for the entity.
             if entity['name'] in targetAcIdsByTitle:
-                acId = targetAcIdsByTitle[entity['name']]
+                plId = targetAcIdsByTitle[entity['name']]
             elif entity['name'] != self._entityNarrative:
 
-                # Create a new arc, if it's not the "Narrative" indicator.
-                acId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
-                self.novel.plotLines[acId] = PlotLine()
-                self.novel.plotLines[acId].title = entity['name']
-                self.novel.plotLines[acId].shortName = entity['name']
-                self.novel.tree.append(PL_ROOT, acId)
+                # Create a new plot line, if it's not the "Narrative" indicator.
+                plId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
+                self.novel.plotLines[plId] = PlotLine(title=entity['name'], shortName=entity['name'])
+                self.novel.tree.append(PL_ROOT, plId)
             if entity['name'] == self._entityNarrative:
                 self._entityNarrativeGuid = entity['guid']
             else:
-                acIdsByGuid[entity['guid']] = acId
-                self._arcGuidsById[acId] = entity['guid']
+                acIdsByGuid[entity['guid']] = plId
+                self._arcGuidsById[plId] = entity['guid']
                 self._arcCount += 1
         return acIdsByGuid
 
@@ -421,10 +423,10 @@ class JsonTimeline2(File):
             if entity['name'] in targetCrIdsByTitle:
                 crId = targetCrIdsByTitle[entity['name']]
             else:
+                # Create a new character.
                 crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
-                self.novel.characters[crId] = Character()
-                self.novel.characters[crId].title = entity['name']
-                self.novel.tree.append(CR_ROOT, crId)  # Create a new character.
+                self.novel.characters[crId] = Character(title=entity['name'])
+                self.novel.tree.append(CR_ROOT, crId)
             crIdsByGuid[entity['guid']] = crId
             self._characterGuidsById[crId] = entity['guid']
             if entity['notes']:
@@ -1474,11 +1476,12 @@ class JsonTimeline2(File):
             else:
                 #--- Create a new section.
                 scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
-                self.novel.sections[scId] = Section()
-                self.novel.sections[scId].title = source.sections[srcId].title
+                self.novel.sections[scId] = Section(
+                    title=source.sections[srcId].title,
+                    scType=source.sections[srcId].scType,
+                    scene=source.sections[srcId].scene
+                    )
                 scIdsByTitle[self.novel.sections[scId].title] = scId
-                self.novel.sections[scId].scType = source.sections[srcId].scType
-                self.novel.sections[scId].scene = source.sections[srcId].scene
                 newEvent = self._w_get_new_json_event(self.novel.sections[scId])
                 self._jsonData['events'].append(newEvent)
             self.novel.sections[scId].status = source.sections[srcId].status
