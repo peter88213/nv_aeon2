@@ -17,18 +17,32 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 """
 from datetime import datetime
+import gettext
+import locale
 import os
 from pathlib import Path
+import sys
 from tkinter import filedialog
 from tkinter import messagebox
 import webbrowser
 
 from novxlib.file.doc_open import open_document
 from novxlib.novx_globals import Error
+from novxlib.novx_globals import _
 from novxlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
-from nvaeon2lib.nvaeon2_globals import _
 import tkinter as tk
+
+# Initialize localization.
+LOCALE_PATH = f'{os.path.dirname(sys.argv[0])}/locale/'
+CURRENT_LANGUAGE = locale.getlocale()[0][:2]
+try:
+    t = gettext.translation('nv_aeon2', LOCALE_PATH, languages=[CURRENT_LANGUAGE])
+    _ = t.gettext
+except:
+
+    def _(message):
+        return message
 
 APPLICATION = 'Aeon Timeline 2'
 PLUGIN = f'{APPLICATION} plugin v@release'
@@ -137,6 +151,7 @@ class Plugin():
         kwargs.update(configuration.settings)
         kwargs.update(configuration.options)
         kwargs['add_moonphase'] = True
+        kwargs['nv_services'] = self._mdl.nvServices
         timeline = JsonTimeline2(timelinePath, **kwargs)
         timeline.novel = self._mdl.nvServices.make_novel()
         try:
@@ -161,6 +176,7 @@ class Plugin():
         root, __ = os.path.splitext(timelinePath)
         novxPath = f'{root}{self._mdl.nvServices.get_novx_file_extension()}'
         kwargs = self._get_configuration(timelinePath)
+        kwargs['nv_services'] = self._mdl.nvServices
         source = JsonTimeline2(timelinePath, **kwargs)
         target = self._mdl.nvServices.make_novx_file(novxPath)
 

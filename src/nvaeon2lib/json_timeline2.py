@@ -23,7 +23,7 @@ from novxlib.novx_globals import SECTION_PREFIX
 from nvaeon2lib.aeon2_fop import open_timeline
 from nvaeon2lib.aeon2_fop import save_timeline
 from nvaeon2lib.moonphase import get_moon_phase_plus
-from nvaeon2lib.nvaeon2_globals import _
+from novxlib.novx_globals import _
 from nvaeon2lib.uid_helper import get_uid
 
 
