@@ -62,7 +62,7 @@ class JsonTimeline2(File):
         Extends the superclass constructor.
         """
         super().__init__(filePath, **kwargs)
-        self._nvSvc = kwargs['nv_services']
+        self._nvSvc = kwargs['nv_service']
         self._jsonData = None
 
         # JSON[entities][name]
