@@ -23,7 +23,6 @@ from tkinter import filedialog
 from tkinter import messagebox
 import webbrowser
 
-from novxlib.config.configuration import Configuration
 from novxlib.file.doc_open import open_document
 from novxlib.novx_globals import Error
 from novxlib.novx_globals import norm_path
@@ -128,7 +127,10 @@ class Plugin():
         except:
             pluginCnfDir = '.'
         iniFiles = [f'{pluginCnfDir}/{INI_FILENAME}', f'{sourceDir}/{INI_FILENAME}']
-        configuration = Configuration(self.SETTINGS, self.OPTIONS)
+        configuration = self._mdl.nvFacade.make_configuration(
+            settings=self.SETTINGS,
+            options=self.OPTIONS
+            )
         for iniFile in iniFiles:
             configuration.read(iniFile)
         kwargs = {}
@@ -244,7 +246,10 @@ class Plugin():
         except:
             pluginCnfDir = '.'
         iniFiles = [f'{pluginCnfDir}/{INI_FILENAME}', f'{sourceDir}/{INI_FILENAME}']
-        configuration = Configuration(self.SETTINGS, self.OPTIONS)
+        configuration = self._mdl.nvFacade.make_configuration(
+            settings=self.SETTINGS,
+            options=self.OPTIONS
+            )
         for iniFile in iniFiles:
             configuration.read(iniFile)
         kwargs = {}
