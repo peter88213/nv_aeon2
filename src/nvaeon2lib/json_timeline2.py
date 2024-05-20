@@ -8,14 +8,6 @@ from datetime import datetime
 from datetime import timedelta
 
 from novxlib.file.file import File
-from novxlib.model.plot_line import PlotLine
-from novxlib.model.chapter import Chapter
-from novxlib.model.character import Character
-from novxlib.model.id_generator import create_id
-from novxlib.model.section import Section
-from novxlib.model.world_element import WorldElement
-from novxlib.novx_globals import PL_ROOT
-from novxlib.novx_globals import PLOT_LINE_PREFIX
 from novxlib.novx_globals import CHAPTER_PREFIX
 from novxlib.novx_globals import CHARACTER_PREFIX
 from novxlib.novx_globals import CH_ROOT
@@ -25,11 +17,13 @@ from novxlib.novx_globals import ITEM_PREFIX
 from novxlib.novx_globals import IT_ROOT
 from novxlib.novx_globals import LC_ROOT
 from novxlib.novx_globals import LOCATION_PREFIX
+from novxlib.novx_globals import PLOT_LINE_PREFIX
+from novxlib.novx_globals import PL_ROOT
 from novxlib.novx_globals import SECTION_PREFIX
-from novxlib.novx_globals import _
 from nvaeon2lib.aeon2_fop import open_timeline
 from nvaeon2lib.aeon2_fop import save_timeline
 from nvaeon2lib.moonphase import get_moon_phase_plus
+from nvaeon2lib.nvaeon2_globals import _
 from nvaeon2lib.uid_helper import get_uid
 
 
@@ -74,6 +68,7 @@ class JsonTimeline2(File):
         Extends the superclass constructor.
         """
         super().__init__(filePath, **kwargs)
+        self._nvFacade = kwargs['nv_facade']
         self._jsonData = None
 
         # JSON[entities][name]
@@ -391,8 +386,8 @@ class JsonTimeline2(File):
             elif entity['name'] != self._entityNarrative:
 
                 # Create a new plot line, if it's not the "Narrative" indicator.
-                plId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
-                self.novel.plotLines[plId] = PlotLine(title=entity['name'], shortName=entity['name'])
+                plId = self._nvFacade.make_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
+                self.novel.plotLines[plId] = self._nvFacade.make_plot_line(title=entity['name'], shortName=entity['name'])
                 self.novel.tree.append(PL_ROOT, plId)
             if entity['name'] == self._entityNarrative:
                 self._entityNarrativeGuid = entity['guid']
@@ -424,8 +419,8 @@ class JsonTimeline2(File):
                 crId = targetCrIdsByTitle[entity['name']]
             else:
                 # Create a new character.
-                crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
-                self.novel.characters[crId] = Character(title=entity['name'])
+                crId = self._nvFacade.make_id(self.novel.characters, prefix=CHARACTER_PREFIX)
+                self.novel.characters[crId] = self._nvFacade.make_character(title=entity['name'])
                 self.novel.tree.append(CR_ROOT, crId)
             crIdsByGuid[entity['guid']] = crId
             self._characterGuidsById[crId] = entity['guid']
@@ -483,8 +478,8 @@ class JsonTimeline2(File):
             if entity['name'] in targetItIdsByTitle:
                 itId = targetItIdsByTitle[entity['name']]
             else:
-                itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
-                self.novel.items[itId] = WorldElement()
+                itId = self._nvFacade.make_id(self.novel.items, prefix=ITEM_PREFIX)
+                self.novel.items[itId] = self._nvFacade.make_world_element()
                 self.novel.items[itId].title = entity['name']
                 self.novel.tree.append(IT_ROOT, itId)  # Create a new item.
             itIdsByGuid[entity['guid']] = itId
@@ -511,8 +506,8 @@ class JsonTimeline2(File):
             if entity['name'] in targetLcIdsByTitle:
                 lcId = targetLcIdsByTitle[entity['name']]
             else:
-                lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
-                self.novel.locations[lcId] = WorldElement()
+                lcId = self._nvFacade.make_id(self.novel.locations, prefix=LOCATION_PREFIX)
+                self.novel.locations[lcId] = self._nvFacade.make_world_element()
                 self.novel.locations[lcId].title = entity['name']
                 self.novel.tree.append(LC_ROOT, lcId)  # Create a new location.
             lcIdsByGuid[entity['guid']] = lcId
@@ -562,8 +557,8 @@ class JsonTimeline2(File):
             sectionsInChapters.extend(self.novel.tree.get_children(chId))
 
         # Create a chapter for new sections.
-        newChapterId = create_id(self.novel.chapters, prefix=CHAPTER_PREFIX)
-        newChapter = Chapter(title=_('New sections'), chType=0)
+        newChapterId = self._nvFacade.make_id(self.novel.chapters, prefix=CHAPTER_PREFIX)
+        newChapter = self._nvFacade.make_chapter(title=_('New sections'), chType=0)
         # Sort sections by date/time, then put the orphaned ones into the new chapter.
         srtSections = sorted(scIdsByDate.items())
         for __, scList in srtSections:
@@ -600,8 +595,8 @@ class JsonTimeline2(File):
                 scId = targetScIdsByTitle[eventTitle]
             elif isNarrative:
                 # Create a new section.
-                scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
-                self.novel.sections[scId] = Section(
+                scId = self._nvFacade.make_id(self.novel.sections, prefix=SECTION_PREFIX)
+                self.novel.sections[scId] = self._nvFacade.make_section(
                     title=eventTitle,
                     status=1,
                     scType=0,
@@ -1217,7 +1212,7 @@ class JsonTimeline2(File):
             elif srcAcId in linkedArcs:
 
                 #--- Create a new Arc if it is assigned to at least one section.
-                acId = create_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
+                acId = self._nvFacade.make_id(self.novel.plotLines, prefix=PLOT_LINE_PREFIX)
                 acIdsBySrcId[srcAcId] = acId
                 self.novel.plotLines[acId] = source.plotLines[srcAcId]
                 arcName = self.novel.plotLines[acId].title
@@ -1247,7 +1242,7 @@ class JsonTimeline2(File):
             elif srcCrId in linkedCharacters:
 
                 #--- Create a new character if it is assigned to at least one section.
-                crId = create_id(self.novel.characters, prefix=CHARACTER_PREFIX)
+                crId = self._nvFacade.make_id(self.novel.characters, prefix=CHARACTER_PREFIX)
                 crIdsBySrcId[srcCrId] = crId
                 srcIdsbyCrId[crId] = srcCrId
                 self.novel.characters[crId] = source.characters[srcCrId]
@@ -1420,7 +1415,7 @@ class JsonTimeline2(File):
             elif srcItId in linkedItems:
 
                 #--- Create a new Item if it is assigned to at least one section.
-                itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
+                itId = self._nvFacade.make_id(self.novel.items, prefix=ITEM_PREFIX)
                 itIdsBySrcId[srcItId] = itId
                 self.novel.items[itId] = source.items[srcItId]
                 newGuid = get_uid(f'{itId}{self.novel.items[itId].title}')
@@ -1445,7 +1440,7 @@ class JsonTimeline2(File):
             elif srcLcId in linkedLocations:
 
                 #--- Create a new location if it is assigned to at least one section.
-                lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
+                lcId = self._nvFacade.make_id(self.novel.locations, prefix=LOCATION_PREFIX)
                 lcIdsBySrcId[srcLcId] = lcId
                 self.novel.locations[lcId] = source.locations[srcLcId]
                 newGuid = get_uid(f'{lcId}{self.novel.locations[lcId].title}')
@@ -1475,8 +1470,8 @@ class JsonTimeline2(File):
                 scId = scIdsByTitle[source.sections[srcId].title]
             else:
                 #--- Create a new section.
-                scId = create_id(self.novel.sections, prefix=SECTION_PREFIX)
-                self.novel.sections[scId] = Section(
+                scId = self._nvFacade.make_id(self.novel.sections, prefix=SECTION_PREFIX)
+                self.novel.sections[scId] = self._nvFacade.make_section(
                     title=source.sections[srcId].title,
                     scType=source.sections[srcId].scType,
                     scene=source.sections[srcId].scene

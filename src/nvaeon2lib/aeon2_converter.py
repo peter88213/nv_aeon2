@@ -14,6 +14,7 @@ from novxlib.novx_globals import Error
 from novxlib.novx_globals import _
 from novxlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
+from nvlib.model.nv_facade import NvFacade
 
 
 class Aeon2Converter(Converter):
@@ -28,6 +29,7 @@ class Aeon2Converter(Converter):
         The direction of the conversion is determined by the source file type.
         Only novelibre project files and Aeon Timeline 2 files are accepted.
         """
+        kwargs['nv_facade'] = NvFacade()
         if not os.path.isfile(sourcePath):
             self.ui.set_status(f'!{_("File not found")}: "{norm_path(sourcePath)}".')
             return

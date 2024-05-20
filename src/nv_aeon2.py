@@ -17,36 +17,19 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 """
 from datetime import datetime
-import gettext
-import locale
 import os
 from pathlib import Path
-import sys
 from tkinter import filedialog
 from tkinter import messagebox
 import webbrowser
 
 from novxlib.config.configuration import Configuration
 from novxlib.file.doc_open import open_document
-from novxlib.model.novel import Novel
-from novxlib.model.nv_tree import NvTree
-from novxlib.novx.novx_file import NovxFile
 from novxlib.novx_globals import Error
-from novxlib.novx_globals import _
 from novxlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
+from nvaeon2lib.nvaeon2_globals import _
 import tkinter as tk
-
-# Initialize localization.
-LOCALE_PATH = f'{os.path.dirname(sys.argv[0])}/locale/'
-CURRENT_LANGUAGE = locale.getlocale()[0][:2]
-try:
-    t = gettext.translation('nv_aeon2', LOCALE_PATH, languages=[CURRENT_LANGUAGE])
-    _ = t.gettext
-except:
-
-    def _(message):
-        return message
 
 APPLICATION = 'Aeon Timeline 2'
 PLUGIN = f'{APPLICATION} plugin v@release'
@@ -153,7 +136,7 @@ class Plugin():
         kwargs.update(configuration.options)
         kwargs['add_moonphase'] = True
         timeline = JsonTimeline2(timelinePath, **kwargs)
-        timeline.novel = Novel(tree=NvTree())
+        timeline.novel = self._mdl.nvFacade.make_novel()
         try:
             timeline.read()
             timeline.write(timeline.novel)
@@ -174,10 +157,10 @@ class Plugin():
 
         self._ctrl.close_project()
         root, __ = os.path.splitext(timelinePath)
-        novxPath = f'{root}{NovxFile.EXTENSION}'
+        novxPath = f'{root}{self._mdl.nvFacade.get_novx_file_extension()}'
         kwargs = self._get_configuration(timelinePath)
         source = JsonTimeline2(timelinePath, **kwargs)
-        target = NovxFile(novxPath)
+        target = self._mdl.nvFacade.make_novx_file(novxPath)
 
         if os.path.isfile(target.filePath):
             self._ui.set_status(f'!{_("File already exists")}: "{norm_path(target.filePath)}".')
@@ -185,7 +168,7 @@ class Plugin():
 
         message = ''
         try:
-            source.novel = Novel(tree=NvTree())
+            source.novel = self._mdl.nvFacade.make_novel()
             source.read()
             target.novel = source.novel
             target.write()
@@ -232,10 +215,11 @@ class Plugin():
             return
 
         kwargs = self._get_configuration(timelinePath)
-        source = NovxFile(self._mdl.prjFile.filePath, **kwargs)
-        source.novel = Novel(tree=NvTree())
+        kwargs['nv_facade'] = self._mdl.nvFacade
+        source = self._mdl.nvFacade.make_novx_file(self._mdl.prjFile.filePath, **kwargs)
+        source.novel = self._mdl.nvFacade.make_novel()
         target = JsonTimeline2(timelinePath, **kwargs)
-        target.novel = Novel(tree=NvTree())
+        target.novel = self._mdl.nvFacade.make_novel()
         try:
             source.read()
             target.read()
@@ -290,10 +274,11 @@ class Plugin():
 
         self._ctrl.save_project()
         kwargs = self._get_configuration(timelinePath)
+        kwargs['nv_facade'] = self._mdl.nvFacade
         source = JsonTimeline2(timelinePath, **kwargs)
-        target = NovxFile(self._mdl.prjFile.filePath, **kwargs)
+        target = self._mdl.nvFacade.make_novx_file(self._mdl.prjFile.filePath, **kwargs)
         try:
-            target.novel = Novel(tree=NvTree())
+            target.novel = self._mdl.nvFacade.make_novel()
             target.read()
             source.novel = target.novel
             source.read()
