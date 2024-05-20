@@ -30,19 +30,13 @@ from nvaeon2lib.uid_helper import get_uid
 class JsonTimeline2(File):
     """File representation of an Aeon Timeline 2 project. 
 
-    Public class constants:
-        SCN_KWVAR -- List of the names of the section keyword variables.
-        CRT_KWVAR -- List of the names of the character keyword variables.
-    
     Represents the .aeonzip file containing 'timeline.json'.
     """
     EXTENSION = '.aeonzip'
     DESCRIPTION = _('Aeon Timeline 2 project')
     SUFFIX = ''
-    VALUE_YES = '1'
-    # JSON representation of "yes" in Aeon2 "yes/no" properties
     DATE_LIMIT = (datetime(1, 1, 1) - datetime.min).total_seconds()
-    # Dates before 1-01-01 can not be displayed properly in novelibre
+    # novelibre cannot process dates before 1-01-01
 
     def __init__(self, filePath, **kwargs):
         """Initialize instance variables.
