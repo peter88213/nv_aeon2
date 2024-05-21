@@ -7,9 +7,6 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 import os
 
 from novxlib.converter.converter import Converter
-from novxlib.model.novel import Novel
-from novxlib.model.nv_tree import NvTree
-from novxlib.novx.novx_file import NovxFile
 from novxlib.novx_globals import Error
 from novxlib.novx_globals import _
 from novxlib.novx_globals import norm_path
@@ -29,7 +26,8 @@ class Aeon2Converter(Converter):
         The direction of the conversion is determined by the source file type.
         Only novelibre project files and Aeon Timeline 2 files are accepted.
         """
-        kwargs['nv_service'] = NvService()
+        nvService = NvService()
+        kwargs['nv_service'] = nvService
         if not os.path.isfile(sourcePath):
             self.ui.set_status(f'!{_("File not found")}: "{norm_path(sourcePath)}".')
             return
@@ -38,17 +36,17 @@ class Aeon2Converter(Converter):
         if fileExtension == JsonTimeline2.EXTENSION:
             # Source is a timeline
             sourceFile = JsonTimeline2(sourcePath, **kwargs)
-            if os.path.isfile(f'{fileName}{NovxFile.EXTENSION}'):
+            if os.path.isfile(f'{fileName}{nvService.get_novx_file_extension()}'):
                 # Update existing novelibre project from timeline
-                targetFile = NovxFile(f'{fileName}{NovxFile.EXTENSION}', **kwargs)
+                targetFile = nvService.make_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
                 self.import_to_novx(sourceFile, targetFile)
             else:
                 # Create new novelibre project from timeline
-                targetFile = NovxFile(f'{fileName}{NovxFile.EXTENSION}', **kwargs)
+                targetFile = nvService.make_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
                 self.create_novx(sourceFile, targetFile)
-        elif fileExtension == NovxFile.EXTENSION:
+        elif fileExtension == nvService.get_novx_file_extension():
             # Update existing timeline from novelibre project
-            sourceFile = NovxFile(sourcePath, **kwargs)
+            sourceFile = nvService.make_novx_file(sourcePath, **kwargs)
             targetFile = JsonTimeline2(f'{fileName}{JsonTimeline2.EXTENSION}', **kwargs)
             self.export_from_novx(sourceFile, targetFile)
         else:
@@ -73,13 +71,14 @@ class Aeon2Converter(Converter):
         
         Overrides the superclass method.
         """
+        nvService = NvService()
         self.ui.set_info(
             _('Input: {0} "{1}"\nOutput: {2} "{3}"').format(source.DESCRIPTION, norm_path(source.filePath), target.DESCRIPTION, norm_path(target.filePath)))
         message = ''
         try:
             self.check(source, target)
-            source.novel = Novel(tree=NvTree())
-            target.novel = Novel(tree=NvTree())
+            source.novel = nvService.make_novel()
+            target.novel = nvService.make_novel()
             source.read()
             target.read()
             target.write(source.novel)

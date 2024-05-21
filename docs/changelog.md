@@ -5,11 +5,13 @@
 ## Changelog
 
 
-### v4.0.2
+### v4.1.0
 
 - Library update. Now reading and writing *.novx* version 1.4 files.
 - Refactor: split the JsonTimeline2 read() and write() methods.
+- Use factory methods and getters from the model's NvService object.
 
+Compatibility: novelibre v4.1 API
 Based on novxlib v4.0.1
 
 ### v3.3.3
