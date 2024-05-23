@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v4.1.2
+
+- Do not reopen the project after updating from the timeline failed.
+
+Compatibility: novelibre v4.1 API
+Based on novxlib v4.1.0
+
 ### v4.1.1
 
 - Fix the installation directory path.

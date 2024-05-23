@@ -306,12 +306,10 @@ class Plugin():
             target.novel = source.novel
             target.write()
             message = f'{_("File written")}: "{norm_path(target.filePath)}".'
+            self._ctrl.open_project(filePath=self._mdl.prjFile.filePath, doNotSave=True)
         except Error as ex:
             message = f'!{str(ex)}'
-
-        # Reopen the project.
-        self._ctrl.open_project(filePath=self._mdl.prjFile.filePath, doNotSave=True)
-        self._ui.set_status(message)
+        self._ui.set_status(f'{message}')
 
     def _info(self):
         """Show information about the Aeon Timeline 2 file."""
