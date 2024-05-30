@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v4.2.0
+
+- Refactor the code for better maintainability.
+
+Compatibility: novelibre v4.3 API
+Based on novxlib v4.1.0
+
 ### v4.1.2
 
 - Do not reopen the project after updating from the timeline failed.
