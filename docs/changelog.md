@@ -4,6 +4,14 @@
 
 ## Changelog
 
+### v4.2.1
+
+- Refactor the code for future API update,
+  making the prefs argument of the Plugin.install() method optional.
+
+Compatibility: novelibre v4.3 API
+Based on novxlib v4.1.0
+
 ### v4.2.0
 
 - Refactor the code for better maintainability.

@@ -93,14 +93,16 @@ class Plugin(PluginBase):
         """
         self._ui.mainMenu.entryconfig(APPLICATION, state='normal')
 
-    def install(self, model, view, controller, prefs):
+    def install(self, model, view, controller, prefs=None):
         """Add a submenu to the main menu.
         
         Positional arguments:
             model -- reference to the main model instance of the application.
             view -- reference to the main view instance of the application.
             controller -- reference to the main controller instance of the application.
-            prefs -- (deprecated) reference to the application's global dictionary with settings and options.
+
+        Optional arguments:
+            prefs -- deprecated. Please use controller.get_preferences() instead.
         
         Overrides the superclass method.
         """
