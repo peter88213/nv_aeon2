@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 4.2.2\n"
-"POT-Creation-Date: 2024-06-22 08:51:04\n"
-"PO-Revision-Date: 2024-06-22 08:51:04\n"
+"Project-Id-Version: 4.3.0\n"
+"POT-Creation-Date: 2024-06-29 15:50:15\n"
+"PO-Revision-Date: 2024-06-29 15:50:15\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -40,9 +40,6 @@ msgstr "Gegenstand \"{}\" mehrfach in Aeon."
 msgid "Ambiguous Aeon location \"{}\"."
 msgstr "Schauplatz \"{}\" mehrfach in Aeon."
 
-msgid "Ambiguous novelibre arc \"{}\"."
-msgstr "Bogen \"{}\" mehrfach in novelibre."
-
 msgid "Ambiguous novelibre character \"{}\"."
 msgstr "Figur \"{}\" mehrfach in novelibre."
 
@@ -51,6 +48,9 @@ msgstr "Gegenstand \"{}\" mehrfach in novelibre."
 
 msgid "Ambiguous novelibre location \"{}\"."
 msgstr "Schauplatz \"{}\" mehrfach in novelibre."
+
+msgid "Ambiguous novelibre plot line \"{}\"."
+msgstr "Plotlinie \"{}\" mehrfach in novelibre."
 
 msgid "Ambiguous novelibre section title \"{}\"."
 msgstr "Abschnittstitel \"{}\" mehrfach in novelibre."

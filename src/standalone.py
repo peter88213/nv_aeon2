@@ -24,14 +24,18 @@ SETTINGS = dict(
     property_description='Description',
     property_notes='Notes',
     property_moonphase='Moon phase',
-    role_location='Location',
-    role_item='Item',
-    role_character='Participant',
+    type_arc='Arc',
     type_character='Character',
     type_location='Location',
     type_item='Item',
+    role_arc='Arc',
+    role_plotline='Storyline',
+    role_character='Participant',
+    role_item='Item',
+    role_location='Location',
     color_section='Red',
     color_event='Yellow',
+
 )
 OPTIONS = dict(
     add_moonphase=False,

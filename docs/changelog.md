@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v4.3.0
+
+- Make the "Arc" type and role names customizable.
+
+Compatibility: novelibre v4.3 API
+Based on novxlib v4.3.4
+
 ### v4.2.2
 
 - Update the German translation.

@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 4.2.2\n"
-"POT-Creation-Date: 2024-06-22 08:51:04\n"
+"Project-Id-Version: 4.3.0\n"
+"POT-Creation-Date: 2024-06-29 15:50:15\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -44,9 +44,6 @@ msgstr ""
 msgid "Ambiguous Aeon location \"{}\"."
 msgstr ""
 
-msgid "Ambiguous novelibre arc \"{}\"."
-msgstr ""
-
 msgid "Ambiguous novelibre character \"{}\"."
 msgstr ""
 
@@ -54,6 +51,9 @@ msgid "Ambiguous novelibre item \"{}\"."
 msgstr ""
 
 msgid "Ambiguous novelibre location \"{}\"."
+msgstr ""
+
+msgid "Ambiguous novelibre plot line \"{}\"."
 msgstr ""
 
 msgid "Ambiguous novelibre section title \"{}\"."

@@ -75,11 +75,14 @@ class JsonTimeline2(File):
         self._propertyMoonphase = kwargs['property_moonphase']
 
         # JSON[template][types][name][roles]
+        self._roleArc = kwargs['role_arc']
+        self._rolePlotline = kwargs['role_plotline']
+        self._roleCharacter = kwargs['role_character']
         self._roleLocation = kwargs['role_location']
         self._roleItem = kwargs['role_item']
-        self._roleCharacter = kwargs['role_character']
 
         # JSON[template][types][name]
+        self._typeArc = kwargs['type_arc']
         self._typeCharacter = kwargs['type_character']
         self._typeLocation = kwargs['type_location']
         self._typeItem = kwargs['type_item']
@@ -91,7 +94,7 @@ class JsonTimeline2(File):
         self._typeLocationGuid = None
         self._typeItemGuid = None
         self._roleArcGuid = None
-        self._roleStorylineGuid = None
+        self._rolePlotlineGuid = None
         self._roleCharacterGuid = None
         self._roleLocationGuid = None
         self._roleItemGuid = None
@@ -320,7 +323,7 @@ class JsonTimeline2(File):
             title = self.novel.plotLines[acId].title
             if title:
                 if title in targetAcIdsByTitle:
-                    raise Error(_('Ambiguous novelibre arc "{}".').format(title))
+                    raise Error(_('Ambiguous novelibre plot line "{}".').format(title))
 
                 targetAcIdsByTitle[title] = acId
         return targetAcIdsByTitle
@@ -394,13 +397,13 @@ class JsonTimeline2(File):
 
     def _r_fetch_arc_type_and_roles_guid(self):
         for tplTyp in self._jsonData['template']['types']:
-            if tplTyp['name'] == 'Arc':
+            if tplTyp['name'] == self._typeArc:
                 self._typeArcGuid = tplTyp['guid']
                 for tplTypRol in tplTyp['roles']:
-                    if tplTypRol['name'] == 'Arc':
+                    if tplTypRol['name'] == self._roleArc:
                         self._roleArcGuid = tplTypRol['guid']
-                    elif tplTypRol['name'] == 'Storyline':
-                        self._roleStorylineGuid = tplTypRol['guid']
+                    elif tplTypRol['name'] == self._rolePlotline:
+                        self._rolePlotlineGuid = tplTypRol['guid']
                 continue
 
     def _r_fetch_character_guids_by_id(self, targetCrIdsByTitle):
@@ -732,8 +735,8 @@ class JsonTimeline2(File):
                     itId = itIdsByGuid[evtRel['entity']]
                     scItems.append(itId)
 
-                # Add arc assignment to the section, if the event has a "Storyline" relationship.
-                elif evtRel['role'] == self._roleStorylineGuid:
+                # Add arc assignment to the section, if the event has a "Plotline" relationship.
+                elif evtRel['role'] == self._rolePlotlineGuid:
                     acId = acIdsByGuid[evtRel['entity']]
                     self.novel.sections[scId].scPlotLines.append(acId)
                     # adding arc reference to the section
@@ -771,7 +774,7 @@ class JsonTimeline2(File):
                 continue
 
             if source.plotLines[acId].title in srcArcTitles:
-                raise Error(_('Ambiguous novelibre arc "{}".').format(source.plotLines[acId].title))
+                raise Error(_('Ambiguous novelibre plot line "{}".').format(source.plotLines[acId].title))
 
             srcArcTitles.append(source.plotLines[acId].title)
 
@@ -953,7 +956,7 @@ class JsonTimeline2(File):
             return
 
         for entityType in self._jsonData['template']['types']:
-            if entityType['name'] == 'Arc':
+            if entityType['name'] == self._typeArc:
                 self._roleArcGuid = get_uid('_roleArcGuid')
                 entityType['roles'].append(
                     {
@@ -964,27 +967,27 @@ class JsonTimeline2(File):
                         'icon':'circle text',
                         'mandatoryForEntity':False,
                         'mandatoryForEvent':False,
-                        'name':'Arc',
+                        'name':self._roleArc,
                         'sortOrder':0})
                 return
 
     def _w_create_json_role_storyline_if_missing(self):
-        if self._roleStorylineGuid is not None:
+        if self._rolePlotlineGuid is not None:
             return
 
         for entityType in self._jsonData['template']['types']:
-            if entityType['name'] == 'Arc':
-                self._roleStorylineGuid = get_uid('_roleStorylineGuid')
+            if entityType['name'] == self._typeArc:
+                self._rolePlotlineGuid = get_uid('_roleStorylineGuid')
                 entityType['roles'].append(
                     {
                         'allowsMultipleForEntity':True,
                         'allowsMultipleForEvent':True,
                         'allowsPercentAllocated':False,
-                        'guid':self._roleStorylineGuid,
+                        'guid':self._rolePlotlineGuid,
                         'icon':'circle filled text',
                         'mandatoryForEntity':False,
                         'mandatoryForEvent':False,
-                        'name':'Storyline',
+                        'name':self._rolePlotline,
                         'sortOrder':0})
                 return
 
@@ -998,7 +1001,7 @@ class JsonTimeline2(File):
                 'color':'iconYellow',
                 'guid':self._typeArcGuid,
                 'icon':'book',
-                'name':'Arc',
+                'name':self._typeArc,
                 'persistent':True,
                 'roles':[],
                 'sortOrder':typeCount})
@@ -1396,7 +1399,7 @@ class JsonTimeline2(File):
                             {
                             'entity': self._arcGuidsById[acId],
                             'percentAllocated': 1,
-                            'role': self._roleStorylineGuid,
+                            'role': self._rolePlotlineGuid,
                             })
 
             jEvent['relationships'] = newRel
