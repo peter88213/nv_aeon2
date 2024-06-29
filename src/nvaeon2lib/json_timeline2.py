@@ -219,6 +219,20 @@ class JsonTimeline2(File):
         itIdsByTitle = self._w_check_target_items()
         acIdsByTitle = self._w_check_target_arcs()
 
+        #--- Complete the JSON template if needed.
+        self._w_create_json_type_character_if_missing()
+        self._w_create_json_type_location_if_missing()
+        self._w_create_json_type_item_if_missing()
+        self._w_create_json_type_arc_if_missing()
+        self._w_create_json_role_arc_if_missing()
+        self._w_create_json_role_character_if_missing()
+        self._w_create_json_role_location_if_missing()
+        self._w_create_json_role_item_if_missing()
+        self._w_create_json_role_plotline_if_missing()
+        self._w_create_json_property_notes_if_missing()
+        self._w_create_json_property_desc_if_missing()
+        self._w_create_json_property_moonphase_if_missing()
+
         #--- Update JSON data from the source.
         #    Get local lookup dictionaries.
         crIdsBySrcId = self._w_update_characters_from_source(source,
@@ -246,17 +260,6 @@ class JsonTimeline2(File):
             )
 
         #--- Begin writing
-
-        #--- Complete the JSON template if needed.
-        self._w_create_json_type_character_if_missing()
-        self._w_create_json_type_location_if_missing()
-        self._w_create_json_type_item_if_missing()
-        self._w_create_json_type_arc_if_missing()
-        self._w_create_json_role_arc_if_missing()
-        self._w_create_json_role_plotline_if_missing()
-        self._w_create_json_property_notes_if_missing()
-        self._w_create_json_property_desc_if_missing()
-        self._w_create_json_property_moonphase_if_missing()
 
         #--- Update the target JSON timeline elements.
         self._w_create_json_narrative_arc_if_missing()
@@ -902,17 +905,17 @@ class JsonTimeline2(File):
         if self._propertyDescGuid is not None:
             return
 
-            n = len(self._jsonData['template']['properties'])
-            self._propertyDescGuid = get_uid('_propertyDescGuid')
-            self._jsonData['template']['properties'].append({'calcMode':'default',
-                    'calculate':False,
-                    'fadeEvents':False,
-                    'guid':self._propertyDescGuid,
-                    'icon':'tag',
-                    'isMandatory':False,
-                    'name':self._propertyDesc,
-                    'sortOrder':n,
-                    'type':'multitext'})
+        n = len(self._jsonData['template']['properties'])
+        self._propertyDescGuid = get_uid('_propertyDescGuid')
+        self._jsonData['template']['properties'].append({'calcMode':'default',
+                'calculate':False,
+                'fadeEvents':False,
+                'guid':self._propertyDescGuid,
+                'icon':'tag',
+                'isMandatory':False,
+                'name':self._propertyDesc,
+                'sortOrder':n,
+                'type':'multitext'})
 
     def _w_create_json_property_moonphase_if_missing(self):
         if self._propertyMoonphaseGuid is not None:
@@ -971,6 +974,66 @@ class JsonTimeline2(File):
                         'sortOrder':0})
                 return
 
+    def _w_create_json_role_character_if_missing(self):
+        if self._roleCharacterGuid is not None:
+            return
+
+        for entityType in self._jsonData['template']['types']:
+            if entityType['name'] == self._typeCharacter:
+                self._roleCharacterGuid = get_uid('_roleCharacterGuid')
+                entityType['roles'].append(
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleCharacterGuid,
+                        'icon':'circle text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':self._roleCharacter,
+                        'sortOrder':0})
+                return
+
+    def _w_create_json_role_item_if_missing(self):
+        if self._roleItemGuid is not None:
+            return
+
+        for entityType in self._jsonData['template']['types']:
+            if entityType['name'] == self._typeItem:
+                self._roleItemGuid = get_uid('_roleItemGuid')
+                entityType['roles'].append(
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleItemGuid,
+                        'icon':'circle text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':self._roleItem,
+                        'sortOrder':0})
+                return
+
+    def _w_create_json_role_location_if_missing(self):
+        if self._roleLocationGuid is not None:
+            return
+
+        for entityType in self._jsonData['template']['types']:
+            if entityType['name'] == self._typeLocation:
+                self._roleLocationGuid = get_uid('_roleLocationGuid')
+                entityType['roles'].append(
+                    {
+                        'allowsMultipleForEntity':True,
+                        'allowsMultipleForEvent':True,
+                        'allowsPercentAllocated':False,
+                        'guid':self._roleLocationGuid,
+                        'icon':'circle text',
+                        'mandatoryForEntity':False,
+                        'mandatoryForEvent':False,
+                        'name':self._roleLocation,
+                        'sortOrder':0})
+                return
+
     def _w_create_json_role_plotline_if_missing(self):
         if self._rolePlotlineGuid is not None:
             return
@@ -1019,17 +1082,7 @@ class JsonTimeline2(File):
                 'icon':'person',
                 'name':self._typeCharacter,
                 'persistent':False,
-                'roles':[
-                    {
-                        'allowsMultipleForEntity':True,
-                        'allowsMultipleForEvent':True,
-                        'allowsPercentAllocated':False,
-                        'guid':self._roleCharacterGuid,
-                        'icon':'circle text',
-                        'mandatoryForEntity':False,
-                        'mandatoryForEvent':False,
-                        'name':self._roleCharacter,
-                        'sortOrder':0}],
+                'roles':[],
                 'sortOrder':typeCount})
 
     def _w_create_json_type_item_if_missing(self):
@@ -1045,17 +1098,7 @@ class JsonTimeline2(File):
                 'icon':'cube',
                 'name':self._typeItem,
                 'persistent':True,
-                'roles':[
-                    {
-                        'allowsMultipleForEntity':True,
-                        'allowsMultipleForEvent':True,
-                        'allowsPercentAllocated':False,
-                        'guid':self._roleItemGuid,
-                        'icon':'circle text',
-                        'mandatoryForEntity':False,
-                        'mandatoryForEvent':False,
-                        'name':self._roleItem,
-                        'sortOrder':0}],
+                'roles':[],
                 'sortOrder':typeCount})
 
     def _w_create_json_type_location_if_missing(self):
@@ -1071,17 +1114,7 @@ class JsonTimeline2(File):
                 'icon':'map',
                 'name':self._typeLocation,
                 'persistent':True,
-                'roles':[
-                    {
-                        'allowsMultipleForEntity':True,
-                        'allowsMultipleForEvent':True,
-                        'allowsPercentAllocated':False,
-                        'guid':self._roleLocationGuid,
-                        'icon':'circle text',
-                        'mandatoryForEntity':False,
-                        'mandatoryForEvent':False,
-                        'name':self._roleLocation,
-                        'sortOrder':0}],
+                'roles':[],
                 'sortOrder':typeCount})
 
     def _w_delete_trashed_events(self, scIdsByTitle):

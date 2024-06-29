@@ -4,6 +4,15 @@
 
 ## Changelog
 
+### v4.3.2
+
+- Fix a bug where the "desc" property is not created if missing.
+- Add separate methods for character/item/location json roles creation.
+- Fix a bug where newly created events get "None" properties
+  because the JSON template is completed too late in the process.  
+Compatibility: novelibre v4.3 API
+Based on novxlib v4.3.4
+
 ### v4.3.1
 
 - Fix a bug where sections without a specific date are given a wrong default 
