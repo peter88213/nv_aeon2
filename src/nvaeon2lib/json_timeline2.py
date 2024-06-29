@@ -127,7 +127,7 @@ class JsonTimeline2(File):
         Raise the "Error" exception in case of error. 
         Overrides the superclass method.
         """
-        self._set_reference_date()
+        self._set_reference_date(self.novel)
         self._jsonData = open_timeline(self.filePath)
 
         #--- Fetch JSON template data that may also be needed for writing.
@@ -194,7 +194,7 @@ class JsonTimeline2(File):
         Update date/time/duration from the source, if the section title matches.
         Overrides the superclass method.
         """
-        self._set_reference_date()
+        self._set_reference_date(source)
 
         #--- Merge first.
 
@@ -757,10 +757,10 @@ class JsonTimeline2(File):
                 self.novel.sections[scId].items = scItems
         return narrativeEvents, scIdsByDate
 
-    def _set_reference_date(self):
+    def _set_reference_date(self, novel):
         self.referenceDate = datetime.today()
-        if self.novel.referenceDate:
-            defaultDateTime = f'{self.novel.referenceDate} 00:00:00'
+        if novel.referenceDate:
+            defaultDateTime = f'{novel.referenceDate} 00:00:00'
             try:
                 self.referenceDate = datetime.fromisoformat(defaultDateTime)
             except ValueError:
@@ -1532,7 +1532,7 @@ class JsonTimeline2(File):
                 dayInt = int(source.sections[srcId].day)
                 sectionDelta = timedelta(days=dayInt)
                 self.novel.sections[scId].date = (self.referenceDate + sectionDelta).isoformat().split('T')[0]
-            elif (source.sections[srcId].date is None) and (source.sections[srcId].time is not None):
+            elif source.sections[srcId].date is None:
                 self.novel.sections[scId].date = self.referenceDate.isoformat().split('T')[0]
             else:
                 self.novel.sections[scId].date = source.sections[srcId].date

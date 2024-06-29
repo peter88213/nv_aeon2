@@ -4,6 +4,15 @@
 
 ## Changelog
 
+### v4.3.1
+
+- Fix a bug where sections without a specific date are given a wrong default 
+  date during conversion to aeon.
+- Provide a fully translated template in German.  
+  
+Compatibility: novelibre v4.3 API
+Based on novxlib v4.3.4
+
 ### v4.3.0
 
 - Make the "Arc" type and role names customizable.
