@@ -253,7 +253,7 @@ class JsonTimeline2(File):
         self._w_create_json_type_item_if_missing()
         self._w_create_json_type_arc_if_missing()
         self._w_create_json_role_arc_if_missing()
-        self._w_create_json_role_storyline_if_missing()
+        self._w_create_json_role_plotline_if_missing()
         self._w_create_json_property_notes_if_missing()
         self._w_create_json_property_desc_if_missing()
         self._w_create_json_property_moonphase_if_missing()
@@ -971,7 +971,7 @@ class JsonTimeline2(File):
                         'sortOrder':0})
                 return
 
-    def _w_create_json_role_storyline_if_missing(self):
+    def _w_create_json_role_plotline_if_missing(self):
         if self._rolePlotlineGuid is not None:
             return
 
@@ -1392,7 +1392,7 @@ class JsonTimeline2(File):
                     'role': self._roleArcGuid,
                     })
 
-                # Add storyline arcs.
+                # Add plot line arcs.
                 if self.novel.sections[scId].scPlotLines:
                     for acId in self.novel.sections[scId].scPlotLines:
                         newRel.append(
