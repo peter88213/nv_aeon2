@@ -43,6 +43,8 @@ def get_moon_phase(dateStr):
 def get_moon_phase_plus(dateStr):
     """Return a string containing the moon phase plus a pseudo-graphic display.
     """
+    # s = '🌑︎🌑︎🌒︎🌒︎🌒︎🌒︎🌓︎🌓︎🌓︎🌓︎🌔︎🌔︎🌔︎🌔︎🌕︎🌕︎🌕︎🌖︎🌖︎🌖︎🌖︎🌗︎🌗︎🌗︎🌗︎🌘︎🌘︎🌘︎🌘︎🌑︎'
+    # The unicode characters are not supported by Aeon Timeline 2
     s = '  ))))))))))))OOO(((((((((((( '
     p = '00¼¼¼¼½½½½¾¾¾¾111¾¾¾¾½½½½¼¼¼¼0'
     r = get_moon_phase(dateStr)
