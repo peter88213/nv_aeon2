@@ -4,12 +4,21 @@
 
 ## Changelog
 
+### v4.5.0
+
+Refactor
+- Move the moonphase module to novxlib v4.3.0.
+- Use the novelibre 4.4 service for moonphase calculation.
+
+Compatibility: novelibre v4.4 API
+Based on novxlib v4.3.1
+
 ### v4.4.0
 
 - Use Unicode moon phase characters for display.
 
 Compatibility: novelibre v4.3 API
-Based on novxlib v4.3.4
+Based on novxlib v4.2.3
 
 ### v4.3.2
 
@@ -19,7 +28,7 @@ Based on novxlib v4.3.4
   because the JSON template is completed too late in the process.
   
 Compatibility: novelibre v4.3 API
-Based on novxlib v4.3.4
+Based on novxlib v4.2.3
 
 ### v4.3.1
 
@@ -28,14 +37,14 @@ Based on novxlib v4.3.4
 - Provide a fully translated template in German.  
   
 Compatibility: novelibre v4.3 API
-Based on novxlib v4.3.4
+Based on novxlib v4.2.3
 
 ### v4.3.0
 
 - Make the "Arc" type and role names customizable.
 
 Compatibility: novelibre v4.3 API
-Based on novxlib v4.3.4
+Based on novxlib v4.2.3
 
 ### v4.2.2
 

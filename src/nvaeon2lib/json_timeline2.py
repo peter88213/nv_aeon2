@@ -24,7 +24,6 @@ from novxlib.novx_globals import SECTION_PREFIX
 from novxlib.novx_globals import _
 from nvaeon2lib.aeon2_fop import open_timeline
 from nvaeon2lib.aeon2_fop import save_timeline
-from nvaeon2lib.moonphase import get_moon_phase_plus
 from nvaeon2lib.uid_helper import get_uid
 
 
@@ -1334,7 +1333,7 @@ class JsonTimeline2(File):
 
             #--- Calculate moon phase.
             if self._propertyMoonphaseGuid is not None:
-                eventMoonphase = get_moon_phase_plus(self.novel.sections[scId].date)
+                eventMoonphase = self._nvSvc.get_moon_phase_str(self.novel.sections[scId].date)
             else:
                 eventMoonphase = ''
 
