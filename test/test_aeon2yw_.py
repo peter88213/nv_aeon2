@@ -17,6 +17,8 @@ import zipfile
 
 import standalone
 
+UPDATE = False
+
 # Test environment
 # The paths are relative to the "test" directory,
 # where this script is placed and executed
@@ -104,6 +106,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'date_limits.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_AEON, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_NOVX, TEST_DATA_PATH + 'date_limits.novx')
         self.assertEqual(read_file(TEST_NOVX), read_file(TEST_DATA_PATH + 'date_limits.novx'))
 
     # @unittest.skip('')
@@ -113,6 +117,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'updated.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_AEON, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_NOVX, TEST_DATA_PATH + 'updated_from_aeon.novx')
         self.assertEqual(read_file(TEST_NOVX), read_file(TEST_DATA_PATH + 'updated_from_aeon.novx'))
         self.assertEqual(read_file(TEST_NOVX_BAK), read_file(TEST_DATA_PATH + 'date_limits.novx'))
 
@@ -122,6 +128,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'minimal.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_NOVX, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_AEON, TEST_DATA_PATH + 'created.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'created.aeonzip'))
 
     # @unittest.skip('')
@@ -130,6 +138,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'minimal.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_NOVX, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_AEON, TEST_DATA_PATH + 'created_arc.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'created_arc.aeonzip'))
 
     # @unittest.skip('')
@@ -138,6 +148,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'created.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_NOVX, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_AEON, TEST_DATA_PATH + 'updated_from_yw.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'updated_from_yw.aeonzip'))
 
     # @unittest.skip('')
@@ -146,6 +158,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'updated_from_yw.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_NOVX, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_AEON, TEST_DATA_PATH + 'updated1_from_yw.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'updated1_from_yw.aeonzip'))
 
     # @unittest.skip('')
@@ -154,6 +168,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'birthday.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_AEON, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_AEON, TEST_DATA_PATH + 'birthday.aeonzip')
         self.assertEqual(read_file(TEST_NOVX), read_file(TEST_DATA_PATH + 'birthday.novx'))
 
     # @unittest.skip('')
@@ -162,6 +178,8 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'created.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
         standalone.run(TEST_NOVX, silentMode=True)
+        if UPDATE:
+            copyfile(TEST_AEON, TEST_DATA_PATH + 'birthday_updated.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'birthday_updated.aeonzip'))
 
     def tearDown(self):

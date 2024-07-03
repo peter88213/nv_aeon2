@@ -4,9 +4,9 @@ Copyright (c) 2024 Peter Triesberger
 For further information see https://github.com/peter88213/aeon2nv
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
+
 from datetime import datetime
 from datetime import timedelta
-
 from novxlib.file.file import File
 from novxlib.model.id_generator import create_id
 from novxlib.novx_globals import CHAPTER_PREFIX
@@ -24,7 +24,7 @@ from novxlib.novx_globals import SECTION_PREFIX
 from novxlib.novx_globals import _
 from nvaeon2lib.aeon2_fop import open_timeline
 from nvaeon2lib.aeon2_fop import save_timeline
-from nvaeon2lib.uid_helper import get_uid
+from nvaeon2lib.guid_generator import GuidGenerator
 
 
 class JsonTimeline2(File):
@@ -63,6 +63,16 @@ class JsonTimeline2(File):
         """
         super().__init__(filePath, **kwargs)
         self._nvSvc = kwargs['nv_service']
+
+        # Instantiate a project-specific GUID generator.
+
+        # url = f'{self.projectPath}/{self.projectName}{self.EXTENSION}'
+        # this is the correct URL
+
+        url = f'{self.projectName}'
+        # shortening the url; this makes testing easier
+        self._guidGen = GuidGenerator(url)
+
         self._jsonData = None
 
         # JSON[entities][name]
@@ -889,7 +899,7 @@ class JsonTimeline2(File):
         if self._entityNarrativeGuid is not None:
             return
 
-        self._entityNarrativeGuid = get_uid('entityNarrativeGuid')
+        self._entityNarrativeGuid = self._guidGen.get_guid('entityNarrativeGuid')
         self._jsonData['entities'].append({
                 'entityType':self._typeArcGuid,
                 'guid':self._entityNarrativeGuid,
@@ -905,7 +915,7 @@ class JsonTimeline2(File):
             return
 
         n = len(self._jsonData['template']['properties'])
-        self._propertyDescGuid = get_uid('_propertyDescGuid')
+        self._propertyDescGuid = self._guidGen.get_guid('_propertyDescGuid')
         self._jsonData['template']['properties'].append({'calcMode':'default',
                 'calculate':False,
                 'fadeEvents':False,
@@ -924,7 +934,7 @@ class JsonTimeline2(File):
             return
 
         n = len(self._jsonData['template']['properties'])
-        self._propertyMoonphaseGuid = get_uid('_propertyMoonphaseGuid')
+        self._propertyMoonphaseGuid = self._guidGen.get_guid('_propertyMoonphaseGuid')
         self._jsonData['template']['properties'].append({'calcMode':'default',
                 'calculate':False,
                 'fadeEvents':False,
@@ -942,7 +952,7 @@ class JsonTimeline2(File):
         for tplPrp in self._jsonData['template']['properties']:
             tplPrp['sortOrder'] += 1
 
-        self._propertyNotesGuid = get_uid('_propertyNotesGuid')
+        self._propertyNotesGuid = self._guidGen.get_guid('_propertyNotesGuid')
         self._jsonData['template']['properties'].insert(0, {'calcMode':'default',
                 'calculate':False,
                 'fadeEvents':False,
@@ -959,7 +969,7 @@ class JsonTimeline2(File):
 
         for entityType in self._jsonData['template']['types']:
             if entityType['name'] == self._typeArc:
-                self._roleArcGuid = get_uid('_roleArcGuid')
+                self._roleArcGuid = self._guidGen.get_guid('_roleArcGuid')
                 entityType['roles'].append(
                     {
                         'allowsMultipleForEntity':True,
@@ -979,7 +989,7 @@ class JsonTimeline2(File):
 
         for entityType in self._jsonData['template']['types']:
             if entityType['name'] == self._typeCharacter:
-                self._roleCharacterGuid = get_uid('_roleCharacterGuid')
+                self._roleCharacterGuid = self._guidGen.get_guid('_roleCharacterGuid')
                 entityType['roles'].append(
                     {
                         'allowsMultipleForEntity':True,
@@ -999,7 +1009,7 @@ class JsonTimeline2(File):
 
         for entityType in self._jsonData['template']['types']:
             if entityType['name'] == self._typeItem:
-                self._roleItemGuid = get_uid('_roleItemGuid')
+                self._roleItemGuid = self._guidGen.get_guid('_roleItemGuid')
                 entityType['roles'].append(
                     {
                         'allowsMultipleForEntity':True,
@@ -1019,7 +1029,7 @@ class JsonTimeline2(File):
 
         for entityType in self._jsonData['template']['types']:
             if entityType['name'] == self._typeLocation:
-                self._roleLocationGuid = get_uid('_roleLocationGuid')
+                self._roleLocationGuid = self._guidGen.get_guid('_roleLocationGuid')
                 entityType['roles'].append(
                     {
                         'allowsMultipleForEntity':True,
@@ -1039,7 +1049,7 @@ class JsonTimeline2(File):
 
         for entityType in self._jsonData['template']['types']:
             if entityType['name'] == self._typeArc:
-                self._rolePlotlineGuid = get_uid('_roleStorylineGuid')
+                self._rolePlotlineGuid = self._guidGen.get_guid('_roleStorylineGuid')
                 entityType['roles'].append(
                     {
                         'allowsMultipleForEntity':True,
@@ -1057,7 +1067,7 @@ class JsonTimeline2(File):
         if self._typeArcGuid is not None:
             return
 
-        self._typeArcGuid = get_uid('typeArcGuid')
+        self._typeArcGuid = self._guidGen.get_guid('typeArcGuid')
         typeCount = len(self._jsonData['template']['types'])
         self._jsonData['template']['types'].append({
                 'color':'iconYellow',
@@ -1072,8 +1082,8 @@ class JsonTimeline2(File):
         if self._typeCharacterGuid is not None:
             return
 
-        self._typeCharacterGuid = get_uid('_typeCharacterGuid')
-        self._roleCharacterGuid = get_uid('_roleCharacterGuid')
+        self._typeCharacterGuid = self._guidGen.get_guid('_typeCharacterGuid')
+        self._roleCharacterGuid = self._guidGen.get_guid('_roleCharacterGuid')
         typeCount = len(self._jsonData['template']['types'])
         self._jsonData['template']['types'].append({
                 'color':'iconRed',
@@ -1088,8 +1098,8 @@ class JsonTimeline2(File):
         if self._typeItemGuid is not None:
             return
 
-        self._typeItemGuid = get_uid('_typeItemGuid')
-        self._roleItemGuid = get_uid('_roleItemGuid')
+        self._typeItemGuid = self._guidGen.get_guid('_typeItemGuid')
+        self._roleItemGuid = self._guidGen.get_guid('_roleItemGuid')
         typeCount = len(self._jsonData['template']['types'])
         self._jsonData['template']['types'].append({
                 'color':'iconPurple',
@@ -1104,8 +1114,8 @@ class JsonTimeline2(File):
         if self._typeLocationGuid is not None:
             return
 
-        self._typeLocationGuid = get_uid('_typeLocationGuid')
-        self._roleLocationGuid = get_uid('_roleLocationGuid')
+        self._typeLocationGuid = self._guidGen.get_guid('_typeLocationGuid')
+        self._roleLocationGuid = self._guidGen.get_guid('_roleLocationGuid')
         typeCount = len(self._jsonData['template']['types'])
         self._jsonData['template']['types'].append({
                 'color':'iconOrange',
@@ -1148,7 +1158,7 @@ class JsonTimeline2(File):
             'attachments': [],
             'color': '',
             'displayId': self._w_get_display_id(),
-            'guid': get_uid(f'section{section.title}'),
+            'guid': self._guidGen.get_guid(f'section{section.title}'),
             'links': [],
             'locked': False,
             'priority': 500,
@@ -1246,7 +1256,7 @@ class JsonTimeline2(File):
                 acIdsBySrcId[srcAcId] = acId
                 self.novel.plotLines[acId] = source.plotLines[srcAcId]
                 arcName = self.novel.plotLines[acId].title
-                newGuid = get_uid(f'{acId}{arcName}')
+                newGuid = self._guidGen.get_guid(f'{acId}{arcName}')
                 self._arcGuidsById[acId] = newGuid
                 self._jsonData['entities'].append(
                     {
@@ -1276,7 +1286,7 @@ class JsonTimeline2(File):
                 crIdsBySrcId[srcCrId] = crId
                 srcIdsbyCrId[crId] = srcCrId
                 self.novel.characters[crId] = source.characters[srcCrId]
-                newGuid = get_uid(f'{crId}{self.novel.characters[crId].title}')
+                newGuid = self._guidGen.get_guid(f'{crId}{self.novel.characters[crId].title}')
                 self._characterGuidsById[crId] = newGuid
                 jsonCharacter = {}
                 birthDate = self.novel.characters[crId].birthDate
@@ -1448,7 +1458,7 @@ class JsonTimeline2(File):
                 itId = create_id(self.novel.items, prefix=ITEM_PREFIX)
                 itIdsBySrcId[srcItId] = itId
                 self.novel.items[itId] = source.items[srcItId]
-                newGuid = get_uid(f'{itId}{self.novel.items[itId].title}')
+                newGuid = self._guidGen.get_guid(f'{itId}{self.novel.items[itId].title}')
                 self._itemGuidsById[itId] = newGuid
                 self._jsonData['entities'].append({
                         'entityType':self._typeItemGuid,
@@ -1473,7 +1483,7 @@ class JsonTimeline2(File):
                 lcId = create_id(self.novel.locations, prefix=LOCATION_PREFIX)
                 lcIdsBySrcId[srcLcId] = lcId
                 self.novel.locations[lcId] = source.locations[srcLcId]
-                newGuid = get_uid(f'{lcId}{self.novel.locations[lcId].title}')
+                newGuid = self._guidGen.get_guid(f'{lcId}{self.novel.locations[lcId].title}')
                 self._locationGuidsById[lcId] = newGuid
                 self._jsonData['entities'].append({
                         'entityType':self._typeLocationGuid,

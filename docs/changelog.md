@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v4.6.0
+
+- Generate standardized GUIDs according to RFC 4122.
+
+Compatibility: novelibre v4.4 API
+Based on novxlib v4.3.0
+
 ### v4.5.0
 
 Refactor
@@ -11,7 +18,7 @@ Refactor
 - Use the novelibre 4.4 service for moonphase calculation.
 
 Compatibility: novelibre v4.4 API
-Based on novxlib v4.3.1
+Based on novxlib v4.3.0
 
 ### v4.4.0
 
