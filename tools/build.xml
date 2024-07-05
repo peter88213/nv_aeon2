@@ -34,15 +34,16 @@
 		<copy file="${test-path}/${test-app}.py" tofile="${build-path}/${release}/${test-app}.py" />
 		<replace encoding="utf-8" file="${build-path}/${release}/${test-app}.py" token="@release" value="${version}" />
 		
-		<copy file="${source-path}/setup.pyw" todir="${build-path}/${release}" />		
-		<replace encoding="utf-8" file="${build-path}/${release}/setup.pyw" token="@release" value="${version}" />
+      <!--copy file="${source-path}/setup.pyw" todir="${build-path}/${release}" /-->     
+      <copy file="${source-path}/setuplib.py" todir="${build-path}/${release}" />     
+      <replace encoding="utf-8" file="${build-path}/${release}/setuplib.py" token="@release" value="${version}" />
 
 		<copy file="../LICENSE" todir="${build-path}/${release}" />	
 		<copy file="${docs-path}/usage.md" tofile="${build-path}/${release}/README.md" />
 		
 		<fixcrlf encoding="utf-8" eol="lf" srcdir="${build-path}/${release}" includes="**/*.*" />
 		
-		<copy todir="${build-path}/${release}/sample" failonerror="false"> 
+      <copy todir="${build-path}/${release}/${application}_sample" failonerror="false"> 
 			<fileset dir="../sample" />
 		</copy>		
 			
@@ -50,7 +51,16 @@
 			<fileset dir="${i18n-path}/locale" />
 		</copy>
 			
-		<zip destfile="${dist-path}/${release}.zip" basedir="${build-path}" />
+      <!--zip destfile="${dist-path}/${release}.zip" basedir="${build-path}" /-->
+      
+      <exec executable="python" failonerror="true">
+         <arg value="-m"/>
+         <arg value="zipapp"/>
+         <arg value="-o=${dist-path}/${release}.pyzw"/>
+         <arg value="-m=setuplib:main"/>
+         <arg value="-c"/>
+         <arg value="${build-path}/${release}"/>
+      </exec>  
 		
 		<copy file="${docs-path}/template/README.md" overwrite="True" todir=".." />
 		<replace encoding="utf-8" file="../README.md" token="0.99.0" value="${version}" />
