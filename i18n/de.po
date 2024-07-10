@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 4.6.0\n"
-"POT-Creation-Date: 2024-07-06 10:28:09\n"
-"PO-Revision-Date: 2024-07-06 10:28:09\n"
+"Project-Id-Version: 4.7.0\n"
+"POT-Creation-Date: 2024-07-10 15:29:36\n"
+"PO-Revision-Date: 2024-07-10 15:29:36\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -70,9 +70,6 @@ msgstr "Kann Datei nicht schreiben"
 msgid "Create from Aeon Timeline 2..."
 msgstr "Aus Aeon Timeline 2 erzeugen..."
 
-msgid "Edit the timeline"
-msgstr "Den Zeitstrahl bearbeiten"
-
 msgid "File"
 msgstr "Datei"
 
@@ -96,6 +93,9 @@ msgstr "Kein JSON-Teil in der Zeitstrahldatei gefunden"
 
 msgid "No {} file available for this project."
 msgstr "Keine {}-Datei für dieses Projekt vorhanden."
+
+msgid "Open Aeon Timeline 2"
+msgstr "Aeon Timeline 2 öffnen"
 
 msgid "Save the project and update it?"
 msgstr "Projekt speichern und aktualisieren?"

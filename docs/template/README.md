@@ -10,9 +10,14 @@ The [novelibre](https://github.com/peter88213/novelibre/) Python program helps a
 
 The *nv_aeon2* plugin synchronizes novelibre projects with Aeon Timeline 2.
 
+The plugin adds an **Aeon Timeline 2** submenu to the *novelibre* **Tools** menu and a 
+![Aeon Timeline 2](src/icons/16/aeon2.png) button to the toolbar.
+
 ![Screenshot](docs/Screenshots/screen01.png)
 
 ## Features
+
+- Open the project timeline with the Aeon Timeline 2 application.
 
 ### Create a new novelibre project from a timeline
 

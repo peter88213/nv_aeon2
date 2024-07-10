@@ -31,6 +31,7 @@ from novxlib.novx_globals import Error
 from novxlib.novx_globals import _
 from novxlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
+from nvaeon2lib.tl_button import TlButton
 from nvlib.plugin.plugin_base import PluginBase
 import tkinter as tk
 
@@ -87,14 +88,16 @@ class Plugin(PluginBase):
         
         Overrides the superclass method.
         """
-        self._ui.mainMenu.entryconfig(APPLICATION, state='disabled')
+        self._ui.toolsMenu.entryconfig(APPLICATION, state='disabled')
+        self._timelineButton.disable()
 
     def enable_menu(self):
         """Enable menu entries when a project is open.
                 
         Overrides the superclass method.
         """
-        self._ui.mainMenu.entryconfig(APPLICATION, state='normal')
+        self._ui.toolsMenu.entryconfig(APPLICATION, state='normal')
+        self._timelineButton.enable()
 
     def install(self, model, view, controller, prefs=None):
         """Add a submenu to the main menu.
@@ -114,10 +117,9 @@ class Plugin(PluginBase):
         self._ctrl = controller
 
         # Create a submenu in the Tools menu.
-        self._pluginMenu = tk.Menu(self._ui.mainMenu, tearoff=0)
-        position = self._ui.mainMenu.index('end')
-        self._ui.mainMenu.insert_cascade(position, label=APPLICATION, menu=self._pluginMenu)
-        self._ui.mainMenu.entryconfig(APPLICATION, state='disabled')
+        self._pluginMenu = tk.Menu(self._ui.toolsMenu, tearoff=0)
+        self._ui.toolsMenu.add_cascade(label=APPLICATION, menu=self._pluginMenu)
+        self._ui.toolsMenu.entryconfig(APPLICATION, state='disabled')
         self._pluginMenu.add_command(label=_('Information'), command=self._info)
         self._pluginMenu.add_separator()
         # self._pluginMenu.add_command(label=_('Settings'), command=self._edit_settings)
@@ -127,13 +129,51 @@ class Plugin(PluginBase):
         self._pluginMenu.add_separator()
         self._pluginMenu.add_command(label=_('Add or update moon phase data'), command=self._add_moonphase)
         self._pluginMenu.add_separator()
-        self._pluginMenu.add_command(label=_('Edit the timeline'), command=self._launch_application)
+        self._pluginMenu.add_command(label=_('Open Aeon Timeline 2'), command=self._launch_application)
 
         # Add an entry to the "File > New" menu.
         self._ui.newMenu.add_command(label=_('Create from Aeon Timeline 2...'), command=self._create_novx)
 
         # Add an entry to the Help menu.
         self._ui.helpMenu.add_command(label=_('Aeon 2 plugin Online help'), command=lambda: webbrowser.open(self._HELP_URL))
+
+        #--- Configure the toolbar.
+
+        # Get the icons.
+        prefs = controller.get_preferences()
+        if prefs.get('large_icons', False):
+            size = 24
+        else:
+            size = 16
+        try:
+            homeDir = str(Path.home()).replace('\\', '/')
+            iconPath = f'{homeDir}/.novx/icons/{size}'
+        except:
+            iconPath = None
+        try:
+            aeon2Icon = tk.PhotoImage(file=f'{iconPath}/aeon2.png')
+        except:
+            aeon2Icon = None
+
+        # Put a Separator on the toolbar.
+        tk.Frame(view.toolbar.buttonBar, bg='light gray', width=1).pack(side='left', fill='y', padx=4)
+
+        # Initialize the operation.
+        self._timelineButton = TlButton(view, _('Open Aeon Timeline 2'), aeon2Icon, self._launch_application)
+
+    def lock(self):
+        """Inhibit changes on the model.
+        
+        Overrides the superclass method.
+        """
+        self._pluginMenu.entryconfig(_('Update the project'), state='disabled')
+
+    def unlock(self):
+        """Enable changes on the model.
+        
+        Overrides the superclass method.
+        """
+        self._pluginMenu.entryconfig(_('Update the project'), state='normal')
 
     def _add_moonphase(self):
         """Add/update moon phase data.

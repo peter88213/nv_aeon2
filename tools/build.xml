@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="nv_aeon2" basedir=".">
-	<property name="version" value="4.6.0" />
+	<property name="version" value="4.7.0" />
 	<property name="test-app" value="nv_aeon2" />
 	
 	<property name="source-path" location="../src" />
@@ -41,6 +41,10 @@
 				
 		<fixcrlf encoding="utf-8" eol="lf" srcdir="${build-path}/${release}" includes="**/*.*" />
 		
+      <copy todir="${build-path}/${release}/icons"> 
+         <fileset dir="${source-path}/icons" />
+      </copy>
+      
       <copy todir="${build-path}/${release}/${application}_sample" failonerror="false"> 
 			<fileset dir="../sample" />
 		</copy>		
@@ -71,7 +75,6 @@
 
    <target name="zip" description="generate a zipfile">      
       <copy file="${docs-path}/usage.md" tofile="${build-path}/${release}/README.md" />
-      <fixcrlf encoding="utf-8" eol="lf" srcdir="${build-path}/${release}" includes="**/*.*" />
       <copy file="${source-path}/setup.pyw" todir="${build-path}/${release}" />     
       <zip destfile="${dist-path}/${release}.zip" basedir="${build-path}" />
    </target>

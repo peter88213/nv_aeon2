@@ -4,6 +4,14 @@
 
 ## Changelog
 
+### v4.7.0
+
+- Move the **Aeon Timeline 2** submenu from the main menu to the **Tools** menu.
+- Add an "Aeon Timeline 2" button to the button bar.
+
+Compatibility: novelibre v4.4 API
+Based on novxlib v4.4.0
+
 ### v4.6.0
 
 - Generate standardized GUIDs according to RFC 4122.

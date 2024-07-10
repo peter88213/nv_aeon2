@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 4.6.0\n"
-"POT-Creation-Date: 2024-07-06 10:28:09\n"
+"Project-Id-Version: 4.7.0\n"
+"POT-Creation-Date: 2024-07-10 15:29:36\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -74,9 +74,6 @@ msgstr ""
 msgid "Create from Aeon Timeline 2..."
 msgstr ""
 
-msgid "Edit the timeline"
-msgstr ""
-
 msgid "File"
 msgstr ""
 
@@ -99,6 +96,9 @@ msgid "No JSON part found in timeline data"
 msgstr ""
 
 msgid "No {} file available for this project."
+msgstr ""
+
+msgid "Open Aeon Timeline 2"
 msgstr ""
 
 msgid "Save the project and update it?"

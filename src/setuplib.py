@@ -85,6 +85,10 @@ def main(zipped=True):
         output('Copying locale ...')
         copy_tree('locale', applicationDir)
 
+        # Install the icons.
+        output('Copying icons ...')
+        copy_tree('icons', applicationDir)
+
         # Provide the sample files.
         output('Copying/replacing sample files ...')
         rmtree(f'{applicationDir}/{PRJ}_sample', ignore_errors=True)

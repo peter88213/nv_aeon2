@@ -1,4 +1,4 @@
-[![Download the latest release](docs/img/download-button.png)](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v4.6.0.pyzw)
+[![Download the latest release](docs/img/download-button.png)](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v4.7.0.pyzw)
 [![Changelog](docs/img/changelog-button.png)](docs/changelog.md)
 [![News](docs/img/news-button.png)](https://github.com/peter88213/novelibre/discussions/1)
 [![Online help](docs/img/help-button.png)](https://peter88213.github.io/nvhelp-en/nv_aeon2/)
@@ -10,9 +10,14 @@ The [novelibre](https://github.com/peter88213/novelibre/) Python program helps a
 
 The *nv_aeon2* plugin synchronizes novelibre projects with Aeon Timeline 2.
 
+The plugin adds an **Aeon Timeline 2** submenu to the *novelibre* **Tools** menu and a 
+![Aeon Timeline 2](src/icons/16/aeon2.png) button to the toolbar.
+
 ![Screenshot](docs/Screenshots/screen01.png)
 
 ## Features
+
+- Open the project timeline with the Aeon Timeline 2 application.
 
 ### Create a new novelibre project from a timeline
 
@@ -51,10 +56,10 @@ The *nv_aeon2* plugin synchronizes novelibre projects with Aeon Timeline 2.
 
 ### Default: Executable Python zip archive
 
-Download the latest release [nv_aeon2_v4.6.0.pyzw](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v4.6.0.pyzw)
+Download the latest release [nv_aeon2_v4.7.0.pyzw](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v4.7.0.pyzw)
 
-- Launch *nv_aeon2_v4.6.0.pyzw* by double-clicking (Windows/Linux desktop),
-- or execute `python nv_aeon2_v4.6.0.pyzw` (Windows), resp. `python3 nv_aeon2_v4.6.0.pyzw` (Linux) on the command line.
+- Launch *nv_aeon2_v4.7.0.pyzw* by double-clicking (Windows/Linux desktop),
+- or execute `python nv_aeon2_v4.7.0.pyzw` (Windows), resp. `python3 nv_aeon2_v4.7.0.pyzw` (Linux) on the command line.
 
 #### Important
 
@@ -70,9 +75,9 @@ the zip file.
 
 ### Alternative: Zip file
 
-The package is also available in zip format: [nv_aeon2_v4.6.0.zip](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v4.6.0.zip)
+The package is also available in zip format: [nv_aeon2_v4.7.0.zip](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v4.7.0.zip)
 
-- Extract the *nv_aeon2_v4.6.0* folder from the downloaded zipfile "nv_aeon2_v4.6.0.zip".
+- Extract the *nv_aeon2_v4.7.0* folder from the downloaded zipfile "nv_aeon2_v4.7.0.zip".
 - Move into this new folder and launch *setup.pyw* by double-clicking (Windows/Linux desktop), 
 - or execute `python setup.pyw` (Windows), resp. `python3 setup.pyw` (Linux) on the command line.
 
