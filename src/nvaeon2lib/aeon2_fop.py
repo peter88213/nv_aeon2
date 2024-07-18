@@ -11,7 +11,7 @@ import os
 import zipfile
 
 from novxlib.novx_globals import Error
-from novxlib.novx_globals import _
+from nvaeon2lib.nvaeon2_globals import _
 from novxlib.novx_globals import norm_path
 
 

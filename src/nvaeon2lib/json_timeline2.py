@@ -7,6 +7,7 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 from datetime import datetime
 from datetime import timedelta
+
 from novxlib.file.file import File
 from novxlib.model.id_generator import create_id
 from novxlib.novx_globals import CHAPTER_PREFIX
@@ -21,10 +22,10 @@ from novxlib.novx_globals import LOCATION_PREFIX
 from novxlib.novx_globals import PLOT_LINE_PREFIX
 from novxlib.novx_globals import PL_ROOT
 from novxlib.novx_globals import SECTION_PREFIX
-from novxlib.novx_globals import _
 from nvaeon2lib.aeon2_fop import open_timeline
 from nvaeon2lib.aeon2_fop import save_timeline
 from nvaeon2lib.guid_generator import GuidGenerator
+from nvaeon2lib.nvaeon2_globals import _
 
 
 class JsonTimeline2(File):

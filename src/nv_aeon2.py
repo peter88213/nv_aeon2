@@ -17,34 +17,20 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 """
 from datetime import datetime
-import gettext
-import locale
 import os
 from pathlib import Path
-import sys
 from tkinter import filedialog
 from tkinter import messagebox
 import webbrowser
 
 from novxlib.file.doc_open import open_document
 from novxlib.novx_globals import Error
-from novxlib.novx_globals import _
 from novxlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
+from nvaeon2lib.nvaeon2_globals import _
 from nvaeon2lib.tl_button import TlButton
 from nvlib.plugin.plugin_base import PluginBase
 import tkinter as tk
-
-# Initialize localization.
-LOCALE_PATH = f'{os.path.dirname(sys.argv[0])}/locale/'
-CURRENT_LANGUAGE = locale.getlocale()[0][:2]
-try:
-    t = gettext.translation('nv_aeon2', LOCALE_PATH, languages=[CURRENT_LANGUAGE])
-    _ = t.gettext
-except:
-
-    def _(message):
-        return message
 
 APPLICATION = 'Aeon Timeline 2'
 PLUGIN = f'{APPLICATION} plugin v@release'

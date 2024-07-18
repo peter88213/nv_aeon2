@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v4.7.1
+
+- Refactor localization.
+
+Compatibility: novelibre v4.4 API
+Based on novxlib v4.4.0
+
 ### v4.7.0
 
 - Move the **Aeon Timeline 2** submenu from the main menu to the **Tools** menu.

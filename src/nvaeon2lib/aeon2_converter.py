@@ -8,7 +8,7 @@ import os
 
 from novxlib.converter.converter import Converter
 from novxlib.novx_globals import Error
-from novxlib.novx_globals import _
+from nvaeon2lib.nvaeon2_globals import _
 from novxlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
 from nvlib.model.nv_service import NvService
