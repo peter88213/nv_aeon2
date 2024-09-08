@@ -20,8 +20,8 @@ import translate_de
 
 VERSION = 'x.x.x'
 
-APP = 'nv_aeon2'
-RELEASE = f'{APP}_v{VERSION}'
+PRJ_NAME = 'nv_aeon2'
+RELEASE = f'{PRJ_NAME}_v{VERSION}'
 MO_FILE = 'nv_aeon2.mo'
 
 LOCAL_LIB = 'nvaeon2lib'
@@ -63,11 +63,11 @@ def build_translation():
     if not MO_FILE:
         return
 
-    if not build_tools.make_pot(TEST_FILE, app=APP, version=VERSION):
+    if not build_tools.make_pot(TEST_FILE, app=PRJ_NAME, version=VERSION):
         sys.exit(1)
 
     translation = translate_de.main(
-        MO_FILE, app=APP, version=VERSION)
+        MO_FILE, app=PRJ_NAME, version=VERSION)
     if translation is None:
         sys.exit(1)
 
