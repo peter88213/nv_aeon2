@@ -4,7 +4,7 @@ In order to distribute a single script without dependencies,
 this script "inlines" all modules imported from the novxlib package.
 
 The novxlib project (see see https://github.com/peter88213/novxlib)
-must be located on the same directory level as the aeon2nv project. 
+must be located on the same directory level as the nv_aeon2 project. 
 
 Copyright (c) 2024 Peter Triesberger
 For further information see https://github.com/peter88213/nv_aeon2
