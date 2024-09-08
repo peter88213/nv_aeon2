@@ -2,5 +2,6 @@
 /test/temp/
 /test/nv_aeon2.py
 /build/
+/build-ref/
 *.pyc
 *.bak
