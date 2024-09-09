@@ -4,43 +4,53 @@
 
 ## Changelog
 
+### Version 4.7.2
+
+Library update:
+- Rejecting malformed .novx files.
+- Stripping illegal xml characters during post-processing.
+- Refactor for future Python versions
+
+Compatibility: novelibre 4.4 API
+Based on novxlib 4.6.3
+
 ### Version 4.7.1
 
 - Refactor localization.
 
-Compatibility: novelibre version 4.4 API
-Based on novxlib version 4.4.0
+Compatibility: novelibre 4.4 API
+Based on novxlib 4.4.0
 
 ### Version 4.7.0
 
 - Move the **Aeon Timeline 2** submenu from the main menu to the **Tools** menu.
 - Add an "Aeon Timeline 2" button to the button bar.
 
-Compatibility: novelibre version 4.4 API
-Based on novxlib version 4.4.0
+Compatibility: novelibre 4.4 API
+Based on novxlib 4.4.0
 
 ### Version 4.6.0
 
 - Generate standardized GUIDs according to RFC 4122.
 
-Compatibility: novelibre version 4.4 API
-Based on novxlib version 4.3.0
+Compatibility: novelibre 4.4 API
+Based on novxlib 4.3.0
 
 ### Version 4.5.0
 
 Refactor
-- Move the moonphase module to novxlib v4.3.0.
+- Move the moonphase module to novxlib 4.3.0.
 - Use the novelibre 4.4 service for moonphase calculation.
 
-Compatibility: novelibre version 4.4 API
-Based on novxlib version 4.3.0
+Compatibility: novelibre 4.4 API
+Based on novxlib 4.3.0
 
 ### Version 4.4.0
 
 - Use Unicode moon phase characters for display.
 
-Compatibility: novelibre version 4.3 API
-Based on novxlib version 4.2.3
+Compatibility: novelibre 4.3 API
+Based on novxlib 4.2.3
 
 ### Version 4.3.2
 
@@ -49,8 +59,8 @@ Based on novxlib version 4.2.3
 - Fix a bug where newly created events get "None" properties
   because the JSON template is completed too late in the process.
   
-Compatibility: novelibre version 4.3 API
-Based on novxlib version 4.2.3
+Compatibility: novelibre 4.3 API
+Based on novxlib 4.2.3
 
 ### Version 4.3.1
 
@@ -58,51 +68,51 @@ Based on novxlib version 4.2.3
   date during conversion to aeon.
 - Provide a fully translated template in German.  
   
-Compatibility: novelibre version 4.3 API
-Based on novxlib version 4.2.3
+Compatibility: novelibre 4.3 API
+Based on novxlib 4.2.3
 
 ### Version 4.3.0
 
 - Make the "Arc" type and role names customizable.
 
-Compatibility: novelibre version 4.3 API
-Based on novxlib version 4.2.3
+Compatibility: novelibre 4.3 API
+Based on novxlib 4.2.3
 
 ### Version 4.2.2
 
 - Update the German translation.
 
-Compatibility: novelibre version 4.3 API
-Based on novxlib version 4.2.3
+Compatibility: novelibre 4.3 API
+Based on novxlib 4.2.3
 
 ### Version 4.2.1
 
 - Refactor the code for future API update,
   making the prefs argument of the Plugin.install() method optional.
 
-Compatibility: novelibre version 4.3 API
-Based on novxlib version 4.1.0
+Compatibility: novelibre 4.3 API
+Based on novxlib 4.1.0
 
 ### Version 4.2.0
 
 - Refactor the code for better maintainability.
 
-Compatibility: novelibre version 4.3 API
-Based on novxlib version 4.1.0
+Compatibility: novelibre 4.3 API
+Based on novxlib 4.1.0
 
 ### Version 4.1.2
 
 - Do not reopen the project after updating from the timeline failed.
 
-Compatibility: novelibre version 4.1 API
-Based on novxlib version 4.1.0
+Compatibility: novelibre 4.1 API
+Based on novxlib 4.1.0
 
 ### Version 4.1.1
 
 - Fix the installation directory path.
 
-Compatibility: novelibre version 4.1 API
-Based on novxlib version 4.1.0
+Compatibility: novelibre 4.1 API
+Based on novxlib 4.1.0
 
 ### Version 4.1.0
 
@@ -110,14 +120,14 @@ Based on novxlib version 4.1.0
 - Refactor: split the JsonTimeline2 read() and write() methods.
 - Use factory methods and getters from the model's NvService object.
 
-Compatibility: novelibre version 4.1 API
-Based on novxlib version 4.0.1
+Compatibility: novelibre 4.1 API
+Based on novxlib 4.0.1
 
 ### Version 3.3.3
 
 - Do not unnecessarily save the project when updating the timeline.
 
-Based on novxlib version 3.5.3
+Based on novxlib 3.5.3
 
 ### Version 3.3.2
 
@@ -125,63 +135,63 @@ Based on novxlib version 3.5.3
 inline elements within paragraphs.
 - Set the default locale when creating a new project.
 
-Based on novxlib version 3.5.2
+Based on novxlib 3.5.2
 
 ### Version 3.3.1
 
 - Fix a bug where single spaces between emphasized text in section content are lost when writing novx files.
 
-Based on novxlib version 3.5.0
+Based on novxlib 3.5.0
 
 ### Version 3.3.0
 
 - Add "property_moonphase" setting for the moon phase label.
 - Add "lock_on_export" option.
 
-Based on novxlib version 3.3.0
-Compatibility: novelibre version 3.6 API
+Based on novxlib 3.3.0
+Compatibility: novelibre 3.6 API
 
 ### Version 3.2.0
 
 - Library update. Now reading *.novx* version 1.3 files.
 
-Based on novxlib version 3.3.0
-Compatibility: novelibre version 3.6 API
+Based on novxlib 3.3.0
+Compatibility: novelibre 3.6 API
 
 ### Version 3.1.0
 
 - Library update. Now reading *.novx* version 1.2 files.
 
-Based on novxlib version 3.2.0
-Compatibility: novelibre version 3.5 API
+Based on novxlib 3.2.0
+Compatibility: novelibre 3.5 API
 
 ### Version 3.0.2
 
 - Fix a regression from version 3.0.0 where Aeon arcs are not processed the right way.
 
-Based on novxlib version 3.0.1
-Compatibility: novelibre version 3.0 API
+Based on novxlib 3.0.1
+Compatibility: novelibre 3.0 API
 
 ### Version 3.0.1
 
 - Show localized file date/time instead of ISO-formatted date/time.
 
-Based on novxlib version 3.0.1
-Compatibility: novelibre version 3.0 API
+Based on novxlib 3.0.1
+Compatibility: novelibre 3.0 API
 
 ### Version 3.0.0
 
 - Refactor the code for v3.0 API.
 - Enable the online help in German.
 
-Based on novxlib version 2.0.0
-Compatibility: novelibre version 3.0 API
+Based on novxlib 2.0.0
+Compatibility: novelibre 3.0 API
 
 ### Version 2.1.0
 
 Update for "novelibre".
 
-Based on novxlib version 1.1.0
+Based on novxlib 1.1.0
 
 ### Version 2.0.0
 
@@ -189,33 +199,33 @@ Preparations for renaming the application:
 - Refactor the code for v2.0 API.
 - Change the installation directory in the setup script.
 
-Based on novxlib version 1.1.0
-Compatibility: novelibre version 2.0 API
+Based on novxlib 1.1.0
+Compatibility: novelibre 2.0 API
 
 ### Version 1.2.0
 
 - Re-structure the website; adjust links.
 
-Based on novxlib version 1.1.0
-Compatibility: noveltree version 1.8 API
+Based on novxlib 1.1.0
+Compatibility: noveltree 1.8 API
 
 ### Version 1.1.0
 
 Synchronize birth dates and death dates.
 
-Based on novxlib version 1.0.1
-Compatibility: noveltree version 1.0 API
+Based on novxlib 1.0.1
+Compatibility: noveltree 1.0 API
 
 ### Version 1.0.1
 
 - Switch the online help to https://peter88213.github.io/noveltree-help/.
 
-Based on novxlib version 1.0.0
-Compatibility: noveltree version 1.0 API
+Based on novxlib 1.0.0
+Compatibility: noveltree 1.0 API
 
 ### Version 1.0.0
 
 - Release under the GPLv3 license.
 
-Based on novxlib version 1.0.0
-Compatibility: noveltree version 1.0 API
+Based on novxlib 1.0.0
+Compatibility: noveltree 1.0 API
