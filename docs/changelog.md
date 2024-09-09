@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### Version 4.7.3
+
+- Refactor: Change import order for a quick start.
+
+Compatibility: novelibre 4.4 API
+Based on novxlib 4.6.3
+
 ### Version 4.7.2
 
 Library update:
