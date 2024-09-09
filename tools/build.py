@@ -25,6 +25,10 @@ class PluginBuilder(PackageBuilder):
     LOCAL_LIB = 'nvaeon2lib'
     GERMAN_TRANSLATION = True
 
+    def __init__(self, version):
+        super().__init__(version)
+        self.sampleTarget = f'{self.buildDir}/{self.PRJ_NAME}_sample'
+
     def add_extras(self):
         self.add_sample()
         self.add_icons()
