@@ -64,8 +64,8 @@ def main(zipped=True):
     os.chdir(scriptDir)
 
     # Open a tk window.
-    root.geometry("600x250")
-    root.title(f'Install {PLUGIN}{VERSION}')
+    root.title('Setup')
+    output(f'*** Installing {PLUGIN}{VERSION} ***\n')
     header = Label(root, text='')
     header.pack(padx=5, pady=5)
 
