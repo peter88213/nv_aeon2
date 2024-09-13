@@ -21,6 +21,7 @@ import os
 from pathlib import Path
 from tkinter import filedialog
 from tkinter import messagebox
+from tkinter import ttk
 import webbrowser
 
 from nvaeon2lib.nvaeon2_globals import _
@@ -28,7 +29,6 @@ from novxlib.file.doc_open import open_document
 from novxlib.novx_globals import Error
 from novxlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
-from nvaeon2lib.tl_button import TlButton
 from nvlib.plugin.plugin_base import PluginBase
 import tkinter as tk
 
@@ -75,7 +75,7 @@ class Plugin(PluginBase):
         Overrides the superclass method.
         """
         self._ui.toolsMenu.entryconfig(APPLICATION, state='disabled')
-        self._timelineButton.disable()
+        self._timelineButton.config(state='disabled')
 
     def enable_menu(self):
         """Enable menu entries when a project is open.
@@ -83,7 +83,7 @@ class Plugin(PluginBase):
         Overrides the superclass method.
         """
         self._ui.toolsMenu.entryconfig(APPLICATION, state='normal')
-        self._timelineButton.enable()
+        self._timelineButton.config(state='normal')
 
     def install(self, model, view, controller, prefs=None):
         """Add a submenu to the main menu.
@@ -124,28 +124,7 @@ class Plugin(PluginBase):
         self._ui.helpMenu.add_command(label=_('Aeon 2 plugin Online help'), command=lambda: webbrowser.open(self._HELP_URL))
 
         #--- Configure the toolbar.
-
-        # Get the icons.
-        prefs = controller.get_preferences()
-        if prefs.get('large_icons', False):
-            size = 24
-        else:
-            size = 16
-        try:
-            homeDir = str(Path.home()).replace('\\', '/')
-            iconPath = f'{homeDir}/.novx/icons/{size}'
-        except:
-            iconPath = None
-        try:
-            aeon2Icon = tk.PhotoImage(file=f'{iconPath}/aeon2.png')
-        except:
-            aeon2Icon = None
-
-        # Put a Separator on the toolbar.
-        tk.Frame(view.toolbar.buttonBar, bg='light gray', width=1).pack(side='left', fill='y', padx=4)
-
-        # Initialize the operation.
-        self._timelineButton = TlButton(view, _('Open Aeon Timeline 2'), aeon2Icon, self._launch_application)
+        self._configure_toolbar()
 
     def lock(self):
         """Inhibit changes on the model.
@@ -205,6 +184,48 @@ class Plugin(PluginBase):
         else:
             message = f'{_("File written")}: "{norm_path(timeline.filePath)}".'
         self._ui.set_status(message)
+
+    def _configure_toolbar(self):
+
+        # Get the icons.
+        prefs = self._ctrl.get_preferences()
+        if prefs.get('large_icons', False):
+            size = 24
+        else:
+            size = 16
+        try:
+            homeDir = str(Path.home()).replace('\\', '/')
+            iconPath = f'{homeDir}/.novx/icons/{size}'
+        except:
+            iconPath = None
+        try:
+            aeon2Icon = tk.PhotoImage(file=f'{iconPath}/aeon2.png')
+        except:
+            aeon2Icon = None
+
+        # Put a Separator on the toolbar.
+        tk.Frame(self._ui.toolbar.buttonBar, bg='light gray', width=1).pack(side='left', fill='y', padx=4)
+
+        # Put a button on the toolbar.
+        self._timelineButton = ttk.Button(
+            self._ui.toolbar.buttonBar,
+            text=_('Open Aeon Timeline 2'),
+            image=aeon2Icon,
+            command=self._launch_application
+            )
+        self._timelineButton.pack(side='left')
+        self._timelineButton.image = aeon2Icon
+
+        # Initialize tooltip.
+        if not prefs['enable_hovertips']:
+            return
+
+        try:
+            from idlelib.tooltip import Hovertip
+        except ModuleNotFoundError:
+            return
+
+        Hovertip(self._timelineButton, self._timelineButton['text'])
 
     def _create_novx(self):
         """Create a novelibre project from a timeline."""
