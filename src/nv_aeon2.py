@@ -32,11 +32,6 @@ from nvaeon2lib.json_timeline2 import JsonTimeline2
 from nvlib.plugin.plugin_base import PluginBase
 import tkinter as tk
 
-APPLICATION = 'Aeon Timeline 2'
-PLUGIN = f'{APPLICATION} plugin v@release'
-INI_FILENAME = 'nv_aeon2.ini'
-INI_FILEPATH = '.novx/config'
-
 
 class Plugin(PluginBase):
     """Plugin class for synchronization with Aeon Timeline 2."""
@@ -46,6 +41,9 @@ class Plugin(PluginBase):
     URL = 'https://github.com/peter88213/nv_aeon2'
     _HELP_URL = f'https://peter88213.github.io/{_("nvhelp-en")}/nv_aeon2/'
 
+    FEATURE = 'Aeon Timeline 2'
+    INI_FILENAME = 'nv_aeon2.ini'
+    INI_FILEPATH = '.novx/config'
     SETTINGS = dict(
         narrative_arc='Narrative',
         property_description='Description',
@@ -74,7 +72,7 @@ class Plugin(PluginBase):
         
         Overrides the superclass method.
         """
-        self._ui.toolsMenu.entryconfig(APPLICATION, state='disabled')
+        self._ui.toolsMenu.entryconfig(self.FEATURE, state='disabled')
         self._timelineButton.config(state='disabled')
 
     def enable_menu(self):
@@ -82,7 +80,7 @@ class Plugin(PluginBase):
                 
         Overrides the superclass method.
         """
-        self._ui.toolsMenu.entryconfig(APPLICATION, state='normal')
+        self._ui.toolsMenu.entryconfig(self.FEATURE, state='normal')
         self._timelineButton.config(state='normal')
 
     def install(self, model, view, controller, prefs=None):
@@ -104,8 +102,8 @@ class Plugin(PluginBase):
 
         # Create a submenu in the Tools menu.
         self._pluginMenu = tk.Menu(self._ui.toolsMenu, tearoff=0)
-        self._ui.toolsMenu.add_cascade(label=APPLICATION, menu=self._pluginMenu)
-        self._ui.toolsMenu.entryconfig(APPLICATION, state='disabled')
+        self._ui.toolsMenu.add_cascade(label=self.FEATURE, menu=self._pluginMenu)
+        self._ui.toolsMenu.entryconfig(self.FEATURE, state='disabled')
         self._pluginMenu.add_command(label=_('Information'), command=self._info)
         self._pluginMenu.add_separator()
         # self._pluginMenu.add_command(label=_('Settings'), command=self._edit_settings)
@@ -159,10 +157,10 @@ class Plugin(PluginBase):
             sourceDir = '.'
         try:
             homeDir = str(Path.home()).replace('\\', '/')
-            pluginCnfDir = f'{homeDir}/{INI_FILEPATH}'
+            pluginCnfDir = f'{homeDir}/{self.INI_FILEPATH}'
         except:
             pluginCnfDir = '.'
-        iniFiles = [f'{pluginCnfDir}/{INI_FILENAME}', f'{sourceDir}/{INI_FILENAME}']
+        iniFiles = [f'{pluginCnfDir}/{self.INI_FILENAME}', f'{sourceDir}/{self.INI_FILENAME}']
         configuration = self._mdl.nvService.make_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS
@@ -285,7 +283,7 @@ class Plugin(PluginBase):
 
         timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
         if not os.path.isfile(timelinePath):
-            self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
+            self._ui.set_status(_('!No {} file available for this project.').format(self.FEATURE))
             return
 
         if self._mdl.isModified:
@@ -322,10 +320,10 @@ class Plugin(PluginBase):
             sourceDir = '.'
         try:
             homeDir = str(Path.home()).replace('\\', '/')
-            pluginCnfDir = f'{homeDir}/{INI_FILEPATH}'
+            pluginCnfDir = f'{homeDir}/{self.INI_FILEPATH}'
         except:
             pluginCnfDir = '.'
-        iniFiles = [f'{pluginCnfDir}/{INI_FILENAME}', f'{sourceDir}/{INI_FILENAME}']
+        iniFiles = [f'{pluginCnfDir}/{self.INI_FILENAME}', f'{sourceDir}/{self.INI_FILENAME}']
         configuration = self._mdl.nvService.make_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS
@@ -351,7 +349,7 @@ class Plugin(PluginBase):
 
         timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
         if not os.path.isfile(timelinePath):
-            self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
+            self._ui.set_status(_('!No {} file available for this project.').format(self.FEATURE))
             return
 
         if not self._ui.ask_yes_no(_('Save the project and update it?')):
@@ -389,12 +387,12 @@ class Plugin(PluginBase):
                 else:
                     cmp = _('older')
                 fileDate = datetime.fromtimestamp(timestamp).strftime('%c')
-                message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(APPLICATION, cmp, fileDate)
+                message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(self.FEATURE, cmp, fileDate)
             except:
                 message = _('Cannot determine file date.')
         else:
-            message = _('No {} file available for this project.').format(APPLICATION)
-        messagebox.showinfo(PLUGIN, message)
+            message = _('No {} file available for this project.').format(self.FEATURE)
+        messagebox.showinfo(f'{self.FEATURE} plugin v@release', message)
 
     def _launch_application(self):
         """Launch Aeon Timeline 2 with the current project."""
@@ -407,5 +405,5 @@ class Plugin(PluginBase):
                 self._ctrl.lock()
             open_document(timelinePath)
         else:
-            self._ui.set_status(_('!No {} file available for this project.').format(APPLICATION))
+            self._ui.set_status(_('!No {} file available for this project.').format(self.FEATURE))
 
