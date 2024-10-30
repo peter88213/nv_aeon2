@@ -83,6 +83,34 @@ The package is also available in zip format: [nv_aeon2_v4.8.0.zip](https://githu
 
 ---
 
+## Installing the Aeon Timeline 2 custom template
+----------------------------------------------
+
+After installation, you can copy a "novelibre.xml" template to the
+*Aeon Timeline 2* custom template folder. The easiest way is to create new
+timelines based on this template. It provides the entities and event
+properties that are converted to *novelibre* by default.
+
+You find the customized template in the *novelibre* installation directory under
+
+`c:\Users\<user name>\.novx\nv_aeon2_sample\`
+
+Just copy it into
+
+`AppData\Local\Scribble Code\Aeon Timeline 2\CustomTemplates`.
+
+** Hint:**
+- The `<your user name>\AppData` folder is hidden, so you
+  might have to go to the *Explorer* settings first to
+  enable *Show hidden files*. Just disable this again after
+  successfully having installed the custom template.
+    
+The next time you start *Aeon Timeline 2*,
+the new template appears in the *Custom Templates* area.
+
+
+---
+
 [Changelog](docs/changelog.md)
 
 ## Usage and conventions
