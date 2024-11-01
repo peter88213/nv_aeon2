@@ -5,6 +5,14 @@
 ## Changelog
 
 
+### Version 4.8.1
+
+- Change the message window title.
+- Refactor, replacing global constants with class constants.
+
+Compatibility: novelibre 4.11 API
+Based on novxlib 5.0.0
+
 ### Version 4.8.0
 
 - Add a tooltip to the toolbar button.
