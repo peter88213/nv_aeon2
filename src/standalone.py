@@ -10,7 +10,7 @@ import argparse
 import os
 from pathlib import Path
 
-from apptk.view.set_icon_tk import set_icon
+from mvclib.view.set_icon_tk import set_icon
 from novxlib.config.configuration import Configuration
 from novxlib.novx_globals import _
 from novxlib.ui.ui import Ui
