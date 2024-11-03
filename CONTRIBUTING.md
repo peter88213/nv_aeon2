@@ -105,7 +105,7 @@ An easy way may be to put a posting in the [novelibre forum](https://github.com/
 
 ### Conventions
 
-See https://github.com/peter88213/novxlib/blob/main/docs/conventions.md
+See https://github.com/peter88213/novelibre/blob/main/docs/conventions.md
 
 ## Development tools
 

@@ -24,9 +24,9 @@ from tkinter import messagebox
 from tkinter import ttk
 import webbrowser
 
-from novxlib.file.doc_open import open_document
-from novxlib.novx_globals import Error
-from novxlib.novx_globals import norm_path
+from nvlib.model.file.doc_open import open_document
+from nvlib.novx_globals import Error
+from nvlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
 from nvaeon2lib.nvaeon2_globals import _
 from nvlib.plugin.plugin_base import PluginBase

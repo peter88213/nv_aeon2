@@ -10,9 +10,9 @@ import json
 import os
 import zipfile
 
-from novxlib.novx_globals import Error
+from nvlib.novx_globals import Error
 from nvaeon2lib.nvaeon2_globals import _
-from novxlib.novx_globals import norm_path
+from nvlib.novx_globals import norm_path
 
 
 def open_timeline(filePath):
