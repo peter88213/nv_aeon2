@@ -11,7 +11,7 @@ from nvlib.novx_globals import Error
 from nvlib.novx_globals import norm_path
 from nvaeon2lib.json_timeline2 import JsonTimeline2
 from nvaeon2lib.nvaeon2_globals import _
-from nvlib.model.nv_service import NvService
+from nvlib.nv_service import NvService
 
 
 class Aeon2Converter(Converter):
