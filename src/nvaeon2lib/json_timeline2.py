@@ -1219,11 +1219,17 @@ class JsonTimeline2(File):
         """
         span = {}
         if section.lastsDays:
-            span['days'] = int(section.lastsDays)
+            lastsDays = int(section.lastsDays)
+            if lastsDays:
+                span['days'] = lastsDays
         if section.lastsHours:
-            span['hours'] = int(section.lastsHours)
+            lastsHours = int(section.lastsHours)
+            if lastsHours:
+                span['hours'] = lastsHours
         if section.lastsMinutes:
-            span['minutes'] = int(section.lastsMinutes)
+            lastsMinutes = int(section.lastsMinutes)
+            if lastsMinutes:
+                span['minutes'] = lastsMinutes
         return span
 
     def _w_get_timestamp(self, section):
@@ -1581,10 +1587,16 @@ class JsonTimeline2(File):
                 self.novel.sections[scId].date = source.sections[srcId].date
 
             #--- Update section duration.
-            if source.sections[srcId].lastsMinutes is not None:
+            if source.sections[srcId].lastsMinutes is None:
+                self.novel.sections[scId].lastsMinutes = '0'
+            else:
                 self.novel.sections[scId].lastsMinutes = source.sections[srcId].lastsMinutes
-            if source.sections[srcId].lastsHours is not None:
+            if source.sections[srcId].lastsHours is None:
+                self.novel.sections[scId].lastsHours = '0'
+            else:
                 self.novel.sections[scId].lastsHours = source.sections[srcId].lastsHours
-            if source.sections[srcId].lastsDays is not None:
+            if source.sections[srcId].lastsDays is None:
+                self.novel.sections[scId].lastsDays = '0'
+            else:
                 self.novel.sections[scId].lastsDays = source.sections[srcId].lastsDays
 
