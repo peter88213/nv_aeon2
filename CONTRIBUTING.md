@@ -84,7 +84,6 @@ An easy way may be to put a posting in the [novelibre forum](https://github.com/
 ├── novelibre/
 │   ├── i18n/
 │   ├── src/
-│   │   └── nvlib/
 │   └── tools/ 
 │       ├── msgfmt.py
 │       ├── inliner.py
@@ -92,9 +91,6 @@ An easy way may be to put a posting in the [novelibre forum](https://github.com/
 │       ├── pgettext.py
 │       ├── translate_de.py
 │       └── translations.py
-├── novxlib/
-│   └── src/
-│       └── novxlib/
 └── nv_aeon2/
     ├── i18n/
     ├── src/
