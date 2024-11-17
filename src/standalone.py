@@ -9,13 +9,14 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import argparse
 import os
 from pathlib import Path
+import sys
 
 from mvclib.view.set_icon_tk import set_icon
-from nvlib.configuration.configuration import Configuration
-from nvlib.novx_globals import _
 from mvclib.view.ui import Ui
 from novxlib.ui.ui_tk import UiTk
 from nvaeon2lib.aeon2_converter import Aeon2Converter
+from nvlib.configuration.configuration import Configuration
+from nvlib.novx_globals import _
 
 SUFFIX = ''
 APPNAME = 'nv_aeon2'
@@ -67,6 +68,7 @@ def run(sourcePath, silentMode=True, installDir='.'):
 
     converter.run(sourcePath, **kwargs)
     ui.start()
+    sys.stderr.write(ui.infoHowText)
 
 
 if __name__ == '__main__':
