@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### Version 4.9.0
+
+- Fix a bug where changes in duration are not applied to the timeline if zero.
+- Refactor and revise the code for better maintainability.
+- Release the dependency on the novxlib library.
+
+Compatibility: novelibre 4.17 API
 
 ### Version 4.8.1
 

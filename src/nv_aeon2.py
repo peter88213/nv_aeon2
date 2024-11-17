@@ -24,11 +24,11 @@ from tkinter import messagebox
 from tkinter import ttk
 import webbrowser
 
+from nvaeon2lib.json_timeline2 import JsonTimeline2
+from nvaeon2lib.nvaeon2_globals import _
 from nvlib.model.file.doc_open import open_document
 from nvlib.novx_globals import Error
 from nvlib.novx_globals import norm_path
-from nvaeon2lib.json_timeline2 import JsonTimeline2
-from nvaeon2lib.nvaeon2_globals import _
 from nvlib.plugin.plugin_base import PluginBase
 import tkinter as tk
 
@@ -36,7 +36,7 @@ import tkinter as tk
 class Plugin(PluginBase):
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    API_VERSION = '5.0'
+    API_VERSION = '4.17'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
     _HELP_URL = f'{_("https://peter88213.github.io/nvhelp-en")}/nv_aeon2/'
@@ -83,7 +83,7 @@ class Plugin(PluginBase):
         self._ui.toolsMenu.entryconfig(self.FEATURE, state='normal')
         self._timelineButton.config(state='normal')
 
-    def install(self, model, view, controller):
+    def install(self, model, view, controller, prefs=None):
         """Add a submenu to the main menu.
         
         Positional arguments:
@@ -93,6 +93,7 @@ class Plugin(PluginBase):
 
         Optional arguments:
             prefs -- deprecated. Please use controller.get_preferences() instead.
+            TODO: remove for version 5
         
         Overrides the superclass method.
         """
