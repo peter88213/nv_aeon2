@@ -13,7 +13,7 @@ import sys
 
 from mvclib.view.set_icon_tk import set_icon
 from mvclib.view.ui import Ui
-from novxlib.ui.ui_tk import UiTk
+from mvclib.user_interface.ui_tk import UiTk
 from nvaeon2lib.aeon2_converter import Aeon2Converter
 from nvlib.configuration.configuration import Configuration
 from nvlib.novx_globals import _
