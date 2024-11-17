@@ -94,11 +94,9 @@ class Plugin(PluginBase):
         Optional arguments:
             prefs -- deprecated. Please use controller.get_preferences() instead.
         
-        Overrides the superclass method.
+        Extends the superclass method.
         """
-        self._mdl = model
-        self._ui = view
-        self._ctrl = controller
+        super().install(model, view, controller)
 
         # Create a submenu in the Tools menu.
         self._pluginMenu = tk.Menu(self._ui.toolsMenu, tearoff=0)
