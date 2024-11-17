@@ -15,7 +15,9 @@ import sys
 import unittest
 import zipfile
 
-import standalone
+from mvclib.view.ui import Ui
+from nvaeon2lib.aeon2_converter import Aeon2Converter
+from nvlib.configuration.configuration import Configuration
 
 UPDATE = False
 
@@ -25,6 +27,29 @@ UPDATE = False
 TEST_PATH = os.getcwd() + '/../test'
 TEST_DATA_PATH = TEST_PATH + '/data/'
 TEST_EXEC_PATH = TEST_PATH + '/temp/'
+APPNAME = 'nv_aeon2'
+SETTINGS = dict(
+    narrative_arc='Narrative',
+    property_description='Description',
+    property_notes='Notes',
+    property_moonphase='Moon phase',
+    type_arc='Arc',
+    type_character='Character',
+    type_location='Location',
+    type_item='Item',
+    role_arc='Arc',
+    role_plotline='Storyline',
+    role_character='Participant',
+    role_item='Item',
+    role_location='Location',
+    color_section='Red',
+    color_event='Yellow',
+
+)
+OPTIONS = dict(
+    add_moonphase=False,
+    lock_on_export=False,
+)
 
 # Test data
 INI_FILE = TEST_EXEC_PATH + 'nv_aeon2.ini'
@@ -32,6 +57,28 @@ TEST_NOVX = TEST_EXEC_PATH + 'yw7 Sample Project.novx'
 TEST_NOVX_BAK = TEST_EXEC_PATH + 'yw7 Sample Project.novx.bak'
 TEST_AEON = TEST_EXEC_PATH + 'yw7 Sample Project.aeonzip'
 TEST_AEON_BAK = TEST_EXEC_PATH + 'yw7 Sample Project.aeonzip.bak'
+
+
+def convert(sourcePath, installDir='.'):
+
+    # Try to get persistent configuration data
+    sourceDir = os.path.dirname(sourcePath)
+    iniFileName = f'{APPNAME}.ini'
+    iniFiles = [f'{installDir}/{iniFileName}', f'{sourceDir}/{iniFileName}']
+    configuration = Configuration(SETTINGS, OPTIONS)
+    for iniFile in iniFiles:
+        configuration.read(iniFile)
+    kwargs = {'suffix': ''}
+    kwargs.update(configuration.settings)
+    kwargs.update(configuration.options)
+
+    # Convert the file specified by sourcePath.
+    converter = Aeon2Converter()
+    converter.ui = Ui('')
+    converter.run(sourcePath, **kwargs)
+
+    # Write error message, if any.
+    sys.stderr.write(converter.ui.infoHowText)
 
 
 def open_timeline(filePath):
@@ -97,7 +144,7 @@ class NormalOperation(unittest.TestCase):
     def test_ambiguous_aeon_event(self):
         copyfile(TEST_DATA_PATH + 'normal.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_AEON, silentMode=True)
+        convert(TEST_AEON)
         self.assertStderrEquals('Error: Ambiguous Aeon event title "Mrs Hubbard sleeps".')
 
     # @unittest.skip('')
@@ -105,7 +152,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'nv_aeon2.ini', INI_FILE)
         copyfile(TEST_DATA_PATH + 'date_limits.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_AEON, silentMode=True)
+        convert(TEST_AEON)
         if UPDATE:
             copyfile(TEST_NOVX, TEST_DATA_PATH + 'date_limits.novx')
         self.assertEqual(read_file(TEST_NOVX), read_file(TEST_DATA_PATH + 'date_limits.novx'))
@@ -116,7 +163,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'date_limits.novx', TEST_NOVX)
         copyfile(TEST_DATA_PATH + 'updated.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_AEON, silentMode=True)
+        convert(TEST_AEON)
         if UPDATE:
             copyfile(TEST_NOVX, TEST_DATA_PATH + 'updated_from_aeon.novx')
         self.assertEqual(read_file(TEST_NOVX), read_file(TEST_DATA_PATH + 'updated_from_aeon.novx'))
@@ -127,7 +174,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'date_limits.novx', TEST_NOVX)
         copyfile(TEST_DATA_PATH + 'minimal.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_NOVX, silentMode=True)
+        convert(TEST_NOVX)
         if UPDATE:
             copyfile(TEST_AEON, TEST_DATA_PATH + 'created.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'created.aeonzip'))
@@ -137,7 +184,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'arc.novx', TEST_NOVX)
         copyfile(TEST_DATA_PATH + 'minimal.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_NOVX, silentMode=True)
+        convert(TEST_NOVX)
         if UPDATE:
             copyfile(TEST_AEON, TEST_DATA_PATH + 'created_arc.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'created_arc.aeonzip'))
@@ -147,7 +194,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'updated.novx', TEST_NOVX)
         copyfile(TEST_DATA_PATH + 'created.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_NOVX, silentMode=True)
+        convert(TEST_NOVX)
         if UPDATE:
             copyfile(TEST_AEON, TEST_DATA_PATH + 'updated_from_yw.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'updated_from_yw.aeonzip'))
@@ -157,7 +204,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'updated1.novx', TEST_NOVX)
         copyfile(TEST_DATA_PATH + 'updated_from_yw.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_NOVX, silentMode=True)
+        convert(TEST_NOVX)
         if UPDATE:
             copyfile(TEST_AEON, TEST_DATA_PATH + 'updated1_from_yw.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'updated1_from_yw.aeonzip'))
@@ -167,7 +214,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'nv_aeon2.ini', INI_FILE)
         copyfile(TEST_DATA_PATH + 'birthday.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_AEON, silentMode=True)
+        convert(TEST_AEON)
         if UPDATE:
             copyfile(TEST_AEON, TEST_DATA_PATH + 'birthday.aeonzip')
         self.assertEqual(read_file(TEST_NOVX), read_file(TEST_DATA_PATH + 'birthday.novx'))
@@ -177,7 +224,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + 'birthday.novx', TEST_NOVX)
         copyfile(TEST_DATA_PATH + 'created.aeonzip', TEST_AEON)
         os.chdir(TEST_EXEC_PATH)
-        standalone.run(TEST_NOVX, silentMode=True)
+        convert(TEST_NOVX)
         if UPDATE:
             copyfile(TEST_AEON, TEST_DATA_PATH + 'birthday_updated.aeonzip')
         self.assertEqual(open_timeline(TEST_AEON), open_timeline(TEST_DATA_PATH + 'birthday_updated.aeonzip'))
