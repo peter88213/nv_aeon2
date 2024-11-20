@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 4.8.1\n"
-"POT-Creation-Date: 2024-11-01 05:39:39\n"
-"PO-Revision-Date: 2024-11-01 05:39:39\n"
+"Project-Id-Version: 5.0.0\n"
+"POT-Creation-Date: 2024-11-20 14:29:42\n"
+"PO-Revision-Date: 2024-11-20 14:29:42\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -115,11 +115,11 @@ msgstr "Den Zeitstrahl aktualisieren?"
 msgid "\"AD\" era is missing in the calendar."
 msgstr "\"AD\" Ära fehlt im Kalender"
 
+msgid "https://peter88213.github.io/nvhelp-en"
+msgstr "https://peter88213.github.io/nvhelp-de"
+
 msgid "newer"
 msgstr "neuer"
-
-msgid "nvhelp-en"
-msgstr "nvhelp-de"
 
 msgid "older"
 msgstr "älter"
