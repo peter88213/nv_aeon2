@@ -38,15 +38,15 @@ class Aeon2Converter(Converter):
             sourceFile = JsonTimeline2(sourcePath, **kwargs)
             if os.path.isfile(f'{fileName}{nvService.get_novx_file_extension()}'):
                 # Update existing novelibre project from timeline
-                targetFile = nvService.make_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
+                targetFile = nvService.new_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
                 self.import_to_novx(sourceFile, targetFile)
             else:
                 # Create new novelibre project from timeline
-                targetFile = nvService.make_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
+                targetFile = nvService.new_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
                 self.create_novx(sourceFile, targetFile)
         elif fileExtension == nvService.get_novx_file_extension():
             # Update existing timeline from novelibre project
-            sourceFile = nvService.make_novx_file(sourcePath, **kwargs)
+            sourceFile = nvService.new_novx_file(sourcePath, **kwargs)
             targetFile = JsonTimeline2(f'{fileName}{JsonTimeline2.EXTENSION}', **kwargs)
             self.export_from_novx(sourceFile, targetFile)
         else:
@@ -77,8 +77,8 @@ class Aeon2Converter(Converter):
         message = ''
         try:
             self.check(source, target)
-            source.novel = nvService.make_novel()
-            target.novel = nvService.make_novel()
+            source.novel = nvService.new_novel()
+            target.novel = nvService.new_novel()
             source.read()
             target.read()
             target.write(source.novel)

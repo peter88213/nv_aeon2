@@ -159,7 +159,7 @@ class Plugin(PluginBase):
         except:
             pluginCnfDir = '.'
         iniFiles = [f'{pluginCnfDir}/{self.INI_FILENAME}', f'{sourceDir}/{self.INI_FILENAME}']
-        configuration = self._mdl.nvService.make_configuration(
+        configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS
             )
@@ -171,7 +171,7 @@ class Plugin(PluginBase):
         kwargs['add_moonphase'] = True
         kwargs['nv_service'] = self._mdl.nvService
         timeline = JsonTimeline2(timelinePath, **kwargs)
-        timeline.novel = self._mdl.nvService.make_novel()
+        timeline.novel = self._mdl.nvService.new_novel()
         try:
             timeline.read()
             timeline.write(timeline.novel)
@@ -238,7 +238,7 @@ class Plugin(PluginBase):
         kwargs = self._get_configuration(timelinePath)
         kwargs['nv_service'] = self._mdl.nvService
         source = JsonTimeline2(timelinePath, **kwargs)
-        target = self._mdl.nvService.make_novx_file(novxPath)
+        target = self._mdl.nvService.new_novx_file(novxPath)
 
         if os.path.isfile(target.filePath):
             self._ui.set_status(f'!{_("File already exists")}: "{norm_path(target.filePath)}".')
@@ -246,7 +246,7 @@ class Plugin(PluginBase):
 
         message = ''
         try:
-            source.novel = self._mdl.nvService.make_novel()
+            source.novel = self._mdl.nvService.new_novel()
             source.read()
             target.novel = source.novel
             target.write()
@@ -294,10 +294,10 @@ class Plugin(PluginBase):
 
         kwargs = self._get_configuration(timelinePath)
         kwargs['nv_service'] = self._mdl.nvService
-        source = self._mdl.nvService.make_novx_file(self._mdl.prjFile.filePath, **kwargs)
-        source.novel = self._mdl.nvService.make_novel()
+        source = self._mdl.nvService.new_novx_file(self._mdl.prjFile.filePath, **kwargs)
+        source.novel = self._mdl.nvService.new_novel()
         target = JsonTimeline2(timelinePath, **kwargs)
-        target.novel = self._mdl.nvService.make_novel()
+        target.novel = self._mdl.nvService.new_novel()
         try:
             source.read()
             target.read()
@@ -322,7 +322,7 @@ class Plugin(PluginBase):
         except:
             pluginCnfDir = '.'
         iniFiles = [f'{pluginCnfDir}/{self.INI_FILENAME}', f'{sourceDir}/{self.INI_FILENAME}']
-        configuration = self._mdl.nvService.make_configuration(
+        configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS
             )
@@ -357,9 +357,9 @@ class Plugin(PluginBase):
         kwargs = self._get_configuration(timelinePath)
         kwargs['nv_service'] = self._mdl.nvService
         source = JsonTimeline2(timelinePath, **kwargs)
-        target = self._mdl.nvService.make_novx_file(self._mdl.prjFile.filePath, **kwargs)
+        target = self._mdl.nvService.new_novx_file(self._mdl.prjFile.filePath, **kwargs)
         try:
-            target.novel = self._mdl.nvService.make_novel()
+            target.novel = self._mdl.nvService.new_novel()
             target.read()
             source.novel = target.novel
             source.read()
