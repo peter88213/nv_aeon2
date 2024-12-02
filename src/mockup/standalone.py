@@ -16,7 +16,7 @@ from mvclib.view.ui import Ui
 from mvclib.user_interface.ui_tk import UiTk
 from nvaeon2lib.aeon2_converter import Aeon2Converter
 from nvlib.configuration.configuration import Configuration
-from nvlib.novx_globals import _
+from nvlib.nv_locale import _
 
 SUFFIX = ''
 APPNAME = 'nv_aeon2'
