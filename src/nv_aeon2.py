@@ -309,7 +309,7 @@ class Plugin(PluginBase):
     def _get_configuration(self, sourcePath):
         """ Read persistent configuration data for Aeon 2 conversion.
         
-        First, look for a global configuration file in the aeon2nv installation directory,
+        First, look for a global configuration file in the novelibre installation directory,
         then look for a local configuration file in the project directory.
         """
         sourceDir = os.path.dirname(sourcePath)

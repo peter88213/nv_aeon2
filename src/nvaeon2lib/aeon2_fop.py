@@ -1,7 +1,7 @@
 """Provide helper functions for Aeon Timeline 2 file operation.
 
 Copyright (c) 2024 Peter Triesberger
-For further information see https://github.com/peter88213/aeon2nv
+For further information see https://github.com/peter88213/nv_aeon2
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import codecs
