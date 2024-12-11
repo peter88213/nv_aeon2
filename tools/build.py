@@ -12,13 +12,13 @@ import sys
 sys.path.insert(0, f'{os.getcwd()}/../../novelibre/tools')
 from package_builder import PackageBuilder
 
-VERSION = '5.0.2'
+VERSION = '5.0.3'
 
 
 class PluginBuilder(PackageBuilder):
 
     PRJ_NAME = 'nv_aeon2'
-    LOCAL_LIB = 'nvaeon2lib'
+    LOCAL_LIB = 'nvaeon2'
     GERMAN_TRANSLATION = True
 
     def __init__(self, version):

@@ -22,10 +22,10 @@ from nvlib.novx_globals import LOCATION_PREFIX
 from nvlib.novx_globals import PLOT_LINE_PREFIX
 from nvlib.novx_globals import PL_ROOT
 from nvlib.novx_globals import SECTION_PREFIX
-from nvaeon2lib.aeon2_fop import open_timeline
-from nvaeon2lib.aeon2_fop import save_timeline
-from nvaeon2lib.guid_generator import GuidGenerator
-from nvaeon2lib.nvaeon2_globals import _
+from nvaeon2.aeon2_fop import open_timeline
+from nvaeon2.aeon2_fop import save_timeline
+from nvaeon2.guid_generator import GuidGenerator
+from nvaeon2.nvaeon2_locale import _
 
 
 class JsonTimeline2(File):

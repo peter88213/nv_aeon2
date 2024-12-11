@@ -1,4 +1,4 @@
-"""Provide global variables and functions.
+"""Locale settings for nv_aeon2.
 
 Copyright (c) 2024 Peter Triesberger
 For further information see https://github.com/peter88213/nv_aeon2
