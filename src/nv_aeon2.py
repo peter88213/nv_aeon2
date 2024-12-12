@@ -99,7 +99,7 @@ class Plugin(PluginBase):
         self._ui.newMenu.add_command(label=_('Create from Aeon Timeline 2...'), command=self.create_novx)
 
         # Add an entry to the Help menu.
-        self._ui.helpMenu.add_command(label=_('Aeon 2 plugin Online help'), command=self.open_help_page)
+        self._ui.helpMenu.add_command(label=_('Aeon 2 plugin Online help'), command=self.open_help)
 
         #--- Configure the toolbar.
         self._configure_toolbar()
@@ -116,7 +116,7 @@ class Plugin(PluginBase):
         """
         self.pluginMenu.entryconfig(_('Update the project'), state='disabled')
 
-    def open_help_page(self):
+    def open_help(self):
         webbrowser.open(self.HELP_URL)
 
     def unlock(self):
