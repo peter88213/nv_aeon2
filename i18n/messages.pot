@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.0.4\n"
-"POT-Creation-Date: 2024-12-17 12:08:46\n"
+"Project-Id-Version: 5.1.0\n"
+"POT-Creation-Date: 2025-01-15 13:54:01\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -27,6 +27,18 @@ msgid "Aeon 2 plugin Online help"
 msgstr ""
 
 msgid "Aeon Timeline 2 project"
+msgstr ""
+
+msgid "Alt-Down"
+msgstr ""
+
+msgid "Alt-Left"
+msgstr ""
+
+msgid "Alt-Right"
+msgstr ""
+
+msgid "Alt-Up"
 msgstr ""
 
 msgid "Ambiguous Aeon arc \"{}\"."
@@ -74,6 +86,12 @@ msgstr ""
 msgid "Create from Aeon Timeline 2..."
 msgstr ""
 
+msgid "Ctrl"
+msgstr ""
+
+msgid "Del"
+msgstr ""
+
 msgid "File"
 msgstr ""
 
@@ -87,6 +105,12 @@ msgid "Information"
 msgstr ""
 
 msgid "Invalid JSON data in timeline"
+msgstr ""
+
+msgid "Major Character"
+msgstr ""
+
+msgid "Minor Character"
 msgstr ""
 
 msgid "New sections"
@@ -105,6 +129,9 @@ msgid "Save the project and update it?"
 msgstr ""
 
 msgid "Save the project and update the timeline?"
+msgstr ""
+
+msgid "Shift"
 msgstr ""
 
 msgid "Update the project"

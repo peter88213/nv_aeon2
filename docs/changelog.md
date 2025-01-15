@@ -4,6 +4,15 @@
 
 ## Changelog
 
+
+### Version 5.1.0
+
+- Making backup copies when saving timeline or novx files.
+
+API: 5.9
+Based on novelibre 5.9.1
+
+
 ### Version 5.0.4
 
 Library update:

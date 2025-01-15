@@ -1,11 +1,11 @@
 # nv_aeon2 Dictionary (English-German)
-# Copyright (C) 2022 Peter Triesberger
+# Copyright (C) 2025 Peter Triesberger
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.0.4\n"
-"POT-Creation-Date: 2024-12-17 12:08:46\n"
-"PO-Revision-Date: 2024-12-17 12:08:46\n"
+"Project-Id-Version: 5.1.0\n"
+"POT-Creation-Date: 2025-01-15 13:54:01\n"
+"PO-Revision-Date: 2025-01-15 13:54:01\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -24,6 +24,18 @@ msgstr "Aeon 2-Plugin Online-Hilfe"
 
 msgid "Aeon Timeline 2 project"
 msgstr "Aeon Timeline 2-Projekt"
+
+msgid "Alt-Down"
+msgstr "Alt-Ab"
+
+msgid "Alt-Left"
+msgstr "Alt-Links"
+
+msgid "Alt-Right"
+msgstr "Alt-Rechts"
+
+msgid "Alt-Up"
+msgstr "Alt-Auf"
 
 msgid "Ambiguous Aeon arc \"{}\"."
 msgstr "Bogen \"{}\" mehrfach in Aeon."
@@ -70,6 +82,12 @@ msgstr "Kann Datei nicht schreiben"
 msgid "Create from Aeon Timeline 2..."
 msgstr "Aus Aeon Timeline 2 erzeugen..."
 
+msgid "Ctrl"
+msgstr "Strg"
+
+msgid "Del"
+msgstr "Entf"
+
 msgid "File"
 msgstr "Datei"
 
@@ -84,6 +102,12 @@ msgstr "Information"
 
 msgid "Invalid JSON data in timeline"
 msgstr "Ungültige JSON-Daten in der Zeitstrahldatei"
+
+msgid "Major Character"
+msgstr "Hauptfigur"
+
+msgid "Minor Character"
+msgstr "Nebenfigur"
 
 msgid "New sections"
 msgstr "Neue Abschnitte"
@@ -102,6 +126,9 @@ msgstr "Projekt speichern und aktualisieren?"
 
 msgid "Save the project and update the timeline?"
 msgstr "Projekt speichern und den Zeitstrahl aktualisieren?"
+
+msgid "Shift"
+msgstr "Umschalt"
 
 msgid "Update the project"
 msgstr "Das Projekt aktualisieren"

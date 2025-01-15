@@ -12,7 +12,7 @@ from pathlib import Path
 import sys
 
 from mockup.aeon2_converter import Aeon2Converter
-from mvclib.user_interface.ui_tk import UiTk
+from nvlib.gui.user_interface.ui_tk import UiTk
 from mvclib.view.set_icon_tk import set_icon
 from mvclib.view.ui import Ui
 from nvlib.configuration.configuration import Configuration
