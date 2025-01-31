@@ -16,8 +16,8 @@ import unittest
 import zipfile
 
 from mockup.aeon2_converter import Aeon2Converter
-from mvclib.view.ui import Ui
 from nvlib.configuration.configuration import Configuration
+from nvlib.gui.ui import Ui
 
 UPDATE = False
 

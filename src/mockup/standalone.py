@@ -12,10 +12,10 @@ from pathlib import Path
 import sys
 
 from mockup.aeon2_converter import Aeon2Converter
-from nvlib.gui.user_interface.ui_tk import UiTk
-from mvclib.view.set_icon_tk import set_icon
-from mvclib.view.ui import Ui
 from nvlib.configuration.configuration import Configuration
+from nvlib.gui.set_icon_tk import set_icon
+from nvlib.gui.user_interface.ui import Ui
+from nvlib.gui.user_interface.ui_tk import UiTk
 from nvlib.nv_locale import _
 
 SUFFIX = ''

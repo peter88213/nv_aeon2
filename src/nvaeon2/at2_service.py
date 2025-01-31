@@ -9,9 +9,9 @@ import os
 from pathlib import Path
 from tkinter import filedialog
 
-from mvclib.controller.service_base import ServiceBase
 from nvaeon2.json_timeline2 import JsonTimeline2
 from nvaeon2.nvaeon2_locale import _
+from nvlib.controller.services.service_base import ServiceBase
 from nvlib.model.file.doc_open import open_document
 from nvlib.novx_globals import Error
 from nvlib.novx_globals import norm_path
