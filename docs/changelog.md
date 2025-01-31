@@ -5,6 +5,14 @@
 ## Changelog
 
 
+### Version 5.1.1
+
+- Fixed the order of the module imports.
+
+API: 5.9
+Based on novelibre 5.11.2
+
+
 ### Version 5.1.0
 
 - Making backup copies when saving timeline or novx files.

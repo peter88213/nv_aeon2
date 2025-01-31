@@ -20,8 +20,9 @@ from pathlib import Path
 from tkinter import ttk
 import webbrowser
 
-from nvaeon2.at2_service import At2Service
 from nvaeon2.nvaeon2_locale import _
+# must be the first import here
+from nvaeon2.at2_service import At2Service
 from nvlib.controller.plugin.plugin_base import PluginBase
 import tkinter as tk
 
