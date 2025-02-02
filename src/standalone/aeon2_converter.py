@@ -6,12 +6,12 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import os
 
-from nvlib.model.converter.converter import Converter
-from nvlib.novx_globals import Error
-from nvlib.novx_globals import norm_path
 from nvaeon2.json_timeline2 import JsonTimeline2
 from nvaeon2.nvaeon2_locale import _
 from nvlib.controller.services.nv_service import NvService
+from nvlib.model.converter.converter import Converter
+from nvlib.novx_globals import Error
+from nvlib.novx_globals import norm_path
 
 
 class Aeon2Converter(Converter):
@@ -39,21 +39,21 @@ class Aeon2Converter(Converter):
             if os.path.isfile(f'{fileName}{nvService.get_novx_file_extension()}'):
                 # Update existing novelibre project from timeline
                 targetFile = nvService.new_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
-                self.import_to_novx(sourceFile, targetFile)
+                self._import_to_novx(sourceFile, targetFile)
             else:
                 # Create new novelibre project from timeline
                 targetFile = nvService.new_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
-                self.create_novx(sourceFile, targetFile)
+                self._create_novx(sourceFile, targetFile)
         elif fileExtension == nvService.get_novx_file_extension():
             # Update existing timeline from novelibre project
             sourceFile = nvService.new_novx_file(sourcePath, **kwargs)
             targetFile = JsonTimeline2(f'{fileName}{JsonTimeline2.EXTENSION}', **kwargs)
-            self.export_from_novx(sourceFile, targetFile)
+            self._export_from_novx(sourceFile, targetFile)
         else:
             # Source file format is not supported
             self.ui.set_status(f'!{_("File type is not supported")}: "{norm_path(sourcePath)}".')
 
-    def export_from_novx(self, source, target):
+    def _export_from_novx(self, source, target):
         """Convert from novelibre project to other file format.
 
         Positional arguments:
@@ -76,7 +76,7 @@ class Aeon2Converter(Converter):
             _('Input: {0} "{1}"\nOutput: {2} "{3}"').format(source.DESCRIPTION, norm_path(source.filePath), target.DESCRIPTION, norm_path(target.filePath)))
         message = ''
         try:
-            self.check(source, target)
+            self._check(source, target)
             source.novel = nvService.new_novel()
             target.novel = nvService.new_novel()
             source.read()

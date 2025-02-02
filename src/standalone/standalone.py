@@ -1,22 +1,22 @@
-"""Synchronize Aeon Timeline 2 and yWriter
+"""Synchronize Aeon Timeline 2 and novelibre
 
 Version @release
 Requires Python 3.6+
 Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/aeon2yw
-Published under the MIT License (https://opensource.org/licenses/mit-license.php)
+License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import argparse
 import os
 from pathlib import Path
 import sys
 
-from mockup.aeon2_converter import Aeon2Converter
 from nvlib.configuration.configuration import Configuration
 from nvlib.gui.set_icon_tk import set_icon
-from nvlib.gui.user_interface.ui import Ui
-from nvlib.gui.user_interface.ui_tk import UiTk
 from nvlib.nv_locale import _
+from nvlib.user_interface.ui import Ui
+from nvlib.user_interface.ui_tk import UiTk
+from standalone.aeon2_converter import Aeon2Converter
 
 SUFFIX = ''
 APPNAME = 'nv_aeon2'
@@ -73,7 +73,7 @@ def run(sourcePath, silentMode=True, installDir='.'):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Synchronize Aeon Timeline 2 and yWriter',
+        description='Synchronize Aeon Timeline 2 and novelibre',
         epilog='')
     parser.add_argument('sourcePath',
                         metavar='Sourcefile',

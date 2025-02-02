@@ -17,7 +17,7 @@ import zipfile
 
 from mockup.aeon2_converter import Aeon2Converter
 from nvlib.configuration.configuration import Configuration
-from nvlib.gui.ui import Ui
+from nvlib.user_interface.ui import Ui
 
 UPDATE = False
 
