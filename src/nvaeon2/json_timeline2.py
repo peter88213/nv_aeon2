@@ -285,50 +285,38 @@ class JsonTimeline2(File):
     def _r_check_source_arcs(self):
         arcNames = []
         for entity in self._jsonData['entities']:
-            if entity['entityType'] != self._typeArcGuid:
-                continue
+            if entity['entityType'] == self._typeArcGuid:
+                if entity['name'] in arcNames:
+                    raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
 
-            # Check whether the arc title is unique.
-            if entity['name'] in arcNames:
-                raise Error(_('Ambiguous Aeon arc "{}".').format(entity['name']))
-
-            arcNames.append(entity['name'])
+                arcNames.append(entity['name'])
 
     def _r_check_source_characters(self):
         characterNames = []
         for entity in self._jsonData['entities']:
-            if entity['entityType'] != self._typeCharacterGuid:
-                continue
+            if entity['entityType'] == self._typeCharacterGuid:
+                if entity['name'] in characterNames:
+                    raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
 
-            # Check whether the character title is unique.
-            if entity['name'] in characterNames:
-                raise Error(_('Ambiguous Aeon character "{}".').format(entity['name']))
-
-            characterNames.append(entity['name'])
+                characterNames.append(entity['name'])
 
     def _r_check_source_items(self):
         itemNames = []
         for entity in self._jsonData['entities']:
-            if entity['entityType'] != self._typeItemGuid:
-                continue
+            if entity['entityType'] == self._typeItemGuid:
+                if entity['name'] in itemNames:
+                    raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
 
-            # Check whether the item title is unique.
-            if entity['name'] in itemNames:
-                raise Error(_('Ambiguous Aeon item "{}".').format(entity['name']))
-
-            itemNames.append(entity['name'])
+                itemNames.append(entity['name'])
 
     def _r_check_source_locations(self):
         locationNames = []
         for entity in self._jsonData['entities']:
-            if entity['entityType'] != self._typeLocationGuid:
-                continue
+            if entity['entityType'] == self._typeLocationGuid:
+                if entity['name'] in locationNames:
+                    raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
 
-            # Check whether the location title is unique.
-            if entity['name'] in locationNames:
-                raise Error(_('Ambiguous Aeon location "{}".').format(entity['name']))
-
-            locationNames.append(entity['name'])
+                locationNames.append(entity['name'])
 
     def _r_check_target_arcs(self):
         targetAcIdsByTitle = {}
@@ -417,7 +405,6 @@ class JsonTimeline2(File):
                         self._roleArcGuid = tplTypRol['guid']
                     elif tplTypRol['name'] == self._rolePlotline:
                         self._rolePlotlineGuid = tplTypRol['guid']
-                continue
 
     def _r_fetch_character_guids_by_id(self, targetCrIdsByTitle):
         crIdsByGuid = {}
@@ -462,7 +449,6 @@ class JsonTimeline2(File):
                     if tplTypRol['name'] == self._roleCharacter:
                         self._roleCharacterGuid = tplTypRol['guid']
                         break
-                continue
 
     def _r_fetch_color_definitions(self):
         for tplCol in self._jsonData['template']['colors']:
@@ -505,7 +491,6 @@ class JsonTimeline2(File):
                     if tplTypRol['name'] == self._roleItem:
                         self._roleItemGuid = tplTypRol['guid']
                         break
-                continue
 
     def _r_fetch_location_guids_by_id(self, targetLcIdsByTitle):
         lcIdsByGuid = {}
@@ -533,7 +518,6 @@ class JsonTimeline2(File):
                     if tplTypRol['name'] == self._roleLocation:
                         self._roleLocationGuid = tplTypRol['guid']
                         break
-                continue
 
     def _r_fetch_property_desc_guid(self):
         for tplPrp in self._jsonData['template']['properties']:
@@ -545,7 +529,7 @@ class JsonTimeline2(File):
         for tplPrp in self._jsonData['template']['properties']:
             if tplPrp['name'] == self._propertyMoonphase:
                 self._propertyMoonphaseGuid = tplPrp['guid']
-                break
+                return
 
     def _r_fetch_property_notes_guid(self):
         for tplPrp in self._jsonData['template']['properties']:
@@ -555,11 +539,9 @@ class JsonTimeline2(File):
 
     def _r_make_sections_deleted_in_aeon_unused(self, narrativeEvents):
         for scId in self.novel.sections:
-            if scId in narrativeEvents:
-                continue
-
-            if self.novel.sections[scId].scType == 0:
-                self.novel.sections[scId].scType = 1
+            if not scId in narrativeEvents:
+                if self.novel.sections[scId].scType == 0:
+                    self.novel.sections[scId].scType = 1
 
     def _r_put_new_sections_into_new_chapter(self, scIdsByDate):
         sectionsInChapters = []
@@ -783,49 +765,41 @@ class JsonTimeline2(File):
         """Ignore elements that are not related to a section."""
         srcArcTitles = []
         for acId in source.plotLines:
-            if not acId in relatedArcs:
-                continue
+            if acId in relatedArcs:
+                if source.plotLines[acId].title in srcArcTitles:
+                    raise Error(_('Ambiguous novelibre plot line "{}".').format(source.plotLines[acId].title))
 
-            if source.plotLines[acId].title in srcArcTitles:
-                raise Error(_('Ambiguous novelibre plot line "{}".').format(source.plotLines[acId].title))
-
-            srcArcTitles.append(source.plotLines[acId].title)
+                srcArcTitles.append(source.plotLines[acId].title)
 
     def _w_check_source_characters(self, source, relatedCharacters):
         """Ignore elements that are not related to a section."""
         srcChrNames = []
         for crId in source.characters:
-            if not crId in relatedCharacters:
-                continue
+            if crId in relatedCharacters:
+                if source.characters[crId].title in srcChrNames:
+                    raise Error(_('Ambiguous novelibre character "{}".').format(source.characters[crId].title))
 
-            if source.characters[crId].title in srcChrNames:
-                raise Error(_('Ambiguous novelibre character "{}".').format(source.characters[crId].title))
-
-            srcChrNames.append(source.characters[crId].title)
+                srcChrNames.append(source.characters[crId].title)
 
     def _w_check_source_locations(self, source, relatedLocations):
         """Ignore elements that are not related to a section."""
         srcLocTitles = []
         for lcId in source.locations:
-            if not lcId in relatedLocations:
-                continue
+            if lcId in relatedLocations:
+                if source.locations[lcId].title in srcLocTitles:
+                    raise Error(_('Ambiguous novelibre location "{}".').format(source.locations[lcId].title))
 
-            if source.locations[lcId].title in srcLocTitles:
-                raise Error(_('Ambiguous novelibre location "{}".').format(source.locations[lcId].title))
-
-            srcLocTitles.append(source.locations[lcId].title)
+                srcLocTitles.append(source.locations[lcId].title)
 
     def _w_check_source_items(self, source, relatedItems):
         """Ignore elements that are not related to a section."""
         srcItmTitles = []
         for itId in source.items:
-            if not itId in relatedItems:
-                continue
+            if itId in relatedItems:
+                if source.items[itId].title in srcItmTitles:
+                    raise Error(_('Ambiguous novelibre item "{}".').format(source.items[itId].title))
 
-            if source.items[itId].title in srcItmTitles:
-                raise Error(_('Ambiguous novelibre item "{}".').format(source.items[itId].title))
-
-            srcItmTitles.append(source.items[itId].title)
+                srcItmTitles.append(source.items[itId].title)
 
     def _w_check_source_sections(self, source):
         srcScnTitles = []
