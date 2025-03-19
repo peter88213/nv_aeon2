@@ -153,11 +153,17 @@ class At2Service(ServiceBase):
             return
 
         if self._mdl.isModified:
-            if not self._ui.ask_yes_no(_('Save the project and update the timeline?')):
+            if not self._ui.ask_yes_no(
+                _('Save the project and update the timeline?'),
+                title=self.windowTitle
+                ):
                 return
 
             self._ctrl.save_project()
-        elif not self._ui.ask_yes_no(_('Update the timeline?')):
+        elif not self._ui.ask_yes_no(
+            _('Update the timeline?'),
+            title=self.windowTitle
+            ):
             return
 
         kwargs = self._get_configuration(timelinePath)
@@ -194,7 +200,10 @@ class At2Service(ServiceBase):
             self._ui.set_status(_('!No {} file available for this project.').format(self.windowTitle))
             return
 
-        if not self._ui.ask_yes_no(_('Save the project and update it?')):
+        if not self._ui.ask_yes_no(
+            _('Save the project and update it?'),
+            title=self.windowTitle
+            ):
             return
 
         self._ctrl.save_project()
@@ -202,6 +211,7 @@ class At2Service(ServiceBase):
         kwargs['nv_service'] = self._mdl.nvService
         source = JsonTimeline2(timelinePath, **kwargs)
         target = self._mdl.nvService.new_novx_file(self._mdl.prjFile.filePath, **kwargs)
+        message = ''
         try:
             target.novel = self._mdl.nvService.new_novel()
             target.read()
