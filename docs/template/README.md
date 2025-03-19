@@ -50,7 +50,7 @@ The plugin adds an **Aeon Timeline 2** submenu to the *novelibre* **Tools** menu
 ## Requirements
 
 - Aeon Timeline 2 
-- [novelibre](https://github.com/peter88213/novelibre/) version 5.9+
+- [novelibre](https://github.com/peter88213/novelibre/) version 5.17+
 
 ## Download and install
 

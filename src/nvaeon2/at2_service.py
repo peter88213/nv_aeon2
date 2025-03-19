@@ -235,7 +235,11 @@ class At2Service(ServiceBase):
                 message = _('Cannot determine file date.')
         else:
             message = _('No {} file available for this project.').format(self.windowTitle)
-        self._ui.show_info(message, title=self.windowTitle)
+        self._ui.show_info(
+            message=self.windowTitle,
+            detail=message,
+            title=_('Information')
+            )
 
     def launch_application(self):
         """Launch Aeon Timeline 2 with the current project."""
