@@ -114,20 +114,20 @@ class At2Service(ServiceBase):
             self._ui.set_status(f'!{_("File already exists")}: "{norm_path(target.filePath)}".')
             return
 
-        message = ''
+        statusMsg = ''
         try:
             source.novel = self._mdl.nvService.new_novel()
             source.read()
             target.novel = source.novel
             target.write()
         except Error as ex:
-            message = f'!{str(ex)}'
+            statusMsg = f'!{str(ex)}'
         else:
             self._ctrl.fileManager.copy_to_backup(target.filePath)
-            message = f'{_("File written")}: "{norm_path(target.filePath)}".'
+            statusMsg = f'{_("File written")}: "{norm_path(target.filePath)}".'
             self._ctrl.open_project(filePath=target.filePath, doNotSave=True)
         finally:
-            self._ui.set_status(message)
+            self._ui.set_status(statusMsg)
 
     def export_from_novx(self):
         """Update the timeline file from the novx file.
@@ -154,14 +154,15 @@ class At2Service(ServiceBase):
 
         if self._mdl.isModified:
             if not self._ui.ask_yes_no(
-                _('Save the project and update the timeline?'),
+                message=_('Save the project and update the timeline?'),
+                detail=f"{_('There are unsaved changes')}.",
                 title=self.windowTitle
                 ):
                 return
 
             self._ctrl.save_project()
         elif not self._ui.ask_yes_no(
-            _('Update the timeline?'),
+            message=_('Update the timeline?'),
             title=self.windowTitle
             ):
             return
@@ -240,14 +241,14 @@ class At2Service(ServiceBase):
                 else:
                     cmp = _('older')
                 fileDate = datetime.fromtimestamp(timestamp).strftime('%c')
-                message = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(self.windowTitle, cmp, fileDate)
+                tlInfo = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(self.windowTitle, cmp, fileDate)
             except:
-                message = _('Cannot determine file date.')
+                tlInfo = _('Cannot determine file date.')
         else:
-            message = _('No {} file available for this project.').format(self.windowTitle)
+            tlInfo = _('No {} file available for this project.').format(self.windowTitle)
         self._ui.show_info(
             message=self.windowTitle,
-            detail=message,
+            detail=tlInfo,
             title=_('Information')
             )
 

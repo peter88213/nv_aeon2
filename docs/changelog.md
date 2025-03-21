@@ -5,12 +5,12 @@
 ## Changelog
 
 
-### Version 5.2.1
+### Version 5.2.2
 
 - Updated the messaging.
 
 API: 5.17
-Based on novelibre 5.17.1
+Based on novelibre 5.17.3
 
 
 ### Version 5.2.0

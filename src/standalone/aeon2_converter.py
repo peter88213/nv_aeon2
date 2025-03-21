@@ -63,7 +63,7 @@ class Aeon2Converter(Converter):
         Operation:
         1. Send specific information about the conversion to the UI.
         2. Convert source into target.
-        3. Pass the message to the UI.
+        3. Pass the status message to the UI.
         4. Save the new file pathname.
 
         Error handling:
@@ -74,7 +74,7 @@ class Aeon2Converter(Converter):
         nvService = NvService()
         self.ui.set_info(
             _('Input: {0} "{1}"\nOutput: {2} "{3}"').format(source.DESCRIPTION, norm_path(source.filePath), target.DESCRIPTION, norm_path(target.filePath)))
-        message = ''
+        statusMsg = ''
         try:
             self._check(source, target)
             source.novel = nvService.new_novel()
@@ -83,10 +83,10 @@ class Aeon2Converter(Converter):
             target.read()
             target.write(source.novel)
         except Error as ex:
-            message = f'!{str(ex)}'
+            statusMsg = f'!{str(ex)}'
             self.newFile = None
         else:
-            message = f'{_("File written")}: "{norm_path(target.filePath)}".'
+            statusMsg = f'{_("File written")}: "{norm_path(target.filePath)}".'
             self.newFile = target.filePath
         finally:
-            self.ui.set_status(message)
+            self.ui.set_status(statusMsg)
