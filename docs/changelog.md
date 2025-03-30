@@ -5,6 +5,14 @@
 ## Changelog
 
 
+### Version 5.2.3
+
+- Fix a bug where the **File > New > Create from Aeon Timeline 2...** command cannot be properly aborted.
+
+API: 5.18
+Based on novelibre 5.18.0
+
+
 ### Version 5.2.2
 
 - Updated the messaging.

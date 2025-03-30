@@ -102,7 +102,9 @@ class At2Service(ServiceBase):
         if not timelinePath:
             return
 
-        self._ctrl.close_project()
+        if not self._ctrl.close_project():
+            return
+
         root, __ = os.path.splitext(timelinePath)
         novxPath = f'{root}{self._mdl.nvService.get_novx_file_extension()}'
         kwargs = self._get_configuration(timelinePath)
