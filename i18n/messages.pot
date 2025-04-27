@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.2.3\n"
-"POT-Creation-Date: 2025-03-30 15:36:04\n"
+"Project-Id-Version: 5.2.4\n"
+"POT-Creation-Date: 2025-04-27 13:41:59\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -146,7 +146,7 @@ msgstr ""
 msgid "Update the timeline?"
 msgstr ""
 
-msgid "https://peter88213.github.io/nvhelp-en"
+msgid "https://peter88213.github.io/nv_aeon2/help/"
 msgstr ""
 
 msgid "newer"

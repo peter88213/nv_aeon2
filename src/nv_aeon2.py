@@ -33,7 +33,7 @@ class Plugin(PluginBase):
     API_VERSION = '5.18'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
-    HELP_URL = f'{_("https://peter88213.github.io/nvhelp-en")}/nv_aeon2/'
+    HELP_URL = _('https://peter88213.github.io/nv_aeon2/help/')
 
     FEATURE = 'Aeon Timeline 2'
 
