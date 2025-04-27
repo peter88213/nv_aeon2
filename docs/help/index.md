@@ -1,5 +1,6 @@
-![external-link](../img/external-link.png)
-[Deutsch](../help_de/)
+[Project homepage](https://github.com/peter88213/nv_aeon2) > [Index](../) > Help
+
+![external-link](../img/external-link.png)[Deutsch](../help_de/)
 
 ------------------------------------------------------------------------
 
