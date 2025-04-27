@@ -1,5 +1,5 @@
-![external-link](../images/external-link.png)
-[English](https://peter88213.github.io/nv_aeon2/help/)
+![external-link](../img/external-link.png)
+[English](../help/)
 
 ------------------------------------------------------------------------
 
