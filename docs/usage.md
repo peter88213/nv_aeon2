@@ -33,7 +33,7 @@ the new template appears in the *Custom Templates* area.
 
 # Operation
 
-See the [online help](https://peter88213.github.io/nvhelp-en/nv_aeon2/).
+See the [online help](https://peter88213.github.io/nv_aeon2/help/).
 
 ---
 

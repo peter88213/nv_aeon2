@@ -1,7 +1,7 @@
 [![Download the latest release](docs/img/download-button.png)](https://github.com/peter88213/nv_aeon2/raw/main/dist/nv_aeon2_v5.2.3.pyzw)
 [![Changelog](docs/img/changelog-button.png)](docs/changelog.md)
 [![News/Feedback](docs/img/news-button.png)](https://github.com/peter88213/novelibre/discussions)
-[![Online help](docs/img/help-button.png)](https://peter88213.github.io/nvhelp-en/nv_aeon2/)
+[![Online help](docs/img/help-button.png)](https://peter88213.github.io/nv_aeon2/help/)
 
 
 # ![A](icons/aLogo32.png) nv_aeon2
@@ -115,7 +115,7 @@ the new template appears in the *Custom Templates* area.
 
 ## Usage and conventions
 
-See the [online manual](https://peter88213.github.io/nvhelp-en/nv_aeon2/)
+See the [online manual](https://peter88213.github.io/nv_aeon2/help/)
 
 ---
 
