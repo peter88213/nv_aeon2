@@ -2,7 +2,7 @@
 
 ---
 
-# nv_aeon2
+# Index
 
 An Aeon Timeline 2 converter plugin for [novelibre](https://github.com/peter88213/novelibre/).
 

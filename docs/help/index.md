@@ -4,7 +4,7 @@
 
 ------------------------------------------------------------------------
 
-#  nv_aeon2 User guide
+#  User guide
 
 This page refers to the latest
 [nv_aeon2](https://github.com/peter88213/nv_aeon2/) release. You can
