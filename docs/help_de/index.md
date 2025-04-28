@@ -1,10 +1,10 @@
-[Project homepage](https://github.com/peter88213/nv_aeon2) > [Index](../) > Help
+[Projekt-Homepage](https://github.com/peter88213/nv_aeon2) > [Index](../) > Help
 
 ![external-link](../img/external-link.png)[English](../help/)
 
 ------------------------------------------------------------------------
 
-# Benutzerhandbuch
+# nv_aeon2 Benutzerhandbuch
 
 ---
 
@@ -350,3 +350,5 @@ enthalten, die oben aufgelistet sind. Es genügen die durch Sie
 geänderten Einträge.
 
 ---
+
+Copyright (c) 2025 by Peter Triesberger. All rights reserved.

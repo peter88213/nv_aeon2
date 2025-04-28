@@ -4,7 +4,7 @@
 
 ------------------------------------------------------------------------
 
-#  User guide
+#  nv_aeon2 User guide
 
 This page refers to the latest
 [nv_aeon2](https://github.com/peter88213/nv_aeon2/) release. You can
@@ -328,3 +328,5 @@ Your custom configuration file does not have to contain all the entries
 listed above. The changed entries are sufficient.
 
 ---
+
+Copyright (c) 2025 by Peter Triesberger. All rights reserved.
