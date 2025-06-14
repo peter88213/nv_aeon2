@@ -17,7 +17,11 @@ except:
     # Fallback for old Windows versions.
     CURRENT_LANGUAGE = locale.getdefaultlocale()[0][:2]
 try:
-    t = gettext.translation('nv_aeon2', LOCALE_PATH, languages=[CURRENT_LANGUAGE])
+    t = gettext.translation(
+        'nv_aeon2',
+        LOCALE_PATH,
+        languages=[CURRENT_LANGUAGE],
+    )
     _ = t.gettext
 except:
 
