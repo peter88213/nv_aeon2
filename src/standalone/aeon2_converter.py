@@ -29,29 +29,47 @@ class Aeon2Converter(Converter):
         nvService = NvService()
         kwargs['nv_service'] = nvService
         if not os.path.isfile(sourcePath):
-            self.ui.set_status(f'!{_("File not found")}: "{norm_path(sourcePath)}".')
+            self.ui.set_status(
+                f'!{_("File not found")}: "{norm_path(sourcePath)}".'
+            )
             return
 
         fileName, fileExtension = os.path.splitext(sourcePath)
         if fileExtension == JsonTimeline2.EXTENSION:
             # Source is a timeline
             sourceFile = JsonTimeline2(sourcePath, **kwargs)
-            if os.path.isfile(f'{fileName}{nvService.get_novx_file_extension()}'):
+            if os.path.isfile(
+                f'{fileName}{nvService.get_novx_file_extension()}'
+            ):
                 # Update existing novelibre project from timeline
-                targetFile = nvService.new_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
+                targetFile = nvService.new_novx_file(
+                    f'{fileName}{nvService.get_novx_file_extension()}',
+                    **kwargs
+                )
                 self._import_to_novx(sourceFile, targetFile)
             else:
                 # Create new novelibre project from timeline
-                targetFile = nvService.new_novx_file(f'{fileName}{nvService.get_novx_file_extension()}', **kwargs)
+                targetFile = nvService.new_novx_file(
+                    f'{fileName}{nvService.get_novx_file_extension()}',
+                    **kwargs
+                )
                 self._create_novx(sourceFile, targetFile)
         elif fileExtension == nvService.get_novx_file_extension():
             # Update existing timeline from novelibre project
             sourceFile = nvService.new_novx_file(sourcePath, **kwargs)
-            targetFile = JsonTimeline2(f'{fileName}{JsonTimeline2.EXTENSION}', **kwargs)
+            targetFile = JsonTimeline2(
+                f'{fileName}{JsonTimeline2.EXTENSION}',
+                **kwargs
+            )
             self._export_from_novx(sourceFile, targetFile)
         else:
             # Source file format is not supported
-            self.ui.set_status(f'!{_("File type is not supported")}: "{norm_path(sourcePath)}".')
+            self.ui.set_status(
+                (
+                    f'!{_("File type is not supported")}: '
+                    f'"{norm_path(sourcePath)}".'
+                )
+            )
 
     def _export_from_novx(self, source, target):
         """Convert from novelibre project to other file format.
@@ -73,7 +91,13 @@ class Aeon2Converter(Converter):
         """
         nvService = NvService()
         self.ui.set_info(
-            _('Input: {0} "{1}"\nOutput: {2} "{3}"').format(source.DESCRIPTION, norm_path(source.filePath), target.DESCRIPTION, norm_path(target.filePath)))
+            _('Input: {0} "{1}"\nOutput: {2} "{3}"').format(
+                source.DESCRIPTION,
+                norm_path(source.filePath),
+                target.DESCRIPTION,
+                norm_path(target.filePath)
+            )
+        )
         statusMsg = ''
         try:
             self._check(source, target)

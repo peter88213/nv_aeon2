@@ -56,7 +56,10 @@ def run(sourcePath, silentMode=True, installDir='.'):
     if not sourceDir:
         sourceDir = '.'
     iniFileName = f'{APPNAME}.ini'
-    iniFiles = [f'{installDir}/{iniFileName}', f'{sourceDir}/{iniFileName}']
+    iniFiles = [
+        f'{installDir}/{iniFileName}',
+        f'{sourceDir}/{iniFileName}',
+    ]
     configuration = Configuration(SETTINGS, OPTIONS)
     for iniFile in iniFiles:
         configuration.read(iniFile)
@@ -75,13 +78,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Synchronize Aeon Timeline 2 and novelibre',
         epilog='')
-    parser.add_argument('sourcePath',
-                        metavar='Sourcefile',
-                        help='The path of the aeonzip or novx file.')
+    parser.add_argument(
+        'sourcePath',
+        metavar='Sourcefile',
+        help='The path of the aeonzip or novx file.'
+    )
 
-    parser.add_argument('--silent',
-                        action="store_true",
-                        help='suppress error messages and the request to confirm overwriting')
+    parser.add_argument(
+        '--silent',
+        action="store_true",
+        help='suppress error messages and the request to confirm overwriting'
+    )
     args = parser.parse_args()
     try:
         homeDir = str(Path.home()).replace('\\', '/')

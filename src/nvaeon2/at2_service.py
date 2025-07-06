@@ -57,7 +57,10 @@ class At2Service(ServiceBase):
         if not self._mdl.prjFile:
             return
 
-        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        timelinePath = (
+            f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}'
+            f'{JsonTimeline2.EXTENSION}'
+        )
         if not os.path.isfile(timelinePath):
             return
 
@@ -69,7 +72,10 @@ class At2Service(ServiceBase):
             pluginCnfDir = f'{homeDir}/{self.INI_FILEPATH}'
         except:
             pluginCnfDir = '.'
-        iniFiles = [f'{pluginCnfDir}/{self.INI_FILENAME}', f'{sourceDir}/{self.INI_FILENAME}']
+        iniFiles = [
+            f'{pluginCnfDir}/{self.INI_FILENAME}',
+            f'{sourceDir}/{self.INI_FILENAME}',
+        ]
         configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS
@@ -113,7 +119,12 @@ class At2Service(ServiceBase):
         target = self._mdl.nvService.new_novx_file(novxPath)
 
         if os.path.isfile(target.filePath):
-            self._ui.set_status(f'!{_("File already exists")}: "{norm_path(target.filePath)}".')
+            self._ui.set_status(
+                (
+                    f'!{_("File already exists")}: '
+                    f'"{norm_path(target.filePath)}".'
+                )
+            )
             return
 
         statusMsg = ''
@@ -149,9 +160,16 @@ class At2Service(ServiceBase):
                 return
                 # cannot create a timeline if no novx project exists
 
-        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        timelinePath = (
+            f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}'
+            f'{JsonTimeline2.EXTENSION}'
+        )
         if not os.path.isfile(timelinePath):
-            self._ui.set_status(_('!No {} file available for this project.').format(self.windowTitle))
+            self._ui.set_status(
+                _('!No {} file available for this project.').format(
+                    self.windowTitle
+                )
+            )
             return
 
         if self._mdl.isModified:
@@ -171,7 +189,10 @@ class At2Service(ServiceBase):
 
         kwargs = self._get_configuration(timelinePath)
         kwargs['nv_service'] = self._mdl.nvService
-        source = self._mdl.nvService.new_novx_file(self._mdl.prjFile.filePath, **kwargs)
+        source = self._mdl.nvService.new_novx_file(
+            self._mdl.prjFile.filePath,
+            **kwargs
+        )
         source.novel = self._mdl.nvService.new_novel()
         target = JsonTimeline2(timelinePath, **kwargs)
         target.novel = self._mdl.nvService.new_novel()
@@ -189,18 +210,29 @@ class At2Service(ServiceBase):
         """Update the current project file from the timeline file.
         
         Note:
-        The NvWorkFile object of the open project cannot be used as target object.
-        This is because the JsonTimeline2 source object's IDs do not match, so 
-        the sections and other elements are identified by their titles when merging.
-        If anything goes wrong during the conversion, the model remains untouched.
+        The NvWorkFile object of the open project cannot 
+        be used as target object.
+        This is because the JsonTimeline2 source object's 
+        IDs do not match, so 
+        the sections and other elements are identified 
+        by their titles when merging.
+        If anything goes wrong during the conversion, 
+        the model remains untouched.
         """
         self._ui.restore_status()
         if not self._mdl.prjFile:
             return
 
-        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        timelinePath = (
+            f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}'
+            f'{JsonTimeline2.EXTENSION}'
+        )
         if not os.path.isfile(timelinePath):
-            self._ui.set_status(_('!No {} file available for this project.').format(self.windowTitle))
+            self._ui.set_status(
+                _('!No {} file available for this project.').format(
+                    self.windowTitle
+                )
+            )
             return
 
         if not self._ui.ask_yes_no(
@@ -213,7 +245,10 @@ class At2Service(ServiceBase):
         kwargs = self._get_configuration(timelinePath)
         kwargs['nv_service'] = self._mdl.nvService
         source = JsonTimeline2(timelinePath, **kwargs)
-        target = self._mdl.nvService.new_novx_file(self._mdl.prjFile.filePath, **kwargs)
+        target = self._mdl.nvService.new_novx_file(
+            self._mdl.prjFile.filePath,
+            **kwargs
+        )
         message = ''
         try:
             target.novel = self._mdl.nvService.new_novel()
@@ -224,7 +259,10 @@ class At2Service(ServiceBase):
             target.write()
             self._ctrl.fileManager.copy_to_backup(target.filePath)
             message = f'{_("File written")}: "{norm_path(target.filePath)}".'
-            self._ctrl.open_project(filePath=self._mdl.prjFile.filePath, doNotSave=True)
+            self._ctrl.open_project(
+                filePath=self._mdl.prjFile.filePath,
+                doNotSave=True
+            )
         except Error as ex:
             message = f'!{str(ex)}'
         self._ui.set_status(f'{message}')
@@ -234,7 +272,10 @@ class At2Service(ServiceBase):
         if not self._mdl.prjFile:
             return
 
-        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        timelinePath = (
+            f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}'
+            f'{JsonTimeline2.EXTENSION}'
+        )
         if os.path.isfile(timelinePath):
             try:
                 timestamp = os.path.getmtime(timelinePath)
@@ -243,11 +284,17 @@ class At2Service(ServiceBase):
                 else:
                     cmp = _('older')
                 fileDate = datetime.fromtimestamp(timestamp).strftime('%c')
-                tlInfo = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(self.windowTitle, cmp, fileDate)
+                tlInfo = _('{0} file is {1} than the novelibre project.\n (last saved on {2})').format(
+                    self.windowTitle,
+                    cmp,
+                    fileDate
+                )
             except:
                 tlInfo = _('Cannot determine file date.')
         else:
-            tlInfo = _('No {} file available for this project.').format(self.windowTitle)
+            tlInfo = _('No {} file available for this project.').format(
+                self.windowTitle
+            )
         self._ui.show_info(
             message=self.windowTitle,
             detail=tlInfo,
@@ -260,7 +307,10 @@ class At2Service(ServiceBase):
         if not self._mdl.prjFile:
             return
 
-        timelinePath = f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}{JsonTimeline2.EXTENSION}'
+        timelinePath = (
+            f'{os.path.splitext(self._mdl.prjFile.filePath)[0]}'
+            f'{JsonTimeline2.EXTENSION}'
+        )
         prefs = self._get_configuration(timelinePath)
         if os.path.isfile(timelinePath):
             if prefs['lock_on_export']:
@@ -270,13 +320,18 @@ class At2Service(ServiceBase):
             except Exception as ex:
                 self._ui.set_status(f'!{str(ex)}')
         else:
-            self._ui.set_status(_('!No {} file available for this project.').format(self.windowTitle))
+            self._ui.set_status(
+                _('!No {} file available for this project.').format(
+                    self.windowTitle
+                )
+            )
 
     def _get_configuration(self, sourcePath):
         """ Read persistent configuration data for Aeon 2 conversion.
         
-        First, look for a global configuration file in the novelibre installation directory,
-        then look for a local configuration file in the project directory.
+        First, look for a global configuration file in the 
+        novelibre installation directory, then look for 
+        a local configuration file in the project directory.
         """
         sourceDir = os.path.dirname(sourcePath)
         if not sourceDir:
@@ -286,7 +341,10 @@ class At2Service(ServiceBase):
             pluginCnfDir = f'{homeDir}/{self.INI_FILEPATH}'
         except:
             pluginCnfDir = '.'
-        iniFiles = [f'{pluginCnfDir}/{self.INI_FILENAME}', f'{sourceDir}/{self.INI_FILENAME}']
+        iniFiles = [
+            f'{pluginCnfDir}/{self.INI_FILENAME}',
+            f'{sourceDir}/{self.INI_FILENAME}'
+        ]
         configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS

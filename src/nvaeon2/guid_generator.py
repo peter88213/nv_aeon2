@@ -17,6 +17,12 @@ class GuidGenerator:
         """Return a version-3 GUID according to RFC 4122.
         
         Positional arguments:
-            fragment: str -- fragment to be appended to the URL for individual GUID generation.
+            fragment: str -- fragment to be appended to the URL 
+                             for individual GUID generation.
         """
-        return str(uuid.uuid3(uuid.NAMESPACE_URL, f'{self._url}#{fragment}'))
+        return str(
+            uuid.uuid3(
+                uuid.NAMESPACE_URL,
+                f'{self._url}#{fragment}'
+            )
+        )
