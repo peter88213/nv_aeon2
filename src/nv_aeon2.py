@@ -117,6 +117,8 @@ class Plugin(PluginBase):
         # Add an entry to the "File > New" menu.
         self._ui.newMenu.add_command(
             label=_('Create from Aeon Timeline 2...'),
+            image=self._icon,
+            compound='left',
             command=self.create_novx,
         )
 
