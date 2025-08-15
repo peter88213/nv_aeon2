@@ -84,4 +84,4 @@ def main(zipped=True):
             f'at "{os.path.normpath(applicationDir)}".'
         )
 
-    input('Press any key to quit.')
+    input('Press ENTER to quit.')
