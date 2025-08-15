@@ -6,13 +6,13 @@ Copyright (c) 2025 Peter Triesberger
 For further information see https://github.com/peter88213/nv_aeon2
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
-from shutil import copytree
-from shutil import copy2
-from shutil import rmtree
 import os
+from pathlib import Path
+from shutil import copy2
+from shutil import copytree
+from shutil import rmtree
 import sys
 import zipfile
-from pathlib import Path
 
 PLUGIN = 'nv_aeon2.py'
 VERSION = ' @release'
@@ -49,7 +49,7 @@ def main(zipped=True):
     scriptDir = os.path.dirname(scriptPath)
     os.chdir(scriptDir)
 
-    print(f'*** Installing {PLUGIN}{VERSION} ***')
+    print(f'*** Installing {PLUGIN} {VERSION} ***')
     homePath = str(Path.home()).replace('\\', '/')
     applicationDir = f'{homePath}/.novx'
     if os.path.isdir(applicationDir):
@@ -75,17 +75,13 @@ def main(zipped=True):
 
         # Show a success message.
         print(
-            (
-                f'Sucessfully installed "{PLUGIN}" '
-                f'at "{os.path.normpath(pluginDir)}".'
-            )
+            f'Sucessfully installed "{PLUGIN}" '
+            f'at "{os.path.normpath(pluginDir)}".'
         )
     else:
         print(
-            (
-                'ERROR: Cannot find a novelibre installation '
-                f'at "{os.path.normpath(applicationDir)}".'
-            )
+            'ERROR: Cannot find a novelibre installation '
+            f'at "{os.path.normpath(applicationDir)}".'
         )
 
     input('Press any key to quit.')
