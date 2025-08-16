@@ -37,7 +37,7 @@ def cp_tree(sourceDir, targetDir):
     copytree(sourceDir, f'{targetDir}/{sourceDir}', dirs_exist_ok=True)
 
 
-def main(zipped=True):
+def install(zipped):
     if zipped:
         copy_file = extract_file
         copy_tree = extract_tree
@@ -85,3 +85,12 @@ def main(zipped=True):
         )
 
     input('Press ENTER to quit.')
+
+
+def main(zipped=True):
+    try:
+        install(zipped)
+    except Exception as ex:
+        print(str(ex))
+        input('Press ENTER to quit.')
+

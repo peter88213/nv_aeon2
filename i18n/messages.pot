@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 5.3.1\n"
-"POT-Creation-Date: 2025-07-07 11:50:48\n"
+"POT-Creation-Date: 2025-08-16 15:02:10\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -18,6 +18,12 @@ msgid "!No {} file available for this project."
 msgstr ""
 
 msgid "\"AD\" era is missing in the calendar."
+msgstr ""
+
+msgid "1st Edit"
+msgstr ""
+
+msgid "2nd Edit"
 msgstr ""
 
 msgid "Add or update moon phase data"
@@ -92,6 +98,12 @@ msgstr ""
 msgid "Del"
 msgstr ""
 
+msgid "Done"
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
 msgid "File"
 msgstr ""
 
@@ -123,6 +135,9 @@ msgid "No {} file available for this project."
 msgstr ""
 
 msgid "Open Aeon Timeline 2"
+msgstr ""
+
+msgid "Outline"
 msgstr ""
 
 msgid "Save the project and update it?"

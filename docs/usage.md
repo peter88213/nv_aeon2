@@ -9,7 +9,7 @@ A [novelibre](https://github.com/peter88213/novelibre/) plugin providing synchro
 # Installation
 
 - Unzip the downloaded zipfile into a new folder.
-- Move into this new folder and launch **setup.pyw**. This installs the plugin.
+- Move into this new folder and launch **setup.py**. This installs the plugin.
 
 *Note: If you install novelibre at a later time, you can always install the plugin afterwards by running the nv_aeon2 setup script again.*
 

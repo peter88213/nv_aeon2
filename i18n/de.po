@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 5.3.1\n"
-"POT-Creation-Date: 2025-07-07 11:50:48\n"
-"PO-Revision-Date: 2025-07-07 11:50:48\n"
+"POT-Creation-Date: 2025-08-16 15:02:10\n"
+"PO-Revision-Date: 2025-08-16 15:02:10\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -15,6 +15,12 @@ msgstr ""
 
 msgid "!No {} file available for this project."
 msgstr "!Keine {}-Datei für dieses Projekt vorhanden."
+
+msgid "1st Edit"
+msgstr "1. Überarbeitung"
+
+msgid "2nd Edit"
+msgstr "2. Überarbeitung"
 
 msgid "Add or update moon phase data"
 msgstr "Mondphasen hinzufügen oder aktualisieren"
@@ -88,6 +94,12 @@ msgstr "Strg"
 msgid "Del"
 msgstr "Entf"
 
+msgid "Done"
+msgstr "Fertiggestellt"
+
+msgid "Draft"
+msgstr "Entwurf"
+
 msgid "File"
 msgstr "Datei"
 
@@ -120,6 +132,9 @@ msgstr "Keine {}-Datei für dieses Projekt vorhanden."
 
 msgid "Open Aeon Timeline 2"
 msgstr "Aeon Timeline 2 öffnen"
+
+msgid "Outline"
+msgstr "Gliederung"
 
 msgid "Save the project and update it?"
 msgstr "Projekt speichern und aktualisieren?"
