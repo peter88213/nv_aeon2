@@ -15,7 +15,7 @@ import sys
 import zipfile
 
 PLUGIN = 'nv_aeon2.py'
-VERSION = ' @release'
+VERSION = '@release'
 PRJ = 'nv_aeon2'
 
 pyz = os.path.dirname(__file__)
