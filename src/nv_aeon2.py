@@ -30,7 +30,7 @@ import tkinter as tk
 class Plugin(PluginBase):
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    API_VERSION = '5.18'
+    API_VERSION = '5.35'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
     HELP_URL = _('https://peter88213.github.io/nv_aeon2/help/')
@@ -183,12 +183,9 @@ class Plugin(PluginBase):
         if not self._ctrl.get_preferences()['enable_hovertips']:
             return
 
-        try:
-            from idlelib.tooltip import Hovertip
-        except ModuleNotFoundError:
-            return
-
-        Hovertip(self._timelineButton, self._timelineButton['text'])
+        self._mdl.nvService.new_hovertip(
+            self._timelineButton, self._timelineButton['text']
+        )
 
     def _get_icon(self, fileName):
         # Return the icon for the main view.

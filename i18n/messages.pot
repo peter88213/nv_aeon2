@@ -3,8 +3,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.3.1\n"
-"POT-Creation-Date: 2025-08-16 15:02:10\n"
+"Project-Id-Version: 5.4.0\n"
+"POT-Creation-Date: 2025-09-03 09:55:34\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
@@ -77,6 +77,9 @@ msgstr ""
 msgid "Ambiguous novelibre section title \"{}\"."
 msgstr ""
 
+msgid "Bio"
+msgstr ""
+
 msgid "Cannot determine file date."
 msgstr ""
 
@@ -87,6 +90,9 @@ msgid "Cannot read timeline data"
 msgstr ""
 
 msgid "Cannot write file"
+msgstr ""
+
+msgid "Characterization"
 msgstr ""
 
 msgid "Create from Aeon Timeline 2..."
@@ -104,6 +110,9 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
+msgid "Ending"
+msgstr ""
+
 msgid "File"
 msgstr ""
 
@@ -111,6 +120,9 @@ msgid "File already exists"
 msgstr ""
 
 msgid "File written"
+msgstr ""
+
+msgid "Goals"
 msgstr ""
 
 msgid "Information"
@@ -137,7 +149,16 @@ msgstr ""
 msgid "Open Aeon Timeline 2"
 msgstr ""
 
+msgid "Opening"
+msgstr ""
+
 msgid "Outline"
+msgstr ""
+
+msgid "Peak emotional moment"
+msgstr ""
+
+msgid "Plot progress"
 msgstr ""
 
 msgid "Save the project and update it?"
@@ -159,6 +180,9 @@ msgid "Update the timeline"
 msgstr ""
 
 msgid "Update the timeline?"
+msgstr ""
+
+msgid "World building"
 msgstr ""
 
 msgid "https://peter88213.github.io/nv_aeon2/help/"

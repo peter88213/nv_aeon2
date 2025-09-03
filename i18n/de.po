@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.3.1\n"
-"POT-Creation-Date: 2025-08-16 15:02:10\n"
-"PO-Revision-Date: 2025-08-16 15:02:10\n"
+"Project-Id-Version: 5.4.0\n"
+"POT-Creation-Date: 2025-09-03 09:55:34\n"
+"PO-Revision-Date: 2025-09-03 09:55:34\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -73,6 +73,9 @@ msgstr "Plotlinie \"{}\" mehrfach in novelibre."
 msgid "Ambiguous novelibre section title \"{}\"."
 msgstr "Abschnittstitel \"{}\" mehrfach in novelibre."
 
+msgid "Bio"
+msgstr "Biographie"
+
 msgid "Cannot determine file date."
 msgstr "Das Dateidatum ist nicht zu ermitteln."
 
@@ -84,6 +87,9 @@ msgstr "Kann Zeitstrahldaten nicht einlesen"
 
 msgid "Cannot write file"
 msgstr "Kann Datei nicht schreiben"
+
+msgid "Characterization"
+msgstr "Charakterisierung"
 
 msgid "Create from Aeon Timeline 2..."
 msgstr "Aus Aeon Timeline 2 erzeugen..."
@@ -100,6 +106,9 @@ msgstr "Fertiggestellt"
 msgid "Draft"
 msgstr "Entwurf"
 
+msgid "Ending"
+msgstr "Ende"
+
 msgid "File"
 msgstr "Datei"
 
@@ -108,6 +117,9 @@ msgstr "Datei existiert bereits"
 
 msgid "File written"
 msgstr "Datei gespeichert"
+
+msgid "Goals"
+msgstr "Ziele"
 
 msgid "Information"
 msgstr "Information"
@@ -133,8 +145,17 @@ msgstr "Keine {}-Datei für dieses Projekt vorhanden."
 msgid "Open Aeon Timeline 2"
 msgstr "Aeon Timeline 2 öffnen"
 
+msgid "Opening"
+msgstr "Eröffnung"
+
 msgid "Outline"
 msgstr "Gliederung"
+
+msgid "Peak emotional moment"
+msgstr "Emotionaler Höhepunkt"
+
+msgid "Plot progress"
+msgstr "Handlungsfortschritt"
 
 msgid "Save the project and update it?"
 msgstr "Projekt speichern und aktualisieren?"
@@ -156,6 +177,9 @@ msgstr "Den Zeitstrahl aktualisieren"
 
 msgid "Update the timeline?"
 msgstr "Den Zeitstrahl aktualisieren?"
+
+msgid "World building"
+msgstr "Weltenbau"
 
 msgid "\"AD\" era is missing in the calendar."
 msgstr "\"AD\" Ära fehlt im Kalender"
