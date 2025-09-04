@@ -10,7 +10,7 @@
 - Under Linux, the *idle3* package is no longer needed for displaying tooltips.
 
 API: 5.35
-Based on novelibre 5.35.0
+Based on novelibre 5.35.1
 
 
 ### Version 5.3.1
