@@ -2,7 +2,16 @@
 <!DOCTYPE novx SYSTEM "novx_1_6.dtd">
 <?xml-stylesheet href="novx.css" type="text/css"?>
 <novx version="1.6" xml:lang="de-DE">
-  <PROJECT />
+  <PROJECT>
+    <CustomPlotProgress>Plot progress</CustomPlotProgress>
+    <CustomCharacterization>Characterization</CustomCharacterization>
+    <CustomWorldBuilding>World building</CustomWorldBuilding>
+    <CustomGoal>Opening</CustomGoal>
+    <CustomConflict>Peak emotional moment</CustomConflict>
+    <CustomOutcome>Ending</CustomOutcome>
+    <CustomChrBio>Bio</CustomChrBio>
+    <CustomChrGoals>Goals</CustomChrGoals>
+  </PROJECT>
   <CHAPTERS>
     <CHAPTER id="ch1">
       <Title>New scenes</Title>
