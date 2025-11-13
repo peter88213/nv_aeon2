@@ -664,7 +664,9 @@ class JsonTimeline2(File):
             # Check whether the section title is unique.
             eventTitle = event['title'].strip()
             if eventTitle in scnTitles:
-                raise Error(f'Ambiguous Aeon event title "{event["title"]}".')
+                raise Error(
+                    _('Ambiguous Aeon event title "{}".').format(eventTitle)
+                )
 
             scnTitles.append(eventTitle)
 
