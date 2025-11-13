@@ -676,7 +676,7 @@ class JsonTimeline2(File):
                     status=1,
                     scType=0,
                     scene=0,
-                    )
+                )
             else:
                 continue
 
@@ -704,19 +704,15 @@ class JsonTimeline2(File):
 
             #--- Add description and section notes, if missing.
             if not hasDescription:
-                event['values'].append(
-                    {
-                        'property': self._propertyDescGuid,
-                        'value': ''
-                    }
-                )
+                event['values'].append({
+                    'property': self._propertyDescGuid,
+                    'value': ''
+                })
             if not hasNotes:
-                event['values'].append(
-                    {
-                        'property': self._propertyNotesGuid,
-                        'value': ''
-                    }
-                )
+                event['values'].append({
+                    'property': self._propertyNotesGuid,
+                    'value': ''
+                })
 
             #--- Get section tags.
             if event['tags']:
@@ -776,7 +772,7 @@ class JsonTimeline2(File):
                             sectionDuration = sectionEnd - datetime(
                                 sectionStart.year,
                                 sectionStart.month,
-                                sectionStart.day
+                                sectionStart.day,
                             )
                             lastsDays = sectionDuration.days
                             lastsHours = sectionDuration.seconds // 3600
@@ -1466,15 +1462,15 @@ class JsonTimeline2(File):
                 arcName = self.novel.plotLines[acId].title
                 newGuid = self._guidGen.get_guid(f'{acId}{arcName}')
                 self._arcGuidsById[acId] = newGuid
-                self._jsonData['entities'].append(
-                    {
-                        'entityType':self._typeArcGuid,
-                        'guid':newGuid,
-                        'icon':'book',
-                        'name':arcName,
-                        'notes':'',
-                        'sortOrder':self._arcCount,
-                        'swatchColor':'orange'})
+                self._jsonData['entities'].append({
+                    'entityType':self._typeArcGuid,
+                    'guid':newGuid,
+                    'icon':'book',
+                    'name':arcName,
+                    'notes':'',
+                    'sortOrder':self._arcCount,
+                    'swatchColor':'orange'
+                })
                 arcCount += 1
         return acIdsBySrcId
 
