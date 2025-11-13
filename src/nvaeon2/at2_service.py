@@ -36,7 +36,6 @@ class At2Service(ServiceBase):
         role_location='Location',
         color_section='Red',
         color_event='Yellow',
-
     )
     OPTIONS = dict(
         add_moonphase=False,

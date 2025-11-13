@@ -199,8 +199,8 @@ class JsonTimeline2(File):
             crIdsByGuid,
             lcIdsByGuid,
             itIdsByGuid,
-            acIdsByGuid
-            )
+            acIdsByGuid,
+        )
 
         #--- Tidy up the target.
         self._r_make_sections_deleted_in_aeon_unused(narrativeEvents)
@@ -225,7 +225,7 @@ class JsonTimeline2(File):
             relatedCharacters,
             relatedLocations,
             relatedItems,
-            relatedArcs
+            relatedArcs,
         ) = self._w_get_related_elements(source)
 
         #--- Check the source for ambiguous titles.
@@ -265,22 +265,22 @@ class JsonTimeline2(File):
         crIdsBySrcId = self._w_update_characters_from_source(
             source,
             crIdsByTitle,
-            relatedCharacters
+            relatedCharacters,
         )
         lcIdsBySrcId = self._w_update_locations_from_source(
             source,
             lcIdsByTitle,
-            relatedLocations
+            relatedLocations,
         )
         itIdsBySrcId = self._w_update_items_from_source(
             source,
             itIdsByTitle,
-            relatedItems
+            relatedItems,
         )
         acIdsBySrcId = self._w_update_arcs_from_source(
             source,
             acIdsByTitle,
-            relatedArcs
+            relatedArcs,
         )
         self._w_update_sections_from_source(
             source,
@@ -288,7 +288,7 @@ class JsonTimeline2(File):
             crIdsBySrcId,
             lcIdsBySrcId,
             itIdsBySrcId,
-            acIdsBySrcId
+            acIdsBySrcId,
         )
 
         #--- Begin writing
