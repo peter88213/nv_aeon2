@@ -31,11 +31,17 @@ Just copy it into
 
 `AppData\Local\Scribble Code\Aeon Timeline 2\CustomTemplates`.
 
-> [!NOTE]
-> The `<your user name>\AppData` folder is hidden, so you might have to go
-> to the *Explorer* settings first to enable *Show hidden files*. Just
-> disable this again after successfully having installed the custom template.
+---
 
+**Hint**
+
+
+The `<your user name>\AppData` folder is hidden, so you might have to go
+to the *Explorer* settings first to enable *Show hidden files*. Just
+disable this again after successfully having installed the custom
+template.
+
+---
 
 The next time you start *Aeon Timeline 2*, the new template appears in
 the *Custom Templates* area.
@@ -63,11 +69,16 @@ The \"Moon phase\" event property consists of:
 -   the visible shape,
 -   the fraction illuminated.
 
-> [!NOTE]
-> The moon phase calculation is based on a 'do it in your head' algorithm
-> by John Conway. In its current form, it's only valid for the 20th and
-> 21st centuries.
+---
 
+**Note**
+
+
+The moon phase calculation is based on a 'do it in your head' algorithm
+by John Conway. In its current form, it's only valid for the 20th and
+21st centuries.
+
+---
 
 ### Tools \> Aeon Timeline 2 \> Open Aeon Timeline 2
 
@@ -309,9 +320,12 @@ lock_on_export = No
 
 ```
 
-> [!NOTE]
-> Your custom configuration file does not have to contain all the entries
-> listed above. The changed entries are sufficient.
+---
+
+**Note**
+
+Your custom configuration file does not have to contain all the entries
+listed above. The changed entries are sufficient.
 
 ---
 
