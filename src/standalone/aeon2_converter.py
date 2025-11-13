@@ -7,6 +7,7 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 import os
 
 from nvaeon2.json_timeline2 import JsonTimeline2
+from nvaeon2.json_timeline2 import NarrativeMissing
 from nvaeon2.nvaeon2_locale import _
 from nvlib.controller.services.nv_service import NvService
 from nvlib.model.converter.converter import Converter
@@ -65,10 +66,8 @@ class Aeon2Converter(Converter):
         else:
             # Source file format is not supported
             self.ui.set_status(
-                (
                     f'!{_("File type is not supported")}: '
                     f'"{norm_path(sourcePath)}".'
-                )
             )
 
     def _export_from_novx(self, source, target):
@@ -104,7 +103,10 @@ class Aeon2Converter(Converter):
             source.novel = nvService.new_novel()
             target.novel = nvService.new_novel()
             source.read()
-            target.read()
+            try:
+                target.read()
+            except NarrativeMissing:
+                pass
             target.write(source.novel)
         except Error as ex:
             statusMsg = f'!{str(ex)}'

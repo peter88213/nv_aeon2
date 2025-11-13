@@ -5,17 +5,10 @@
 ## Changelog
 
 
-### Version 5.4.2
-
--  Translated error message.
-
-API: 5.35
-Based on novelibre 5.42.0
-
-
-### Version 5.4.1
+### Version 5.4.3
 
 - Aborting the conversion/synchronisation if the timeline has no "Narrative" arc.
+- Translated error message.
 
 API: 5.35
 Based on novelibre 5.42.0

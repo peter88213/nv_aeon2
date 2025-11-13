@@ -8,8 +8,12 @@ License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 from datetime import datetime
 from datetime import timedelta
 
-from nvlib.model.file.file import File
+from nvaeon2.aeon2_fop import open_timeline
+from nvaeon2.aeon2_fop import save_timeline
+from nvaeon2.guid_generator import GuidGenerator
+from nvaeon2.nvaeon2_locale import _
 from nvlib.model.data.id_generator import new_id
+from nvlib.model.file.file import File
 from nvlib.novx_globals import CHAPTER_PREFIX
 from nvlib.novx_globals import CHARACTER_PREFIX
 from nvlib.novx_globals import CH_ROOT
@@ -22,10 +26,6 @@ from nvlib.novx_globals import LOCATION_PREFIX
 from nvlib.novx_globals import PLOT_LINE_PREFIX
 from nvlib.novx_globals import PL_ROOT
 from nvlib.novx_globals import SECTION_PREFIX
-from nvaeon2.aeon2_fop import open_timeline
-from nvaeon2.aeon2_fop import save_timeline
-from nvaeon2.guid_generator import GuidGenerator
-from nvaeon2.nvaeon2_locale import _
 
 
 class JsonTimeline2(File):
@@ -188,9 +188,9 @@ class JsonTimeline2(File):
         itIdsByGuid = self._r_fetch_item_guids_by_id(targetItIdsByTitle)
         acIdsByGuid = self._r_fetch_arc_guids_by_id(targetAcIdsByTitle)
 
-        #--- Abort here if there is no Narrative arc.
+        #--- Abort here if there is no "Narrative" arc.
         if not self._entityNarrativeGuid:
-            raise Error(
+            raise NarrativeMissing(
                 f'{_("The selected project has no narrative arc")} '
                 f'"{self._entityNarrative}".'
             )
@@ -1865,4 +1865,8 @@ class JsonTimeline2(File):
                 self.novel.sections[scId].lastsDays = (
                     source.sections[srcId].lastsDays
                 )
+
+
+class NarrativeMissing(Error):
+    pass
 

@@ -10,6 +10,7 @@ from pathlib import Path
 from tkinter import filedialog
 
 from nvaeon2.json_timeline2 import JsonTimeline2
+from nvaeon2.json_timeline2 import NarrativeMissing
 from nvaeon2.nvaeon2_locale import _
 from nvlib.controller.services.service_base import ServiceBase
 from nvlib.model.file.doc_open import open_document
@@ -119,8 +120,8 @@ class At2Service(ServiceBase):
 
         if os.path.isfile(target.filePath):
             self._ui.set_status(
-                    f'!{_("File already exists")}: '
-                    f'"{norm_path(target.filePath)}".'
+                f'!{_("File already exists")}: '
+                f'"{norm_path(target.filePath)}".'
             )
             return
 
@@ -195,7 +196,10 @@ class At2Service(ServiceBase):
         target.novel = self._mdl.nvService.new_novel()
         try:
             source.read()
-            target.read()
+            try:
+                target.read()
+            except NarrativeMissing:
+                pass
             target.write(source.novel)
             self._ctrl.fileManager.copy_to_backup(target.filePath)
             message = f'{_("File written")}: "{norm_path(target.filePath)}".'
