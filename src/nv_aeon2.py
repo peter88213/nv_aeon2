@@ -175,7 +175,7 @@ class Plugin(PluginBase):
             text=_('Open Aeon Timeline 2'),
             image=self._icon,
             command=self.launch_application
-            )
+        )
         self._timelineButton.pack(side='left')
         self._timelineButton.image = self._icon
 

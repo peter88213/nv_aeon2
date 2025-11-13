@@ -262,29 +262,34 @@ class JsonTimeline2(File):
 
         #--- Update JSON data from the source.
         #    Get local lookup dictionaries.
-        crIdsBySrcId = self._w_update_characters_from_source(source,
+        crIdsBySrcId = self._w_update_characters_from_source(
+            source,
             crIdsByTitle,
             relatedCharacters
-            )
-        lcIdsBySrcId = self._w_update_locations_from_source(source,
+        )
+        lcIdsBySrcId = self._w_update_locations_from_source(
+            source,
             lcIdsByTitle,
             relatedLocations
-            )
-        itIdsBySrcId = self._w_update_items_from_source(source,
+        )
+        itIdsBySrcId = self._w_update_items_from_source(
+            source,
             itIdsByTitle,
             relatedItems
-            )
-        acIdsBySrcId = self._w_update_arcs_from_source(source,
+        )
+        acIdsBySrcId = self._w_update_arcs_from_source(
+            source,
             acIdsByTitle,
             relatedArcs
-            )
-        self._w_update_sections_from_source(source,
+        )
+        self._w_update_sections_from_source(
+            source,
             scIdsByTitle,
             crIdsBySrcId,
             lcIdsBySrcId,
             itIdsBySrcId,
             acIdsBySrcId
-            )
+        )
 
         #--- Begin writing
 

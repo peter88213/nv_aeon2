@@ -79,7 +79,7 @@ class At2Service(ServiceBase):
         configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS
-            )
+        )
         for iniFile in iniFiles:
             configuration.read(iniFile)
         kwargs = {}
@@ -104,7 +104,7 @@ class At2Service(ServiceBase):
         timelinePath = filedialog.askopenfilename(
             filetypes=[(JsonTimeline2.DESCRIPTION, JsonTimeline2.EXTENSION)],
             defaultextension=JsonTimeline2.EXTENSION,
-            )
+        )
         if not timelinePath:
             return
 
@@ -120,10 +120,8 @@ class At2Service(ServiceBase):
 
         if os.path.isfile(target.filePath):
             self._ui.set_status(
-                (
                     f'!{_("File already exists")}: '
                     f'"{norm_path(target.filePath)}".'
-                )
             )
             return
 
@@ -177,14 +175,14 @@ class At2Service(ServiceBase):
                 message=_('Save the project and update the timeline?'),
                 detail=f"{_('There are unsaved changes')}.",
                 title=self.windowTitle
-                ):
+            ):
                 return
 
             self._ctrl.save_project()
         elif not self._ui.ask_yes_no(
             message=_('Update the timeline?'),
             title=self.windowTitle
-            ):
+        ):
             return
 
         kwargs = self._get_configuration(timelinePath)
@@ -238,7 +236,7 @@ class At2Service(ServiceBase):
         if not self._ui.ask_yes_no(
             _('Save the project and update it?'),
             title=self.windowTitle
-            ):
+        ):
             return
 
         self._ctrl.save_project()
@@ -299,7 +297,7 @@ class At2Service(ServiceBase):
             message=self.windowTitle,
             detail=tlInfo,
             title=_('Information')
-            )
+        )
 
     def launch_application(self):
         """Launch Aeon Timeline 2 with the current project."""
@@ -348,7 +346,7 @@ class At2Service(ServiceBase):
         configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
             options=self.OPTIONS
-            )
+        )
         for iniFile in iniFiles:
             configuration.read(iniFile)
         kwargs = {}
