@@ -10,7 +10,7 @@ from pathlib import Path
 from tkinter import filedialog
 
 from nvaeon2.json_timeline2 import JsonTimeline2
-from nvaeon2.json_timeline2 import NarrativeMissing
+from nvaeon2.narrative_missing import NarrativeMissing
 from nvaeon2.nvaeon2_locale import _
 from nvlib.controller.services.service_base import ServiceBase
 from nvlib.model.file.doc_open import open_document

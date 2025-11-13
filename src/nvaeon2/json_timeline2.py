@@ -11,6 +11,7 @@ from datetime import timedelta
 from nvaeon2.aeon2_fop import open_timeline
 from nvaeon2.aeon2_fop import save_timeline
 from nvaeon2.guid_generator import GuidGenerator
+from nvaeon2.narrative_missing import NarrativeMissing
 from nvaeon2.nvaeon2_locale import _
 from nvlib.model.data.id_generator import new_id
 from nvlib.model.file.file import File
@@ -1865,8 +1866,4 @@ class JsonTimeline2(File):
                 self.novel.sections[scId].lastsDays = (
                     source.sections[srcId].lastsDays
                 )
-
-
-class NarrativeMissing(Error):
-    pass
 
