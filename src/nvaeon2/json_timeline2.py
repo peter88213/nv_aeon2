@@ -190,7 +190,10 @@ class JsonTimeline2(File):
 
         #--- Abort here if there is no Narrative arc.
         if not self._entityNarrativeGuid:
-            return
+            raise Error(
+                f'{_("The selected project has no narrative arc")} '
+                f'"{self._entityNarrative}".'
+            )
 
         #--- Build target sections from the source events.
         #    Get local lookup dictionaries.

@@ -5,6 +5,14 @@
 ## Changelog
 
 
+### Version 5.4.1
+
+- Aborting the conversion/synchronisation if the timeline has no "Narrative" arc.
+
+API: 5.35
+Based on novelibre 5.42.0
+
+
 ### Version 5.4.0
 
 - Under Linux, the *idle3* package is no longer needed for displaying tooltips.
