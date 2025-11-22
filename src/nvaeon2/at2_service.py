@@ -14,7 +14,6 @@ from nvaeon2.narrative_missing import NarrativeMissing
 from nvaeon2.nvaeon2_locale import _
 from nvlib.controller.services.service_base import ServiceBase
 from nvlib.model.file.doc_open import open_document
-from nvlib.novx_globals import Error
 from nvlib.novx_globals import norm_path
 
 
@@ -92,7 +91,7 @@ class At2Service(ServiceBase):
         try:
             timeline.read()
             timeline.write(timeline.novel)
-        except Error as ex:
+        except RuntimeError as ex:
             message = f'!{str(ex)}'
         else:
             message = f'{_("File written")}: "{norm_path(timeline.filePath)}".'
@@ -131,7 +130,7 @@ class At2Service(ServiceBase):
             source.read()
             target.novel = source.novel
             target.write()
-        except Error as ex:
+        except RuntimeError as ex:
             statusMsg = f'!{str(ex)}'
         else:
             self._ctrl.fileManager.copy_to_backup(target.filePath)
@@ -203,7 +202,7 @@ class At2Service(ServiceBase):
             target.write(source.novel)
             self._ctrl.fileManager.copy_to_backup(target.filePath)
             message = f'{_("File written")}: "{norm_path(target.filePath)}".'
-        except Error as ex:
+        except RuntimeError as ex:
             message = f'!{str(ex)}'
         self._ui.set_status(message)
 
@@ -264,7 +263,7 @@ class At2Service(ServiceBase):
                 filePath=self._mdl.prjFile.filePath,
                 doNotSave=True
             )
-        except Error as ex:
+        except RuntimeError as ex:
             message = f'!{str(ex)}'
         self._ui.set_status(f'{message}')
 

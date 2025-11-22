@@ -30,7 +30,7 @@ import tkinter as tk
 class Plugin(PluginBase):
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    API_VERSION = '5.35'
+    API_VERSION = '5.43'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
     HELP_URL = _('https://peter88213.github.io/nv_aeon2/help/')

@@ -19,7 +19,6 @@ from nvlib.novx_globals import CHAPTER_PREFIX
 from nvlib.novx_globals import CHARACTER_PREFIX
 from nvlib.novx_globals import CH_ROOT
 from nvlib.novx_globals import CR_ROOT
-from nvlib.novx_globals import Error
 from nvlib.novx_globals import ITEM_PREFIX
 from nvlib.novx_globals import IT_ROOT
 from nvlib.novx_globals import LC_ROOT
@@ -142,7 +141,7 @@ class JsonTimeline2(File):
         - Events marked as sections are converted to sections 
           in one single chapter.
         - Other events are converted to "Notes" sections in another chapter.
-        Raise the "Error" exception in case of error. 
+        Raise the "RuntimeError" exception in case of error. 
         Overrides the superclass method.
         """
         self._set_reference_date(self.novel)
@@ -315,10 +314,9 @@ class JsonTimeline2(File):
         for entity in self._jsonData['entities']:
             if entity['entityType'] == self._typeArcGuid:
                 if entity['name'] in arcNames:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous Aeon arc "{}".').format(
-                            entity['name']
-                        )
+                            entity['name'])
                     )
 
                 arcNames.append(entity['name'])
@@ -328,10 +326,9 @@ class JsonTimeline2(File):
         for entity in self._jsonData['entities']:
             if entity['entityType'] == self._typeCharacterGuid:
                 if entity['name'] in characterNames:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous Aeon character "{}".').format(
-                            entity['name']
-                        )
+                            entity['name'])
                     )
 
                 characterNames.append(entity['name'])
@@ -341,10 +338,9 @@ class JsonTimeline2(File):
         for entity in self._jsonData['entities']:
             if entity['entityType'] == self._typeItemGuid:
                 if entity['name'] in itemNames:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous Aeon item "{}".').format(
-                            entity['name']
-                        )
+                            entity['name'])
                     )
 
                 itemNames.append(entity['name'])
@@ -354,10 +350,9 @@ class JsonTimeline2(File):
         for entity in self._jsonData['entities']:
             if entity['entityType'] == self._typeLocationGuid:
                 if entity['name'] in locationNames:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous Aeon location "{}".').format(
-                            entity['name']
-                        )
+                            entity['name'])
                     )
 
                 locationNames.append(entity['name'])
@@ -368,10 +363,9 @@ class JsonTimeline2(File):
             title = self.novel.plotLines[acId].title
             if title:
                 if title in targetAcIdsByTitle:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre plot line "{}".').format(
-                            title
-                        )
+                            title)
                     )
 
                 targetAcIdsByTitle[title] = acId
@@ -383,10 +377,9 @@ class JsonTimeline2(File):
             title = self.novel.characters[crId].title
             if title:
                 if title in targetCrIdsByTitle:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre character "{}".').format(
-                            title
-                        )
+                            title)
                     )
 
                 targetCrIdsByTitle[title] = crId
@@ -398,10 +391,9 @@ class JsonTimeline2(File):
             title = self.novel.items[itId].title
             if title:
                 if title in targetItIdsByTitle:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre item "{}".').format(
-                            title
-                        )
+                            title)
                     )
 
                 targetItIdsByTitle[title] = itId
@@ -413,10 +405,9 @@ class JsonTimeline2(File):
             title = self.novel.locations[lcId].title
             if title:
                 if title in targetLcIdsByTitle:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre location "{}".').format(
-                            title
-                        )
+                            title)
                     )
 
                 targetLcIdsByTitle[title] = lcId
@@ -428,10 +419,9 @@ class JsonTimeline2(File):
             title = self.novel.sections[scId].title
             if title:
                 if title in targetScIdsByTitle:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre section title "{}".').format(
-                            title
-                        )
+                            title)
                     )
 
                 targetScIdsByTitle[title] = scId
@@ -539,7 +529,7 @@ class JsonTimeline2(File):
                         break
 
         if self._tplDateGuid is None:
-            raise Error(_('"AD" era is missing in the calendar.'))
+            raise RuntimeError(_('"AD" era is missing in the calendar.'))
 
     def _r_fetch_item_guids_by_id(self, targetItIdsByTitle):
         itIdsByGuid = {}
@@ -665,7 +655,7 @@ class JsonTimeline2(File):
             # Check whether the section title is unique.
             eventTitle = event['title'].strip()
             if eventTitle in scnTitles:
-                raise Error(
+                raise RuntimeError(
                     _('Ambiguous Aeon event title "{}".').format(eventTitle)
                 )
 
@@ -893,10 +883,9 @@ class JsonTimeline2(File):
         for acId in source.plotLines:
             if acId in relatedArcs:
                 if source.plotLines[acId].title in srcArcTitles:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre plot line "{}".').format(
-                            source.plotLines[acId].title
-                        )
+                            source.plotLines[acId].title)
                     )
 
                 srcArcTitles.append(source.plotLines[acId].title)
@@ -907,10 +896,9 @@ class JsonTimeline2(File):
         for crId in source.characters:
             if crId in relatedCharacters:
                 if source.characters[crId].title in srcChrNames:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre character "{}".').format(
-                            source.characters[crId].title
-                        )
+                            source.characters[crId].title)
                     )
 
                 srcChrNames.append(source.characters[crId].title)
@@ -921,10 +909,9 @@ class JsonTimeline2(File):
         for lcId in source.locations:
             if lcId in relatedLocations:
                 if source.locations[lcId].title in srcLocTitles:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre location "{}".').format(
-                            source.locations[lcId].title
-                        )
+                            source.locations[lcId].title)
                     )
 
                 srcLocTitles.append(source.locations[lcId].title)
@@ -935,10 +922,9 @@ class JsonTimeline2(File):
         for itId in source.items:
             if itId in relatedItems:
                 if source.items[itId].title in srcItmTitles:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre item "{}".').format(
-                            source.items[itId].title
-                        )
+                            source.items[itId].title)
                     )
 
                 srcItmTitles.append(source.items[itId].title)
@@ -951,10 +937,9 @@ class JsonTimeline2(File):
 
             for scId in source.tree.get_children(chId):
                 if source.sections[scId].title in srcScnTitles:
-                    raise Error(
+                    raise RuntimeError(
                         _('Ambiguous novelibre section title "{}".').format(
-                            source.sections[scId].title
-                        )
+                            source.sections[scId].title)
                     )
 
                 srcScnTitles.append(source.sections[scId].title)
@@ -964,10 +949,9 @@ class JsonTimeline2(File):
         acIdsByTitle = {}
         for acId in self.novel.plotLines:
             if self.novel.plotLines[acId].title in acIdsByTitle:
-                raise Error(
+                raise RuntimeError(
                     _('Ambiguous Aeon arc "{}".').format(
-                        self.novel.plotLines[acId].title
-                    )
+                        self.novel.plotLines[acId].title)
                 )
 
             acIdsByTitle[self.novel.plotLines[acId].title] = acId
@@ -977,10 +961,9 @@ class JsonTimeline2(File):
         crIdsByTitle = {}
         for crId in self.novel.characters:
             if self.novel.characters[crId].title in crIdsByTitle:
-                raise Error(
+                raise RuntimeError(
                     _('Ambiguous Aeon character "{}".').format(
-                        self.novel.characters[crId].title
-                    )
+                        self.novel.characters[crId].title)
                 )
 
             crIdsByTitle[self.novel.characters[crId].title] = crId
@@ -990,10 +973,9 @@ class JsonTimeline2(File):
         itIdsByTitle = {}
         for itId in self.novel.items:
             if self.novel.items[itId].title in itIdsByTitle:
-                raise Error(
+                raise RuntimeError(
                     _('Ambiguous Aeon item "{}".').format(
-                        self.novel.items[itId].title
-                    )
+                        self.novel.items[itId].title)
                 )
 
             itIdsByTitle[self.novel.items[itId].title] = itId
@@ -1003,10 +985,9 @@ class JsonTimeline2(File):
         lcIdsByTitle = {}
         for lcId in self.novel.locations:
             if self.novel.locations[lcId].title in lcIdsByTitle:
-                raise Error(
+                raise RuntimeError(
                     _('Ambiguous Aeon location "{}".').format(
-                        self.novel.locations[lcId].title
-                    )
+                        self.novel.locations[lcId].title)
                 )
 
             lcIdsByTitle[self.novel.locations[lcId].title] = lcId
@@ -1017,10 +998,9 @@ class JsonTimeline2(File):
         for scId in self.novel.sections:
             if self.novel.sections[scId].title in scIdsByTitle:
 
-                raise Error(
+                raise RuntimeError(
                     _('Ambiguous Aeon event title "{}".').format(
-                        self.novel.sections[scId].title
-                    )
+                        self.novel.sections[scId].title)
                 )
             scIdsByTitle[self.novel.sections[scId].title] = scId
         return scIdsByTitle

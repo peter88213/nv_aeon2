@@ -10,7 +10,6 @@ import json
 import os
 import zipfile
 
-from nvlib.novx_globals import Error
 from nvaeon2.nvaeon2_locale import _
 from nvlib.novx_globals import norm_path
 
@@ -22,20 +21,20 @@ def open_timeline(filePath):
         filePath -- Path of the .aeon project file to read.
         
     Return a Python object containing the timeline structure.
-    Raise the "Error" exception in case of error. 
+    Raise the "RuntimeError" exception in case of error. 
     """
     try:
         with zipfile.ZipFile(filePath, 'r') as myzip:
             jsonBytes = myzip.read('timeline.json')
             jsonStr = codecs.decode(jsonBytes, encoding='utf-8')
     except:
-        raise Error(f'{_("Cannot read timeline data")}.')
+        raise RuntimeError(f'{_("Cannot read timeline data")}.')
     if not jsonStr:
-        raise Error(f'{_("No JSON part found in timeline data")}.')
+        raise RuntimeError(f'{_("No JSON part found in timeline data")}.')
     try:
         jsonData = json.loads(jsonStr)
     except JSONDecodeError:
-        raise Error(f'{_("Invalid JSON data in timeline")}.')
+        raise RuntimeError(f'{_("Invalid JSON data in timeline")}.')
     return jsonData
 
 
@@ -46,14 +45,14 @@ def save_timeline(jsonData, filePath):
         jsonData -- Python object containing the timeline structure.
         filePath -- Path of the .aeon project file to write.
         
-    Raise the "Error" exception in case of error. 
+    Raise the "RuntimeError" exception in case of error. 
     """
     backedUp = False
     if os.path.isfile(filePath):
         try:
             os.replace(filePath, f'{filePath}.bak')
         except:
-            raise Error(
+            raise RuntimeError(
                     f'{_("Cannot overwrite file")}: '
                     f'"{norm_path(filePath)}".'
             )
@@ -69,5 +68,5 @@ def save_timeline(jsonData, filePath):
     except:
         if backedUp:
             os.replace(f'{filePath}.bak', filePath)
-        raise Error(f'{_("Cannot write file")}: "{norm_path(filePath)}".')
+        raise RuntimeError(f'{_("Cannot write file")}: "{norm_path(filePath)}".')
 
