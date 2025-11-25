@@ -14,8 +14,8 @@ import sys
 from nvlib.configuration.configuration import Configuration
 from nvlib.gui.set_icon_tk import set_icon
 from nvlib.nv_locale import _
-from nvlib.user_interface.ui import Ui
-from nvlib.user_interface.ui_tk import UiTk
+from nvlib.alternative_ui.ui import Ui
+from nvlib.alternative_ui.ui_tk import UiTk
 from standalone.aeon2_converter import Aeon2Converter
 
 SUFFIX = ''
