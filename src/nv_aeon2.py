@@ -16,17 +16,15 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 """
-from pathlib import Path
-from tkinter import ttk
 import webbrowser
 
 from nvaeon2.nvaeon2_locale import _
-# must be the first import here
 from nvaeon2.at2_service import At2Service
 from nvlib.controller.plugin.plugin_base import PluginBase
-import tkinter as tk
+from nvlib.gui.menus.nv_menu import NvMenu
 
 
+# must be the first import here
 class Plugin(PluginBase):
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
@@ -42,22 +40,6 @@ class Plugin(PluginBase):
 
     def create_novx(self):
         self.timelineService.create_novx()
-
-    def disable_menu(self):
-        """Disable menu entries when no project is open.
-        
-        Overrides the superclass method.
-        """
-        self._ui.toolsMenu.entryconfig(self.FEATURE, state='disabled')
-        self._timelineButton.config(state='disabled')
-
-    def enable_menu(self):
-        """Enable menu entries when a project is open.
-                
-        Overrides the superclass method.
-        """
-        self._ui.toolsMenu.entryconfig(self.FEATURE, state='normal')
-        self._timelineButton.config(state='normal')
 
     def export_from_novx(self):
         self.timelineService.export_from_novx()
@@ -79,124 +61,101 @@ class Plugin(PluginBase):
         Extends the superclass method.
         """
         super().install(model, view, controller)
-        self._icon = self._get_icon('aeon2.png')
-
-        # Create a submenu in the Tools menu.
-        self.pluginMenu = tk.Menu(self._ui.toolsMenu, tearoff=0)
-        self._ui.toolsMenu.add_cascade(
-            label=self.FEATURE,
-            image=self._icon,
-            compound='left',
-            menu=self.pluginMenu,
-            state='disabled',
-        )
-        self.pluginMenu.add_command(
-            label=_('Information'),
-            command=self.info,
-        )
-        self.pluginMenu.add_separator()
-        self.pluginMenu.add_command(
-            label=_('Update the timeline'),
-            command=self.export_from_novx,
-        )
-        self.pluginMenu.add_command(
-            label=_('Update the project'),
-            command=self.import_to_novx,
-        )
-        self.pluginMenu.add_separator()
-        self.pluginMenu.add_command(
-            label=_('Add or update moon phase data'),
-            command=self.add_moonphase,
-        )
-        self.pluginMenu.add_separator()
-        self.pluginMenu.add_command(
-            label=_('Open Aeon Timeline 2'),
-            command=self.launch_application,
-        )
-
-        # Add an entry to the "File > New" menu.
-        self._ui.newMenu.add_command(
-            label=_('Create from Aeon Timeline 2...'),
-            image=self._icon,
-            compound='left',
-            command=self.create_novx,
-        )
-
-        # Add an entry to the Help menu.
-        self._ui.helpMenu.add_command(
-            label=_('Aeon 2 plugin Online help'),
-            image=self._icon,
-            compound='left',
-            command=self.open_help,
-        )
-
-        #--- Configure the toolbar.
-        self._configure_toolbar()
-
         self.timelineService = At2Service(
             model,
             view,
             controller,
             self.FEATURE
         )
+        self._icon = self._get_icon('aeon2.png')
+
+        #--- Configure the main menu.
+
+        # Create a submenu in the Tools menu.
+        label = self.FEATURE
+        self.pluginMenu = NvMenu()
+        self._ui.toolsMenu.add_cascade(
+            label=label,
+            image=self._icon,
+            compound='left',
+            menu=self.pluginMenu,
+            state='disabled',
+        )
+        self._ui.toolsMenu.disableOnClose.append(label)
+
+        label = _('Information')
+        self.pluginMenu.add_command(
+            label=label,
+            command=self.info,
+        )
+
+        label = _('Update the timeline')
+        self.pluginMenu.add_separator()
+        self.pluginMenu.add_command(
+            label=label,
+            command=self.export_from_novx,
+        )
+
+        label = _('Update the project')
+        self.pluginMenu.add_command(
+            label=label,
+            command=self.import_to_novx,
+        )
+        self.pluginMenu.disableOnLock.append(label)
+
+        label = _('Add or update moon phase data')
+        self.pluginMenu.add_separator()
+        self.pluginMenu.add_command(
+            label=label,
+            command=self.add_moonphase,
+        )
+
+        self.pluginMenu.add_separator()
+
+        label = _('Open Aeon Timeline 2')
+        self.pluginMenu.add_command(
+            label=label,
+            command=self.launch_application,
+        )
+
+        # Add an entry to the "File > New" menu.
+        label = _('Create from Aeon Timeline 2...')
+        self._ui.newMenu.add_command(
+            label=label,
+            image=self._icon,
+            compound='left',
+            command=self.create_novx,
+        )
+
+        # Add an entry to the Help menu.
+        label = _('Aeon 2 plugin Online help')
+        self._ui.helpMenu.add_command(
+            label=label,
+            image=self._icon,
+            compound='left',
+            command=self.open_help,
+        )
+
+        #--- Configure the toolbar.
+        self._ui.toolbar.add_separator(),
+
+        # Put a button on the toolbar.
+        self._ui.toolbar.new_button(
+            text=_('Open Aeon Timeline 2'),
+            image=self._icon,
+            command=self.launch_application,
+            disableOnLock=False,
+        ).pack(side='left')
 
     def launch_application(self):
         self.timelineService.launch_application()
 
     def lock(self):
-        """Inhibit changes on the model.
-        
-        Overrides the superclass method.
-        """
-        self.pluginMenu.entryconfig(_('Update the project'), state='disabled')
+        self.pluginMenu.lock()
 
     def open_help(self):
         webbrowser.open(self.HELP_URL)
 
     def unlock(self):
-        """Enable changes on the model.
-        
-        Overrides the superclass method.
-        """
-        self.pluginMenu.entryconfig(_('Update the project'), state='normal')
+        self.pluginMenu.unlock()
 
-    def _configure_toolbar(self):
-
-        # Put a Separator on the toolbar.
-        tk.Frame(
-            self._ui.toolbar.buttonBar,
-            bg='light gray',
-            width=1
-        ).pack(side='left', fill='y', padx=4)
-
-        # Put a button on the toolbar.
-        self._timelineButton = ttk.Button(
-            self._ui.toolbar.buttonBar,
-            text=_('Open Aeon Timeline 2'),
-            image=self._icon,
-            command=self.launch_application
-        )
-        self._timelineButton.pack(side='left')
-        self._timelineButton.image = self._icon
-
-        # Initialize tooltip.
-        if not self._ctrl.get_preferences()['enable_hovertips']:
-            return
-
-        self._mdl.nvService.new_hovertip(
-            self._timelineButton, self._timelineButton['text']
-        )
-
-    def _get_icon(self, fileName):
-        # Return the icon for the main view.
-        if self._ctrl.get_preferences().get('large_icons', False):
-            size = 24
-        else:
-            size = 16
-        try:
-            homeDir = str(Path.home()).replace('\\', '/')
-            iconPath = f'{homeDir}/.novx/icons/{size}'
-            icon = tk.PhotoImage(file=f'{iconPath}/{fileName}')
-        except:
-            icon = None
-        return icon
