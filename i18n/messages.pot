@@ -1,10 +1,10 @@
 # nv_aeon2 Dictionary
-# Copyright (C) 2025 Peter Triesberger
+# Copyright (C) 2026 Peter Triesberger
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.6.1\n"
-"POT-Creation-Date: 2025-12-01 19:12:46\n"
+"Project-Id-Version: 5.7.0\n"
+"POT-Creation-Date: 2026-01-12 16:49:50\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: LANGUAGE\n"
