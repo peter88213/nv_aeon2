@@ -77,10 +77,11 @@ class At2Service(ServiceBase):
         ]
         configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
-            options=self.OPTIONS
+            options=self.OPTIONS,
         )
         for iniFile in iniFiles:
-            configuration.read(iniFile)
+            configuration.filePath = iniFile
+            configuration.read()
         kwargs = {}
         kwargs.update(configuration.settings)
         kwargs.update(configuration.options)
@@ -347,10 +348,11 @@ class At2Service(ServiceBase):
         ]
         configuration = self._mdl.nvService.new_configuration(
             settings=self.SETTINGS,
-            options=self.OPTIONS
+            options=self.OPTIONS,
         )
         for iniFile in iniFiles:
-            configuration.read(iniFile)
+            configuration.filePath = iniFile
+            configuration.read()
         kwargs = {}
         kwargs.update(configuration.settings)
         kwargs.update(configuration.options)

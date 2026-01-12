@@ -67,7 +67,8 @@ def convert(sourcePath, installDir='.'):
     iniFiles = [f'{installDir}/{iniFileName}', f'{sourceDir}/{iniFileName}']
     configuration = Configuration(SETTINGS, OPTIONS)
     for iniFile in iniFiles:
-        configuration.read(iniFile)
+        configuration.filePath = iniFile
+        configuration.read()
     kwargs = {'suffix': ''}
     kwargs.update(configuration.settings)
     kwargs.update(configuration.options)
