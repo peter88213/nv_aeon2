@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.7.0\n"
+"Project-Id-Version: 5.7.1\n"
 "POT-Creation-Date: 2025-11-13 12:51:42\n"
-"PO-Revision-Date: 2026-01-12 16:49:50\n"
+"PO-Revision-Date: 2026-03-30 13:32:35\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -30,18 +30,6 @@ msgstr "Aeon 2-Plugin Online-Hilfe"
 
 msgid "Aeon Timeline 2 project"
 msgstr "Aeon Timeline 2-Projekt"
-
-msgid "Alt-Down"
-msgstr "Alt-Ab"
-
-msgid "Alt-Left"
-msgstr "Alt-Links"
-
-msgid "Alt-Right"
-msgstr "Alt-Rechts"
-
-msgid "Alt-Up"
-msgstr "Alt-Auf"
 
 msgid "Ambiguous Aeon arc \"{}\"."
 msgstr "Bogen \"{}\" mehrfach in Aeon."
@@ -103,6 +91,9 @@ msgstr "Entf"
 msgid "Done"
 msgstr "Fertiggestellt"
 
+msgid "Down"
+msgstr "Ab"
+
 msgid "Draft"
 msgstr "Entwurf"
 
@@ -126,6 +117,9 @@ msgstr "Information"
 
 msgid "Invalid JSON data in timeline"
 msgstr "Ungültige JSON-Daten in der Zeitstrahldatei"
+
+msgid "Left"
+msgstr "Links"
 
 msgid "Major Character"
 msgstr "Hauptfigur"
@@ -157,6 +151,9 @@ msgstr "Emotionaler Höhepunkt"
 msgid "Plot progress"
 msgstr "Handlungsfortschritt"
 
+msgid "Right"
+msgstr "Rechts"
+
 msgid "Save the project and update it?"
 msgstr "Projekt speichern und aktualisieren?"
 
@@ -171,6 +168,9 @@ msgstr "Das ausgewählte Projekt hat keinen Narrativ-Bogen"
 
 msgid "There are unsaved changes"
 msgstr "Es gibt ungesicherte Änderungen"
+
+msgid "Up"
+msgstr "Auf"
 
 msgid "Update the project"
 msgstr "Das Projekt aktualisieren"

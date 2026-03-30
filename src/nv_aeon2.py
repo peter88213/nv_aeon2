@@ -35,6 +35,10 @@ class Plugin(PluginBase):
 
     FEATURE = 'Aeon Timeline 2'
 
+    DTD_MAJOR_VERSION = 1
+    DTD_MINOR_VERSION = 9
+    # DTD version supported by the plugin.
+
     def add_moonphase(self):
         self.timelineService.add_moonphase()
 
@@ -60,6 +64,20 @@ class Plugin(PluginBase):
 
         Extends the superclass method.
         """
+        # Raise an exception if the plugin is not compatible
+        # with the DTD supported by novelibre.
+        (
+            novelibreDtdMajorVersion,
+            novelibreDtdMinorVersion
+        ) = model.nvService.get_novx_dtd_version()
+        if (
+            novelibreDtdMajorVersion != self.DTD_MAJOR_VERSION or
+            novelibreDtdMinorVersion > self.DTD_MINOR_VERSION
+        ):
+            raise RuntimeError(
+                'Outdated: Current novx file version not supported.'
+            )
+
         super().install(model, view, controller)
         self.timelineService = At2Service(
             model,
