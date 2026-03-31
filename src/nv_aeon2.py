@@ -28,7 +28,7 @@ from nvlib.gui.menus.nv_menu import NvMenu
 class Plugin(PluginBase):
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    API_VERSION = '5.50'
+    API_VERSION = '5.55'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
     HELP_URL = _('https://peter88213.github.io/nv_aeon2/help/')
@@ -36,7 +36,7 @@ class Plugin(PluginBase):
     FEATURE = 'Aeon Timeline 2'
 
     DTD_MAJOR_VERSION = 1
-    DTD_MINOR_VERSION = 9
+    DTD_MINOR_VERSION = 10
     # DTD version supported by the plugin.
 
     def add_moonphase(self):
