@@ -5,6 +5,14 @@
 ## Changelog
 
 
+### Version 5.8.0
+
+Update for novelibre 5.55 and DTD 1.10. 
+
+API: 5.55
+Based on novelibre 5.55.1
+
+
 ### Version 5.7.1
 
 - Added a DTD version check. 
