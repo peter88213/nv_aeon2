@@ -1,4 +1,4 @@
-[Projekt-Homepage](https://github.com/peter88213/nv_aeon2) > [Index](../) > Benutzerhandbuch
+[Projekt-Homepage](https://github.com/peter88213/nv_aeon2) > Benutzerhandbuch
 
 ![external-link](../img/external-link.png)[English](../help/)
 
