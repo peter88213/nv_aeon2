@@ -55,7 +55,7 @@ class Plugin(PluginBase):
         self.timelineService.info()
 
     def install(self, model, view, controller):
-        """Add a submenu to the main menu.
+        """Install the plugin at runtime.
         
         Positional arguments:
             model -- reference to the novelibre main model instance.
