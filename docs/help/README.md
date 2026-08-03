@@ -8,11 +8,11 @@
 
 This page refers to the latest
 [nv_aeon2](https://github.com/peter88213/nv_aeon2/) release. You can
-open it with **Help \> Aeon 2 plugin Online help**.
+open it with **Help \> Aeon 2 plugin help**.
 
 The plugin adds a **Timeline** entry to the *novelibre* **Tools** menu,
 a **Create from Aeon Timeline 2\...** to the **File \> New** submenu,
-and an **Aeon 2 plugin Online Help** entry to the **Help** menu. The
+and an **Aeon 2 plugin help** entry to the **Help** menu. The
 Toolbar gets a ![Timeline](images/aeon2.png) button.
 
 ## Installing the Aeon Timeline 2 custom template

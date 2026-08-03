@@ -18,12 +18,12 @@ Version des Benutzerhandbuchs wechseln (Link oben).
 
 Diese Seite gilt für die neueste Ausgabe von
 [nv_aeon2](https://github.com/peter88213/nv_aeon2/). Sie können sie mit
-**Hilfe \> Aeon 2-Plugin Online-Hilfe** öffnen.
+**Hilfe \> Aeon 2-Plugin Hilfe** öffnen.
 
 Das Plugin fügt dem *novelibre*-**Extras**-Menü den Eintrag **Aeon
 Timeline 2** hinzu, außerdem dem **Datei \> Neu**-Untermenü den Eintrag
 **Aus Aeon Timeline 2 erzeugen\...**, und dem **Hilfe**-Menü den Eintrag
-**Aeon 2-Plugin Online-Hilfe**. Die Werkzeugleiste erhält eine
+**Aeon 2-Plugin Hilfe**. Die Werkzeugleiste erhält eine
 ![Timeline](images/aeon2.png) Schaltfläche.
 
 ## Die Aeon Timeline 2 Benutzervorlage installieren

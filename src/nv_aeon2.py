@@ -16,8 +16,6 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 """
-import webbrowser
-
 from nvaeon2.nvaeon2_locale import _
 from nvaeon2.at2_service import At2Service
 from nvlib.controller.plugin.plugin_base import PluginBase
@@ -31,7 +29,6 @@ class Plugin(PluginBase):
     API_VERSION = '5.55'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
-    HELP_URL = _('https://peter88213.github.io/nv_aeon2/help/')
 
     FEATURE = 'Aeon Timeline 2'
 
@@ -146,7 +143,7 @@ class Plugin(PluginBase):
         )
 
         # Add an entry to the Help menu.
-        label = _('Aeon 2 plugin Online help')
+        label = _('Aeon 2 plugin help')
         self._ui.helpMenu.add_command(
             label=label,
             image=self._icon,
@@ -171,8 +168,11 @@ class Plugin(PluginBase):
     def lock(self):
         self.pluginMenu.lock()
 
-    def open_help(self):
-        webbrowser.open(self.HELP_URL)
+    def open_help(self, event=None):
+        self._ctrl.helpService.open_help_page(
+            _('help'),
+            site='https://peter88213.github.io/nv_aeon2'
+        )
 
     def unlock(self):
         self.pluginMenu.unlock()
