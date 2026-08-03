@@ -148,7 +148,7 @@ class Plugin(PluginBase):
             label=label,
             image=self._icon,
             compound='left',
-            command=self.open_help,
+            command=self._open_help,
         )
 
         #--- Configure the toolbar.
@@ -168,12 +168,11 @@ class Plugin(PluginBase):
     def lock(self):
         self.pluginMenu.lock()
 
-    def open_help(self, event=None):
+    def unlock(self):
+        self.pluginMenu.unlock()
+
+    def _open_help(self, event=None):
         self._ctrl.helpService.open_help_page(
             _('help'),
             site='https://peter88213.github.io/nv_aeon2'
         )
-
-    def unlock(self):
-        self.pluginMenu.unlock()
-
