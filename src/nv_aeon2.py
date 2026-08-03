@@ -36,21 +36,6 @@ class Plugin(PluginBase):
     DTD_MINOR_VERSION = 10
     # DTD version supported by the plugin.
 
-    def add_moonphase(self):
-        self.timelineService.add_moonphase()
-
-    def create_novx(self):
-        self.timelineService.create_novx()
-
-    def export_from_novx(self):
-        self.timelineService.export_from_novx()
-
-    def import_to_novx(self):
-        self.timelineService.import_to_novx()
-
-    def info(self):
-        self.timelineService.info()
-
     def install(self, model, view, controller):
         """Install the plugin at runtime.
         
@@ -84,7 +69,31 @@ class Plugin(PluginBase):
         )
         self._icon = self._get_icon('aeon2.png')
 
-        #--- Configure the main menu.
+        #--- Configure the user interface.
+
+        def add_moonphase():
+            self.timelineService.add_moonphase()
+
+        def create_novx():
+            self.timelineService.create_novx()
+
+        def export_from_novx():
+            self.timelineService.export_from_novx()
+
+        def import_to_novx():
+            self.timelineService.import_to_novx()
+
+        def info():
+            self.timelineService.info()
+
+        def launch_application():
+            self.timelineService.launch_application()
+
+        def open_help():
+            self._ctrl.helpService.open_help_page(
+                _('help'),
+                site='https://peter88213.github.io/nv_aeon2'
+            )
 
         # Create a submenu in the Tools menu.
         label = self.FEATURE
@@ -101,20 +110,20 @@ class Plugin(PluginBase):
         label = _('Information')
         self.pluginMenu.add_command(
             label=label,
-            command=self.info,
+            command=info,
         )
 
         label = _('Update the timeline')
         self.pluginMenu.add_separator()
         self.pluginMenu.add_command(
             label=label,
-            command=self.export_from_novx,
+            command=export_from_novx,
         )
 
         label = _('Update the project')
         self.pluginMenu.add_command(
             label=label,
-            command=self.import_to_novx,
+            command=import_to_novx,
         )
         self.pluginMenu.disableOnLock.append(label)
 
@@ -122,7 +131,7 @@ class Plugin(PluginBase):
         self.pluginMenu.add_separator()
         self.pluginMenu.add_command(
             label=label,
-            command=self.add_moonphase,
+            command=add_moonphase,
         )
 
         self.pluginMenu.add_separator()
@@ -130,7 +139,7 @@ class Plugin(PluginBase):
         label = _('Open Aeon Timeline 2')
         self.pluginMenu.add_command(
             label=label,
-            command=self.launch_application,
+            command=launch_application,
         )
 
         # Add an entry to the "File > New" menu.
@@ -139,7 +148,7 @@ class Plugin(PluginBase):
             label=label,
             image=self._icon,
             compound='left',
-            command=self.create_novx,
+            command=create_novx,
         )
 
         # Add an entry to the Help menu.
@@ -148,22 +157,17 @@ class Plugin(PluginBase):
             label=label,
             image=self._icon,
             compound='left',
-            command=self._open_help,
+            command=open_help,
         )
 
-        #--- Configure the toolbar.
-        self._ui.toolbar.add_separator(),
-
         # Put a button on the toolbar.
+        self._ui.toolbar.add_separator(),
         self._ui.toolbar.new_button(
             text=_('Open Aeon Timeline 2'),
             image=self._icon,
-            command=self.launch_application,
+            command=launch_application,
             disableOnLock=False,
         ).pack(side='left')
-
-    def launch_application(self):
-        self.timelineService.launch_application()
 
     def lock(self):
         self.pluginMenu.lock()
@@ -171,8 +175,3 @@ class Plugin(PluginBase):
     def unlock(self):
         self.pluginMenu.unlock()
 
-    def _open_help(self, event=None):
-        self._ctrl.helpService.open_help_page(
-            _('help'),
-            site='https://peter88213.github.io/nv_aeon2'
-        )
