@@ -26,7 +26,7 @@ from nvlib.gui.menus.nv_menu import NvMenu
 class Plugin(PluginBase):
     """Plugin class for synchronization with Aeon Timeline 2."""
     VERSION = '@release'
-    API_VERSION = '5.55'
+    API_VERSION = '5.63'
     DESCRIPTION = 'Synchronize with Aeon Timeline 2'
     URL = 'https://github.com/peter88213/nv_aeon2'
 
