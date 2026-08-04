@@ -5,6 +5,15 @@
 ## Changelog
 
 
+### Version 5.9.0
+
+- Using the novelibre 5.63+ help service.
+- Refactored the code
+
+API: 5.63
+Based on novelibre 5.63.0
+
+
 ### Version 5.8.0
 
 Update for novelibre 5.55 and DTD 1.10. 
