@@ -74,24 +74,6 @@ class Plugin(PluginBase):
 
         #--- Configure the user interface.
 
-        def add_moonphase():
-            self.timelineService.add_moonphase()
-
-        def create_novx():
-            self.timelineService.create_novx()
-
-        def export_from_novx():
-            self.timelineService.export_from_novx()
-
-        def import_to_novx():
-            self.timelineService.import_to_novx()
-
-        def info():
-            self.timelineService.info()
-
-        def launch_application():
-            self.timelineService.launch_application()
-
         # Create a submenu in the Tools menu.
         label = self.FEATURE
         self.pluginMenu = NvMenu()
@@ -107,20 +89,20 @@ class Plugin(PluginBase):
         label = _('Information')
         self.pluginMenu.add_command(
             label=label,
-            command=info,
+            command=self.timelineService.info,
         )
 
         label = _('Update the timeline')
         self.pluginMenu.add_separator()
         self.pluginMenu.add_command(
             label=label,
-            command=export_from_novx,
+            command=self.timelineService.export_from_novx,
         )
 
         label = _('Update the project')
         self.pluginMenu.add_command(
             label=label,
-            command=import_to_novx,
+            command=self.timelineService.import_to_novx,
         )
         self.pluginMenu.disableOnLock.append(label)
 
@@ -128,7 +110,7 @@ class Plugin(PluginBase):
         self.pluginMenu.add_separator()
         self.pluginMenu.add_command(
             label=label,
-            command=add_moonphase,
+            command=self.timelineService.add_moonphase,
         )
 
         self.pluginMenu.add_separator()
@@ -136,7 +118,7 @@ class Plugin(PluginBase):
         label = _('Open Aeon Timeline 2')
         self.pluginMenu.add_command(
             label=label,
-            command=launch_application,
+            command=self.timelineService.launch_application,
         )
 
         # Add an entry to the "File > New" menu.
@@ -145,7 +127,7 @@ class Plugin(PluginBase):
             label=label,
             image=self._icon,
             compound='left',
-            command=create_novx,
+            command=self.timelineService.create_novx,
         )
 
         # Put a button on the toolbar.
@@ -153,7 +135,7 @@ class Plugin(PluginBase):
         self._ui.toolbar.new_button(
             text=_('Open Aeon Timeline 2'),
             image=self._icon,
-            command=launch_application,
+            command=self.timelineService.launch_application,
             disableOnLock=False,
         ).pack(side='left')
 
