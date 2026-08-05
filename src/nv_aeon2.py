@@ -36,6 +36,9 @@ class Plugin(PluginBase):
     DTD_MINOR_VERSION = 10
     # DTD version supported by the plugin.
 
+    HELP_SITE = 'https://peter88213.github.io/nv_aeon2'
+    HELP_PAGE = _('help')
+
     def install(self, model, view, controller):
         """Install the plugin at runtime.
         
@@ -88,12 +91,6 @@ class Plugin(PluginBase):
 
         def launch_application():
             self.timelineService.launch_application()
-
-        def open_help():
-            self._ctrl.helpService.open_help_page(
-                _('help'),
-                site='https://peter88213.github.io/nv_aeon2'
-            )
 
         # Create a submenu in the Tools menu.
         label = self.FEATURE
@@ -151,15 +148,6 @@ class Plugin(PluginBase):
             command=create_novx,
         )
 
-        # Add an entry to the Help menu.
-        label = _('Aeon 2 plugin help')
-        self._ui.helpMenu.add_command(
-            label=label,
-            image=self._icon,
-            compound='left',
-            command=open_help,
-        )
-
         # Put a button on the toolbar.
         self._ui.toolbar.add_separator(),
         self._ui.toolbar.new_button(
@@ -168,6 +156,8 @@ class Plugin(PluginBase):
             command=launch_application,
             disableOnLock=False,
         ).pack(side='left')
+
+        self._add_help_menu_entry(_('Aeon 2 plugin help'))
 
     def lock(self):
         self.pluginMenu.lock()
