@@ -3,9 +3,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 5.9.2\n"
+"Project-Id-Version: 5.9.3\n"
 "POT-Creation-Date: 2025-11-13 12:51:42\n"
-"PO-Revision-Date: 2026-08-05 14:08:12\n"
+"PO-Revision-Date: 2026-08-06 13:06:10\n"
 "Last-Translator: Peter Triesberger\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
