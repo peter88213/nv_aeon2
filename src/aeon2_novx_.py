@@ -11,12 +11,12 @@ import os
 from pathlib import Path
 import sys
 
-from nvlib.configuration.configuration import Configuration
-from nvlib.gui.set_icon_tk import set_icon
-from nvlib.nv_locale import _
+from nvaeon2.nvaeon2_locale import _
+from nvaeon2.aeon2_converter import Aeon2Converter
 from nvlib.alternative_ui.ui import Ui
 from nvlib.alternative_ui.ui_tk import UiTk
-from standalone.aeon2_converter import Aeon2Converter
+from nvlib.configuration.configuration import Configuration
+from nvlib.gui.set_icon_tk import set_icon
 
 SUFFIX = ''
 APPNAME = 'nv_aeon2'
@@ -44,7 +44,7 @@ OPTIONS = dict(
 )
 
 
-def run(sourcePath, silentMode=True, installDir='.'):
+def run(sourcePath, silentMode=True, configDir='.'):
     if silentMode:
         ui = Ui('')
     else:
@@ -57,12 +57,13 @@ def run(sourcePath, silentMode=True, installDir='.'):
         sourceDir = '.'
     iniFileName = f'{APPNAME}.ini'
     iniFiles = [
-        f'{installDir}/{iniFileName}',
+        f'{configDir}/{iniFileName}',
         f'{sourceDir}/{iniFileName}',
     ]
     configuration = Configuration(SETTINGS, OPTIONS)
     for iniFile in iniFiles:
-        configuration.read(iniFile)
+        configuration.filePath = iniFile
+        configuration.read()
     kwargs = {'suffix': SUFFIX}
     kwargs.update(configuration.settings)
     kwargs.update(configuration.options)
@@ -92,7 +93,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     try:
         homeDir = str(Path.home()).replace('\\', '/')
-        installDir = f'{homeDir}/.novxlib/{APPNAME}/config'
+        configDir = f'{homeDir}/.novx/config'
     except:
-        installDir = '.'
-    run(args.sourcePath, args.silent, installDir)
+        configDir = '.'
+    run(args.sourcePath, args.silent, configDir)
