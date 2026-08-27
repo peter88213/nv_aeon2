@@ -2,7 +2,7 @@
         
 Note: VERSION must be updated manually before starting this script.
 
-For further information see https://github.com/peter88213/novx_xtg
+For further information see https://github.com/peter88213/nv_aeon2
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
 import os
