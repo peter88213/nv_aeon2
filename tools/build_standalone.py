@@ -43,6 +43,12 @@ class ApplicationBuilder(PackageBuilder):
     def build_package(self):
         return
 
+    def update_landing_page(self):
+        return
+
+    def write_version_ini(self):
+        return
+
 
 def main():
     ab = ApplicationBuilder(VERSION)
