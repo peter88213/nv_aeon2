@@ -71,7 +71,7 @@ See the [novelibre CONTRIBUTING page](https://github.com/peter88213/novelibre/bl
 └── nv_aeon2/
     ├── i18n/
     ├── src/
-	 │   └── nvaeon2lib/
+	 │   └── nvaeon2/
     └── tools/ 
         └── build.py
 ```
