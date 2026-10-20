@@ -5,7 +5,7 @@
 - If you don't use *novelibre* yourself, it seems rather unlikely to me 
   that you could contribute anything meaningful.
 
-- Before contributing to this project, consider going to the 
+- Before contributing code to this project, consider going to the 
   [novelibre "Discussions" forum](https://github.com/peter88213/novelibre/discussions) 
   first to discuss your idea. 
   If you're considering implementing a new feature, the preferred approach is to create a plugin. 
@@ -71,7 +71,7 @@ See the [novelibre CONTRIBUTING page](https://github.com/peter88213/novelibre/bl
 └── nv_aeon2/
     ├── i18n/
     ├── src/
-	 │   └── nvaeon2/
+    │   └── nvaeon2/
     └── tools/ 
         └── build.py
 ```
