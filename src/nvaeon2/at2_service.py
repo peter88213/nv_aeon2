@@ -1,6 +1,6 @@
 """Provide an Aeon Timeline 2 service class for novelibre.
 
-Copyright (c) Peter Triesberger
+Copyright (c) 2024 Peter Triesberger
 For further information see https://github.com/peter88213/nv_aeon2
 License: GNU GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 """
